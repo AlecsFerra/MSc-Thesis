@@ -1,0 +1,677 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{galois}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage[bb=boondox]{mathalfa}
+\usepackage{bussproofs}
+\usepackage{backnaur}
+\usepackage{graphicx}
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proofs}{Proof}
+\newtheorem{exmp}{Example}[section]
+
+\usepackage{xcolor}
+\newcommand\todo[1]{\textcolor{red}{#1}}
+
+
+\newcommand{\oltriple}[3]{
+    \langle #1 \rangle \; #2 \; \langle #3 \rangle
+}
+
+\def\rr{\rightarrow}
+
+\newcommand{\htriple}[3]{
+    \{ #1 \} \; #2 \; \{ #3 \}
+}
+
+\newcommand{\iltriple}[3]{
+    [ #1 ] \; #2 \; [ #3 ]
+}
+
+\newcommand{\atriple}[4][A]{
+    \langle #2 \rangle_#1 \; #3 \; \langle #4 \rangle
+}
+
+\newcommand*{\sem}[1]{
+    \llbracket #1 \rrbracket
+}
+
+\newcommand{\bca}[2]{
+    #2_{bai}^{#1}
+}
+
+\newcommand{\bsem}[2][A]{
+    \bca{#1}{\sem{#2}}
+}
+
+\def\fcmp{\mathbin{\raise 0.6ex\hbox{\oalign{\hfil$\scriptscriptstyle      
+    \mathrm{o}$\hfil\cr\hfil$\scriptscriptstyle\mathrm{9}$\hfil}}}}
+\def\ocirc{\mathrm{o}}
+\def\cceq{\mathrel{\vcenter{\hbox{::}}{=}}\;}
+\def\smid{\quad|\quad}
+\def\rr{\rightarrow}
+\def\prr{\hookrightarrow}
+\def\lang{\mathbb{C}}
+\def\state{\mathbb{S}}
+\def\pow{\mathcal{P}}
+
+\title{Note}
+
+\begin{document}
+
+
+\section{Introduction}
+Reasoning about probrams bla bla bla
+
+\section{Programming Language}
+
+\subsection{Syntax}
+    We start by defining an imperative programming language with non 
+    deterministic choice and parametric on a set $Base$ of base commands,
+    common choices for the set of base commands usually contain a command
+    for assignments and boolean guards.
+
+    The set of valid $\lang$ programs is defined by the following inductive 
+    definition:
+    \begin{definition}[$\lang$ language syntax]
+        \begin{align*}
+            \lang & \cceq \mathbb{0}    & \text{Always non terminating program} \\
+                  & \smid \mathbb{1}    & \text{Identity program (skip)}\\
+                  & \smid b             & \text{Base command}\\
+                  & \smid C_1 \fcmp C_2 & \text{Program composition}\\
+                  & \smid C_1 + C_2     & \text{Non deterministic choice}\\
+                  & \smid C^\star       & \text{Iteration}\\
+        \end{align*}
+        Where $C, C_1, C_2 \in \lang$ and $b \in Base$.
+    \end{definition}
+
+\subsection{Semantics}
+    Given a set $\state$ of states and a family of partial functions
+    $\sem{b} : \state \prr \state$ we can define inductively the semantics
+    of a program in $\lang$ by structural induction on the terms:
+    
+    \begin{definition}[$\lang$ language semantics]
+        \begin{align*}
+            \sem{\cdot}         & \;:\; \pow(\state) \rr \pow(\state) \\
+            \sem{\mathbb{0}}    &= const \; \emptyset \\
+            \sem{\mathbb{1}}    &= id \\
+            \sem{b}             &= \lambda P \rr \{ x 
+                \mid \sem{b}(p)\downarrow = x \; \land p \: \in P \} \\
+            \sem{C_1 \fcmp C_2} &= \sem{C_2} \circ \sem{C_1} \\
+            \sem{C_1 + C_2}     &= \lambda P \rr \sem{C_1} P \cup \sem{C_2} P \\
+            \sem{C^\star}       &= \lambda P \rr lfp(\lambda P' \rr
+                P \cup \sem{C} P')
+        \end{align*}
+    \end{definition}
+
+    \begin{theorem}[$\sem{\cdot}$ is monotone]
+        $\forall P, Q \in \pow(\state) \quad C \in \lang$
+        $$P \subseteq Q \implies \sem{C}(P) \subseteq \sem{C}(Q)$$
+    \end{theorem}
+
+    This framework is general enough to cover non deterministic imperative 
+    languages, for example if we include a base command for boolean guards $e?$
+    where $e$ is a boolean valued expression on $\state$ we can define the 
+    usual control flow statements $\texttt{if} \; b \; \texttt{then} \; C_1 \; 
+    \texttt{else} \; C_2$ as $(e ? \fcmp C_1) + (\neg e ? \fcmp C_2)$ and
+    $\texttt{while} \; e \; \texttt{do} \; C \; \texttt{done}$ as $(e? \fcmp
+    C)^\star \fcmp \neg e ?$.
+
+\section{Best Abstract Inductive semantics}
+    We can abstract the \textit{Best Abstract Inductive Semantics} of a program 
+    in $\lang$ parametrically on a complete lattice $A$ that has as elements 
+    collections of program states and a family of monotone functions 
+    $\bsem{b} : A \rr A \quad \forall \; b \in Base$ by structural 
+    induction on the syntax of $\lang$:
+
+    \begin{definition}[Best abstract inductive semantics]
+        \begin{align*}
+            \bsem{\cdot}         & \;:\; A \rr A \\
+            \bsem{\mathbb{0}}    &= const \; \bot_A \\
+            \bsem{\mathbb{1}}    &= id_A \\
+            \bsem{b}             &= \lambda P \rr \bsem{b}(P) \\
+            \bsem{C_1 \fcmp C_2} &= \bsem{C_2} \ocirc \bsem{C_1} \\
+            \bsem{C_1 + C_2}     &= \lambda P \rr 
+                \bsem{C_1}(P) \lor_A \bsem{C_2}(P) \\
+            \bsem{C^\star}       &= \lambda P \rr lfp(\lambda P' \rr
+                P \lor_A \bsem{C} P')
+        \end{align*}
+    \end{definition}
+
+
+    \begin{theorem}[Semantic equivalence]
+        If we take as the lattice $\mathcal{P}(\state)$ and as $\bsem{b} = \lambda P 
+        \rr \{ x \mid \sem{b}(p)\downarrow = x \; \land \; p \in P \}$ the two 
+        semantics are identical.
+
+        $\forall P \in \mathcal{P}(\state) \quad C \in \lang$
+        $$\bsem[\mathcal{P}(\state)]{C}(P) = \sem{C}(P)$$
+    \end{theorem}
+    
+    \begin{theorem}[$\bsem{\cdot}$ is monotone]
+        $\forall P, Q \in A \quad C \in \lang$
+        $$P \leq_A Q \implies \bsem{C}(P) \leq_A \bsem{C}(Q)$$
+    \end{theorem}
+
+\subsection{Obtaining BAIs from other BAIs via Galois connections}
+    Given a Galois connection $\langle D, \leq_D \rangle \galois{\alpha}{\gamma}
+    \langle A, \leq_A \rangle$ if we have define a \textit{Best Abstract 
+    Inductive Semantics} on $D$ with the semantics of basic commands 
+    $\bsem[D]{b}$ we can define a \textit{Best Abstract Inductive Semantics} 
+    on $A$ with semantics of basic commands $\bsem[A]{b} = \alpha \circ 
+    \bsem[D]{b} \circ \gamma$.
+
+    \begin{theorem}[Soundness]
+        $\forall {P \in D} \; C \in \lang$
+        $$\alpha(\bsem[D]{C}(P) \leq_D \bsem[A]{C}(\alpha(P))$$
+    \end{theorem}
+
+\section{Abstract Hoare logic}
+    In this section we will define when an Abstract Hoare triple is valid, give
+    some inference rules for it \todo{BLAH}.
+
+    \begin{definition}[Abstract Hoare triple]
+        Fixed a complete lattice $A$ and the semantics of the base commands 
+        $\bsem{b}$, an \textit{Abstract Hoare triple} is valid if and only if 
+        executing the bai of a command $C$ of some precondition captured by the
+        element $P$ of $A$ is overapproximated by some element $Q$ of $A$:
+        $$\atriple{P}{C}{Q} \iff \bsem{C}(P) \leq_A Q$$
+    \end{definition}
+
+\subsection{Inference rule}
+    As in standard Hoare logic we can give a set of inference rules to derive
+    valid triples from smaller ones:
+
+    \begin{definition}[Abstract Hoare inference rules]
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(\mathbb{0})$}
+            \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
+        \end{prooftree}
+        
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(\mathbb{1})$}
+            \UnaryInfC{$\vdash \atriple{P}{\mathbb{1}}{P}$}
+        \end{prooftree}
+
+
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(b)$}
+            \UnaryInfC{$\vdash \atriple{P}{b}{\bsem{b}(P)}$}
+        \end{prooftree}
+
+        \begin{prooftree}
+            \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+            \AxiomC{$\vdash \atriple{Q}{C_2}{R}$}
+            \RightLabel{$(\mathbb{\fcmp})$}
+            \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}{R}$}
+        \end{prooftree}
+
+        \begin{prooftree}
+            \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+            \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
+            \RightLabel{$(+)$}
+            \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
+        \end{prooftree}
+
+        \begin{prooftree}
+            \AxiomC{$\vdash \atriple{P}{C}{P}$}
+            \RightLabel{$(*)$}
+            \UnaryInfC{$\vdash \atriple{P}{C ^ *}{P}$}
+        \end{prooftree}
+
+        \begin{prooftree}
+            \AxiomC{$P \leq P'$}
+            \AxiomC{$\vdash \atriple{P'}{C}{Q'}$}
+            \AxiomC{$Q' \leq Q$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+        \end{prooftree}
+    \end{definition}
+
+    \label{exmp-int}
+    \begin{exmp}[Derivation in the integer interval domain]
+        We will start by defining our running example the integer interval
+        domain: The elements of the interval domain on one variable are defined
+        by $Int = \{ [x, y] \mid x \leq y \quad x, y \in \mathbb{Z} \cup 
+        \{ +\infty , -\infty \} \} \cup \{ \bot \}$ where the order relation is 
+        given by $\bot \leq_{Int} a \; \forall a \in Int$ and $[a, b] 
+        \leq_{Int} [c, d] \iff c \leq a \land b \leq d$ and clearly $\top = 
+        [-\infty, + \infty]$. The definition can be lifted pointwise for domains
+        with an arbitrary number of variables.
+
+        As basic command we will add $e ?$ for boolean tests discarding all the
+        states that don't satisfy the condition $e$ and $x := y$ assigning the
+        result of evaluating expression $y$ to the variable $x$ and fix 
+        $\bsem{b} = \alpha \circ \sem{b} \circ \gamma$.
+
+        Then the following is a valid derivation for program 
+        $C = (x := 1 + x := 2) \fcmp x := x + 1$
+        
+        \scalebox{.5}{
+        \parbox{1cm}{
+        \begin{prooftree}
+            \AxiomC{$\top \leq \top$}
+            \AxiomC{$\vdash \atriple{\top}{x := 1}{x \in [1, 1]}$}
+            \AxiomC{$x \in [1, 1] \leq x \in [1, 2]$}
+            \TrinaryInfC{$\vdash \atriple{\top}{x := 1}{x \in [1, 2]}$}
+            \AxiomC{$\top \leq \top$}
+            \AxiomC{$\vdash \atriple{\top}{x := 2}{x \in [2, 2]}$}
+            \AxiomC{$x \in [2, 2] \leq x \in [1, 2]$}
+            \TrinaryInfC{$\vdash \atriple{\top}{x := 2}{x \in [1, 2]}$}
+            \BinaryInfC{$\vdash \atriple{\top}{x := 1 + x := 2}{x \in [1, 2]}$}
+            \AxiomC{$\vdash \atriple{x \in [1, 2]}{x := x + 1}{x \in [2, 3]}$}
+            \BinaryInfC{$\vdash \atriple{\top}{C}{x \in [2, 3]}$}
+        \end{prooftree}
+        }}
+
+        And clearly $\bsem{C}(\top) = x \in [2, 3]$.
+    \end{exmp}
+
+
+    \begin{theorem}[The proofsystem is sound]
+        $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
+    \end{theorem}
+    \begin{proofs}
+        By structural induction on the last rule applied in the derivation of
+        $\vdash \atriple{P}{C}{Q}$:
+        \begin{itemize}
+            \item $(\mathbb{0})$:
+                Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(\mathbb{0})$}
+                    \UnaryInfC{$\vdash 
+                        \atriple{P}{\mathbb{0}}{\bot}$}
+                \end{prooftree}
+
+                The triple is valid since:
+                \begin{align*}
+                    \bsem{\mathbb{0}}(P)
+                        &= \bot_A &\text{By definition of $\bsem{\cdot}$}
+                \end{align*}
+
+            \item $(\mathbb{1})$:
+                Then the last step in the derivation was: 
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(\mathbb{1})$}
+                    \UnaryInfC{$\vdash 
+                        \atriple{P}{\mathbb{1}}{P}$}
+                \end{prooftree}
+
+                The triple is valid since:
+                \begin{align*}
+                    \bsem{\mathbb{1}}(P)
+                        &= P &\text{By definition of $\bsem{\cdot}$}
+                \end{align*}
+
+            \item $(b)$:
+                Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(b)$}
+                    \UnaryInfC{$\vdash 
+                    \atriple{P}{b}{\bsem{b}(P)}$}
+                \end{prooftree}
+
+                The triple is valid since:
+                \begin{align*}
+                    \bsem{b}(P)
+                        &= \bsem{b}(P)
+                        & \text{By definition of $\bsem{\cdot}$}
+                \end{align*}
+
+            \item $(\fcmp)$: Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+                    \AxiomC{$\vdash \atriple{Q}{C_2}{R}$}
+                    \RightLabel{$(\mathbb{\fcmp})$}
+                    \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}
+                        {R}$}
+                \end{prooftree}
+                
+                By inductive hypothesis:
+                $\bsem{C_1}(P) \leq_A Q$ and
+                $\bsem{C_2}(Q) \leq_A R$.
+
+                The triple is valid since:
+                \begin{align*}
+                    \bsem{C_1 \fcmp C_2}(P)
+                        &= \bsem{C_2}(\bsem{C_1}(P))
+                        &\text{By definition of $\bsem{\cdot}$} \\
+                        &\leq_A \bsem{C_2}(Q)
+                        &\text{By monotonicity of $\bsem{\cdot}$} \\
+                        &\leq_A R
+                \end{align*}
+
+            \item $(+)$: Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+                    \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
+                    \RightLabel{$(+)$}
+                    \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
+                \end{prooftree}
+
+                By inductive hypothesis: $\bsem{C_1}(P) \leq Q$ and
+                $\bsem{C_2}(P) \leq Q$.
+
+                The triple is valid since:
+                \begin{align*}
+                    \bsem{C_1 + C_2}(P)
+                        &= \bsem{C_1}(P) \lor \bsem{C_2}(P)
+                        &\text{By definition of $\bsem{\cdot}$} \\
+                        &\leq_A Q \lor Q \\
+                        &= Q
+                \end{align*}
+
+            \item $(\star)$:
+                Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$\vdash \atriple{P}{C}{P}$}
+                    \RightLabel{$(*)$}
+                    \UnaryInfC{$\vdash \atriple{P}{C ^ \star}{P}$}
+                \end{prooftree}
+
+                By inductive hypothesis: $\bsem{C}P \leq P$
+
+                \begin{align*}
+                    \bsem{C^\star}(P)
+                        &= lfp(\lambda P' \rr P \vee_A \bsem{C}(P')) \\
+                \end{align*}
+                
+                \begin{align*}
+                    (\lambda P' \rr P \vee_A \bsem{C}(P'))(P)
+                        &= P \vee \bsem{C}(P)
+                        & \text{since $\bsem{C}(P) \leq P$} \\
+                        &= P
+                \end{align*}
+                Hence $P$ is a fixpoint for 
+                $\lambda P' \rr P \vee_A \bsem{C}(P')$
+
+                Thus $lfp(\lambda P' \rr P \vee_A \bsem{C}(P')) \leq_A P$
+                
+
+            \item $(\leq)$: Then the last step in the derivation was:
+                \begin{prooftree}
+                    \AxiomC{$P \leq P'$}
+                    \AxiomC{$\vdash \atriple{P'}{C}{Q'}$}
+                    \AxiomC{$Q' \leq Q$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+                \end{prooftree}
+
+                By inductive hypothesis: $\bsem{C}(P') \leq Q'$.
+
+                \begin{align*}
+                    \bsem{C}(P)
+                        & \bsem{C}(P')
+                        & \text{By monotonicity of $\bsem{\cdot}$}\\
+                        & \leq Q' & \text{By inductive hypothesis} \\
+                        & \leq Q
+                \end{align*}
+
+        \end{itemize}
+    \end{proofs}
+
+\subsection{Merge rules}
+    In standard Hoare loigc the following rule is valid:
+    \begin{prooftree}
+        \AxiomC{$\vdash \htriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \htriple{P_2}{C}{Q}$}
+        \RightLabel{$(merge)$}
+        \BinaryInfC{$\vdash \htriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+
+    And can be used to easily merge the results obtained by different analysis,
+    but in general the same rule in the context of abstract Hoare logic:
+    \begin{prooftree}
+        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+        \RightLabel{$(merge)$}
+        \BinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+    is unsound.
+
+    \begin{exmp}[Unsoundness of the rule $(merge)$]
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp-int} and
+        $C = (x = 3? \fcmp x := 400) + (x \not = 3? \fcmp x := x + 1)$
+
+        Then we can derive the following triples:
+        \begin{itemize}
+            \item $\vdash \atriple{x \in [1, 2]}{C}{x \in [2, 3]}$
+            \item $\vdash \atriple{x \in [4, 5]}{C}{x \in [5, 6]}$
+        \end{itemize}
+
+        But applying the rule $(merge)$ would allow to derive the following:
+        $\vdash \atriple{x \in [1, 5]}{C}{x \in [2, 6]}$, that is unsound since
+        $\bsem{C}(x \in [1, 5]) = x \in [2, 400]$.
+    \end{exmp}
+
+
+    The cause of the issue is caused by the non additivity of the base commands,
+    in fact:
+    \label{thm:add}
+    \begin{theorem}[Additivity of the semantics on attitive base commands]
+        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+        $\forall P_1, P_2 \in A \quad C \in \lang$
+        $$\bsem{C}(P_1) \lor \bsem{C}(P_2) = \bsem{C}(P_1 \lor P_2)$$
+    \end{theorem}
+    \begin{proofs}
+        By structural induction on $C$:
+        \begin{itemize}
+            \item $\mathbb{0}$:
+                By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
+                and $\bsem{\mathbb{0}}(P_i) = \bot$
+
+            \item $\mathbb{1}$:
+                By definition $i \in \{1, 2\} \; \bsem{\mathbb{1}}(P_i) = P_i$
+                and $\bsem{\mathbb{1}}(P_1 \lor P_2) = P_1 \lor P_2$
+
+            \item $b$:
+                \begin{align*}
+                    \bsem{b}(P_1 \lor P_2)
+                        &= \bsem{b}(P_1) \lor \bsem{b}(P_2)
+                        &\text{By additivity of $\bsem{b}$} \\
+                \end{align*}
+
+            \item $C_1 \fcmp C_2$:
+                \begin{align*}
+                    \bsem{C_1 \fcmp C_2}(P_1 \lor P_2)
+                        &= \bsem{C_2}(\bsem{C_1}(P_1 \lor P_2)) \\
+                        &= \bsem{C_2}(\bsem{C_1}(P_1) \lor \bsem{C_1}(P_2))
+                        &\text{By inductive hypothesis} \\
+                        &= \bsem{C_1 \fcmp C_2}(P_1) 
+                            \lor \bsem{C_2 \fcmp C_2}(P_2) \\
+                        &\text{By inductive hypothesis} \\
+                \end{align*}
+
+            \item $C_1 + C_2$:
+                \begin{align*}
+                    \bsem{C_1 + C_2}(P_1 \lor P_2)
+                        &= \bsem{C_1}(P_1 \lor P_2) \lor \bsem{C_2}(P_1 \lor P_2) \\
+                        &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) 
+                            \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
+                        &\text{By inductive hypothesis} \\
+                        &= \bsem{C_1 + C_2}(P_1) \lor \bsem{C_1 + C_2}(P_2)
+                        &\text{Rearranging $\lor$ and by definition of +} \\
+                \end{align*}
+
+            \item $C^\star$:
+                \begin{align*}
+                    \bsem{C^\star}(P_1 \lor P_2)
+                        &= lfp(\lambda P' \rr P_1 \lor P_2 \lor \bsem{C}(P')) \\
+                \end{align*}
+
+                Let $F_i = lfp(\lambda P' \rr P_i \lor \bsem{C}(P'))$
+
+
+                \begin{align*}
+                    (\lambda P' \rr P_1 \vee P_2 \vee_A \bsem{C}(P'))(F_1 \lor F_2)
+                        &= P_1 \vee P_2 \vee \bsem{C}(F_1 \vee F_2) \\
+                        &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2)
+                        & \text{By inductive hypothesis}  \\
+                        &= P_1 \vee \bsem{C}(F_1) \vee P_2 \vee \bsem{C}(F_2) \\
+                        &= F_1 \lor F_2
+                \end{align*}
+
+                Thus $F_1 \lor F_2$ is a fixpoint for 
+                $\lambda P' \rr P_i \lor \bsem{C}(P')$.
+
+                Following the same reasoning is also the least one by 
+                $F_1 \lor F_2$ beeing the smallest $K \geq F_1$ and 
+                $K \geq F_2$
+        \end{itemize}
+    \end{proofs}
+
+    \begin{theorem}[Soundness of the rule $merge$ on attitive base commands]
+        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+        $\forall P_2, P_2, Q \in A \quad C \in \lang$
+        $$\bsem{C}(P_1) \leq Q \text{ and } \bsem{C}(P_2) \leq Q \implies
+        \bsem{C}(P_1 \lor P_2) \leq Q$$
+    \end{theorem}
+    \begin{proofs}
+        Let $S_i = \bsem{C}(P_i)$ by Theorem \ref{thm:add} 
+        $\bsem{C}(P_1 \lor P_2) = \bsem{C}(P_1) \vee \bsem{C}(P_2) \leq Q \lor Q
+        = Q$
+    \end{proofs}
+
+    But requiring all the base commands to be additive is a strong requirement
+    with $\pow(\state)$ the requirement is equivalent as requiring $\gamma$ 
+    especially when the base commands are defined trough a Galois connection
+    to be additive, a requiring satisfied by a very small portion of abstract
+    domains utilized in practice.
+
+    \begin{theorem}[Base commands additivity]
+        Given a Galois connection $\langle D, \leq_D \rangle 
+        \galois{\alpha}{\gamma} \langle A, \leq_A \rangle$ and
+        $\bsem[D]{b}$ additive.
+        $$\alpha \circ \bsem[D]{b} \circ \gamma \text{ additive }
+        \impliedby \gamma \text{ additive }$$
+    \end{theorem}
+    \begin{proofs}
+        \begin{align*}
+            \alpha(\bsem{b}(\gamma(P_1 \lor P_2)))
+                &= \alpha(\bsem{b}(\gamma(P_1) \lor \gamma(P_2))) \\
+                &= \alpha(\bsem{b}(\gamma(P_1)) \lor \bsem{b}(\gamma(P_2))) \\
+                &= \alpha(\bsem{b}(\gamma(P_1))) \lor \alpha(\bsem{b}(\gamma(P_2))) \\
+        \end{align*}
+    \end{proofs}
+
+\subsubsection{Local condition}
+    Given that additivity conditions on the domain $A$ are too restrictive we
+    will look at local conditions.
+    
+    One could think that requiring $\gamma$ to be additive on $P_1 \lor P_2$
+    is enough giving a rule like this:
+    \begin{prooftree}
+        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+        \AxiomC{$\gamma(P_1 \lor P_2) = \gamma(P_1) \lor \gamma(P_2)$}
+        \RightLabel{$(merge)$}
+        \TrinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+
+    \begin{exmp}[$(merge)$ rule is unsound]
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp-int}.
+
+        By picking $P_1 = x \in [0, 1]$ and $P_2 = x \in [2, 2]$ we can 
+        obtain the following judgments:
+        \begin{itemize}
+            \item $\atriple{P_1}C{\bot}$
+            \item $\atriple{P_2}C{\bot}$
+        \end{itemize}
+
+        And by applying the $(merge)$ rule we can obtain:
+        $\atriple{P_1 \lor P_2}{C}{Q}$ but by running command $C$ on 
+        $P_1 \lor P_2$ we obtain $x \in [1, 1]$.
+
+        \begin{align*}
+            \bsem{C}(P_1 \lor P_2) 
+                &= \bsem{C}(x \in [0, 2]) \\
+                &= \bsem{x = 1?}(\bsem{x = 0? + x = 2?}(x \in [0, 2])) \\
+                &= \bsem{x = 1?}(\bsem{x = 0?}(x \in [0, 2])\lor 
+                    \bsem{x = 2?}(x \in [0, 2])) \\
+                &= \bsem{x = 1?}(x \in [0, 0])\lor 
+                    (x \in [2, 2])) \\
+                &= \bsem{x = 1?}(x \in [0, 2]) \\
+                &= x \in [1, 1] \\
+        \end{align*}
+
+    \end{exmp}
+
+    The issue is caused by the imprecision added by the $\lor$ 
+    introduced by the non deterministic choice.
+
+    In fact the following equivalence between programs that is true
+    on the concrete domain $(C_1 + C_2) \fcmp C_3 
+    \equiv (C_1 \fcmp C_3) + (C_2 \fcmp C_3)$ it's not true in the 
+    abstract, the program $C' = (x = 0? \fcmp x = 1?) + (x = 2? 
+    \fcmp x = 1?)$ that should be equivalent to $C$ it's not:
+    $\bsem{C'}(P_1 \lor P_2) = \bot$.
+
+    The fact that programs $C$ and $C'$ are different when interpreted by
+    $\bsem{\cdot}$ means that we can't look at them as a KAT, in fact
+    this would violate the axiom $(p + q)r = pr + qr$. It should also
+    be noted that the dual axiom $r(p + q) = rp + rq$ instead holds.
+
+    \begin{theorem}
+        $\forall C_1 C_2 C_3$
+        $$\bsem{C_1 \fcmp (C_2 + C_3)} = \bsem{(C_1 \fcmp C_2) + (C_1 \fcmp C_3)}$$
+    \end{theorem}
+    \begin{proofs}
+        \begin{align*}
+            \bsem{C_1 \fcmp (C_2 + C_3)}(P)
+                &= \bsem{C_2}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_1}(P)) \\
+                &= \bsem{C_1 \fcmp C_2}(P) \lor \bsem{C_1 \fcmp C_3}(P) \\
+                &= \bsem{C_1 \fcmp C_2 + C_1 \fcmp C_3}(P) 
+        \end{align*}
+    \end{proofs}
+
+    Requiring $(C_1 + C_2) \fcmp C_3 \equiv (C_1 \fcmp C_3) 
+    + (C_2 \fcmp C_3)$ is equivalent to requiring the abstract semantics
+    of every program to be additive:
+
+    \begin{theorem}
+        $$\forall C_1 C_2 C_3 \quad \bsem{(C_1 + C_2) \fcmp C_3} =
+        \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$$
+        $$\iff$$ 
+        $$\forall P_1 P_2 (decidable) C' \quad
+        \bsem{C'}(P_1 \lor P_2) = \bsem{C_1}(P_1) \lor \bsem{C_2}(P_2)$$
+    \end{theorem}
+    \begin{proofs}
+        \begin{itemize}
+            \item $(\impliedby)$:
+                \begin{align*}
+                    \bsem{(C_1 + C_2) \fcmp C_3}(P)
+                        &= \bsem{C_3}(\bsem{C_1}(P) \lor \bsem{C_2}(P)) \\
+                        &= \bsem{C_3}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_2}(P)) \\
+                        &= \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}(P)
+                \end{align*}
+            \item $(\implies)$:
+                For every proposition $P$ we can construct a program 
+                $c(P)$ such that $\bsem{c(P)}(Q) = P$ (we just need to provide
+                a program for every join-irriducible element in $A$)
+
+                \begin{align*}
+                    \bsem{C}(P_1 \lor P_2)
+                        &= \bsem{C}(\bsem{c(P_1)}(Q) \lor \bsem{c(P_2)}(Q)) \\
+                        &= \bsem{C}(\bsem{c(P_1) + c(P_2)}(Q)) \\
+                        &= \bsem{(c(P_1) + c(P_2)) \fcmp C}(Q)) \\
+                        &= \bsem{(c(P_1) \fcmp C) + (c(P_2) \fcmp C)}(Q)) \\
+                        &= \bsem{C}(\bsem{c(P_1)}(Q)) \lor \bsem{C}(\bsem{c(P_2)}(Q)) \\
+                        &= \bsem{C}(P_1) \lor \bsem{C}(P_2) \\
+                \end{align*}
+        \end{itemize}
+    \end{proofs}
+
+\end{document}
+
