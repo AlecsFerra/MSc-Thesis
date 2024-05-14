@@ -254,7 +254,7 @@ Reasoning about probrams bla bla bla
         Then the following is a valid derivation for program 
         $C = (x := 1 + x := 2) \fcmp x := x + 1$
         
-        \scalebox{.5}{
+        \scalebox{.4}{
         \parbox{1cm}{
         \begin{prooftree}
             \AxiomC{$\top \leq \top$}
@@ -487,21 +487,22 @@ Reasoning about probrams bla bla bla
                     \bsem{C_1 \fcmp C_2}(P_1 \lor P_2)
                         &= \bsem{C_2}(\bsem{C_1}(P_1 \lor P_2)) \\
                         &= \bsem{C_2}(\bsem{C_1}(P_1) \lor \bsem{C_1}(P_2))
-                        &\text{By inductive hypothesis} \\
+                        &\text{By inductive} \\
+                        &&\text{hypothesis} \\
                         &= \bsem{C_1 \fcmp C_2}(P_1) 
-                            \lor \bsem{C_2 \fcmp C_2}(P_2) \\
-                        &\text{By inductive hypothesis} \\
+                            \lor \bsem{C_2 \fcmp C_2}(P_2)
+                        &\text{By inductive} \\ && \text{hypothesis} \\
                 \end{align*}
 
             \item $C_1 + C_2$:
                 \begin{align*}
                     \bsem{C_1 + C_2}(P_1 \lor P_2)
                         &= \bsem{C_1}(P_1 \lor P_2) \lor \bsem{C_2}(P_1 \lor P_2) \\
-                        &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) 
-                            \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
+                        &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) \\
+                            & \; \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
                         &\text{By inductive hypothesis} \\
                         &= \bsem{C_1 + C_2}(P_1) \lor \bsem{C_1 + C_2}(P_2)
-                        &\text{Rearranging $\lor$ and by definition of +} \\
+                        &\text{Rearranging $\lor$} \\
                 \end{align*}
 
             \item $C^\star$:
@@ -516,8 +517,8 @@ Reasoning about probrams bla bla bla
                 \begin{align*}
                     (\lambda P' \rr P_1 \vee P_2 \vee_A \bsem{C}(P'))(F_1 \lor F_2)
                         &= P_1 \vee P_2 \vee \bsem{C}(F_1 \vee F_2) \\
-                        &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2)
                         & \text{By inductive hypothesis}  \\
+                        &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2) \\
                         &= P_1 \vee \bsem{C}(F_1) \vee P_2 \vee \bsem{C}(F_2) \\
                         &= F_1 \lor F_2
                 \end{align*}
