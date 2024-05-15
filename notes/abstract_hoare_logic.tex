@@ -48,6 +48,10 @@
     \bca{#1}{\sem{#2}}
 }
 
+\newcommand{\basesem}[2][A]{
+    \sem{#2}_{base}
+}
+
 \def\fcmp{\mathbin{\raise 0.6ex\hbox{\oalign{\hfil$\scriptscriptstyle      
     \mathrm{o}$\hfil\cr\hfil$\scriptscriptstyle\mathrm{9}$\hfil}}}}
 \def\ocirc{\mathrm{o}}
@@ -91,7 +95,7 @@ Reasoning about probrams bla bla bla
 
 \subsection{Semantics}
     Given a set $\state$ of states and a family of partial functions
-    $\sem{b} : \state \prr \state$ we can define inductively the semantics
+    $\basesem{b} : \state \prr \state$ we can define inductively the semantics
     of a program in $\lang$ by structural induction on the terms:
     
     \begin{definition}[$\lang$ language semantics]
@@ -100,7 +104,7 @@ Reasoning about probrams bla bla bla
             \sem{\mathbb{0}}    &= const \; \emptyset \\
             \sem{\mathbb{1}}    &= id \\
             \sem{b}             &= \lambda P \rr \{ x 
-                \mid \sem{b}(p)\downarrow = x \; \land p \: \in P \} \\
+                \mid \basesem{b}(p)\downarrow = x \; \land p \: \in P \} \\
             \sem{C_1 \fcmp C_2} &= \sem{C_2} \circ \sem{C_1} \\
             \sem{C_1 + C_2}     &= \lambda P \rr \sem{C_1} P \cup \sem{C_2} P \\
             \sem{C^\star}       &= \lambda P \rr lfp(\lambda P' \rr
@@ -109,7 +113,6 @@ Reasoning about probrams bla bla bla
     \end{definition}
 
     \begin{theorem}[$\sem{\cdot}$ is monotone]
-        $\forall P, Q \in \pow(\state) \quad C \in \lang$
         $$P \subseteq Q \implies \sem{C}(P) \subseteq \sem{C}(Q)$$
     \end{theorem}
 
@@ -125,7 +128,7 @@ Reasoning about probrams bla bla bla
     We can abstract the \textit{Best Abstract Inductive Semantics} of a program 
     in $\lang$ parametrically on a complete lattice $A$ that has as elements 
     collections of program states and a family of monotone functions 
-    $\bsem{b} : A \rr A \quad \forall \; b \in Base$ by structural 
+    $\basesem{b} : A \rr A \quad \forall \; b \in Base$ by structural 
     induction on the syntax of $\lang$:
 
     \begin{definition}[Best abstract inductive semantics]
@@ -133,7 +136,7 @@ Reasoning about probrams bla bla bla
             \bsem{\cdot}         & \;:\; A \rr A \\
             \bsem{\mathbb{0}}    &= const \; \bot_A \\
             \bsem{\mathbb{1}}    &= id_A \\
-            \bsem{b}             &= \lambda P \rr \bsem{b}(P) \\
+            \bsem{b}             &= \lambda P \rr \basesem{b}(P) \\
             \bsem{C_1 \fcmp C_2} &= \bsem{C_2} \ocirc \bsem{C_1} \\
             \bsem{C_1 + C_2}     &= \lambda P \rr 
                 \bsem{C_1}(P) \lor_A \bsem{C_2}(P) \\
@@ -148,12 +151,10 @@ Reasoning about probrams bla bla bla
         \rr \{ x \mid \sem{b}(p)\downarrow = x \; \land \; p \in P \}$ the two 
         semantics are identical.
 
-        $\forall P \in \mathcal{P}(\state) \quad C \in \lang$
         $$\bsem[\mathcal{P}(\state)]{C}(P) = \sem{C}(P)$$
     \end{theorem}
     
     \begin{theorem}[$\bsem{\cdot}$ is monotone]
-        $\forall P, Q \in A \quad C \in \lang$
         $$P \leq_A Q \implies \bsem{C}(P) \leq_A \bsem{C}(Q)$$
     \end{theorem}
 
@@ -166,8 +167,8 @@ Reasoning about probrams bla bla bla
     \bsem[D]{b} \circ \gamma$.
 
     \begin{theorem}[Soundness]
-        $\forall {P \in D} \; C \in \lang$
         $$\alpha(\bsem[D]{C}(P) \leq_D \bsem[A]{C}(\alpha(P))$$
+        (Here soundness is intended in an abstract interpretation sense)
     \end{theorem}
 
 \section{Abstract Hoare logic}
@@ -203,7 +204,7 @@ Reasoning about probrams bla bla bla
         \begin{prooftree}
             \AxiomC{$ $}
             \RightLabel{$(b)$}
-            \UnaryInfC{$\vdash \atriple{P}{b}{\bsem{b}(P)}$}
+            \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}(P)}$}
         \end{prooftree}
 
         \begin{prooftree}
@@ -318,13 +319,13 @@ Reasoning about probrams bla bla bla
                     \AxiomC{$ $}
                     \RightLabel{$(b)$}
                     \UnaryInfC{$\vdash 
-                    \atriple{P}{b}{\bsem{b}(P)}$}
+                    \atriple{P}{b}{\basesem{b}(P)}$}
                 \end{prooftree}
 
                 The triple is valid since:
                 \begin{align*}
                     \bsem{b}(P)
-                        &= \bsem{b}(P)
+                        &= \basesem{b}(P)
                         & \text{By definition of $\bsem{\cdot}$}
                 \end{align*}
 
@@ -418,6 +419,132 @@ Reasoning about probrams bla bla bla
                 \end{align*}
 
         \end{itemize}
+    \end{proofs}
+
+    \label{thm:post-completeness}
+    \begin{theorem}[Relative $\bsem{\cdot}$-completeness]
+        $$\vdash \atriple{P}{C}{\bsem{C}(P)}$$
+    \end{theorem}
+    \begin{proofs}
+        By structural induction on $C$:
+        \begin{itemize}
+            \item $\mathbb{0}$:
+                By definition $\bsem{\mathbb{0}}(P) = \bot$
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(\mathbb{0})$}
+                    \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
+                \end{prooftree}
+
+            \item $\mathbb{1}$:
+                By definition $\bsem{\mathbb{1}}(P) = P$
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(\mathbb{1})$}
+                    \UnaryInfC{$\vdash \atriple{P}{\mathbb{1}}{P}$}
+                \end{prooftree}
+
+            \item $b$:
+                By definition $\bsem{b}(P) = \basesem{b}(P)$
+                \begin{prooftree}
+                    \AxiomC{$ $}
+                    \RightLabel{$(b)$}
+                    \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}(P)}$}
+                \end{prooftree}
+
+            \item $C_1 \fcmp C_2$:
+                By definition $\bsem{C_1 \fcmp C_2}(P) = 
+                \bsem{C_2}(\bsem{C_1}(P))$
+
+                \begin{prooftree}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{P}{C_1}{\bsem{C_1}(P)}$}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{\bsem{C_1}(P)}{C_2}
+                        {\bsem{C_2}(\bsem{C_1}(P))}$}
+                    \RightLabel{$(\fcmp)$}
+                    \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}
+                        {\bsem{C_2}(\bsem{C_1}(P))}$}
+                \end{prooftree}
+
+
+            \item $C_1 + C_2$:
+                By definition $\bsem{C_1 + C_2}(P) = 
+                \bsem{C_1}(P) \lor \bsem{C_2}(P)$
+
+                \begin{prooftree}
+                    \AxiomC{$P \leq P$}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{P}{C_1}{\bsem{C_1}(P)}$}
+                    \AxiomC{$\bsem{C_1}(P) \leq \bsem{C_1}(P) \lor \bsem{C_2}(P)$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{P}{C_1}
+                        {\bsem{C_1}(P) \lor \bsem{C_2}(P)}$}
+                    \AxiomC{$\pi_1$}
+                    \RightLabel{$(+)$}
+                    \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}
+                        {\bsem{C_1}(P) \lor \bsem{C_2}(P)}$}
+                \end{prooftree}
+
+                Where $\pi_1$:
+                \begin{prooftree}
+                    \AxiomC{$P \leq P$}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{P}{C_2}{\bsem{C_2}(P)}$}
+                    \AxiomC{$\bsem{C_2}(P) \leq \bsem{C_1}(P) \lor \bsem{C_2}(P)$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{P}{C_2}
+                        {\bsem{C_1}(P) \lor \bsem{C_2}(P)}$}
+                \end{prooftree}
+
+            \item $C^\star$:
+                By definition $\bsem{C^\star}(P) = lfp(\lambda P' \rr P \lor 
+                \bsem{C}(S')$ and let's call this value $K$, by $K$ being 
+                a fixpoint the following fact is true $K = P \lor \bsem{C}(K)$
+                hence the following facts are true:
+                \begin{itemize}
+                    \item $\alpha_1$: $K \geq P$
+                    \item $\alpha_2$: $K \geq \bsem{C}(K)$
+                \end{itemize}
+
+                \begin{prooftree}
+                    \AxiomC{$\alpha_1$}
+                    \AxiomC{$K \leq K$}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{K}{C}{\bsem{C}(K)}$}
+                    \AxiomC{$\alpha_2$}
+                    \TrinaryInfC{$\vdash \atriple{K}{C}{K}$}
+                    \RightLabel{$(\star)$}
+                    \UnaryInfC{$\vdash \atriple{K}{C^\star}{K}$}
+                    \AxiomC{$K \leq K$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{P}{C^\star}{K}$}
+                \end{prooftree}
+        \end{itemize}
+    \end{proofs}
+
+
+    \label{thm:completeness}
+    \begin{theorem}[Relative completeness]
+        $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
+    \end{theorem}
+    \begin{proofs}
+        By definition of $\atriple{P}{C}{Q} \iff Q \geq \bsem{C}(P)$
+
+        \begin{prooftree}
+            \AxiomC{$P \leq P$}
+            \AxiomC{By Theorem \ref{thm:post-completeness}}
+            \noLine
+            \UnaryInfC{$\vdash \atriple{P}{C}{\bsem{C}(P)}$}
+            \AxiomC{$Q \geq \bsem{C}(P)$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+        \end{prooftree}
     \end{proofs}
 
 \subsection{Merge rules}
