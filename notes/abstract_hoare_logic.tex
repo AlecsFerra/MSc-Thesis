@@ -236,8 +236,8 @@ Reasoning about probrams bla bla bla
         \end{prooftree}
     \end{definition}
 
-    \label{exmp-int}
     \begin{exmp}[Derivation in the integer interval domain]
+        \label{exmp:int}
         We will start by defining our running example the integer interval
         domain: The elements of the interval domain on one variable are defined
         by $Int = \{ [x, y] \mid x \leq y \quad x, y \in \mathbb{Z} \cup 
@@ -421,8 +421,8 @@ Reasoning about probrams bla bla bla
         \end{itemize}
     \end{proofs}
 
-    \label{thm:post-completeness}
     \begin{theorem}[Relative $\bsem{\cdot}$-completeness]
+        \label{thm:post-completeness}
         $$\vdash \atriple{P}{C}{\bsem{C}(P)}$$
     \end{theorem}
     \begin{proofs}
@@ -529,8 +529,8 @@ Reasoning about probrams bla bla bla
     \end{proofs}
 
 
-    \label{thm:completeness}
     \begin{theorem}[Relative completeness]
+        \label{thm:completeness}
         $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
     \end{theorem}
     \begin{proofs}
@@ -567,7 +567,7 @@ Reasoning about probrams bla bla bla
     is unsound.
 
     \begin{exmp}[Unsoundness of the rule $(merge)$]
-        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp-int} and
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int} and
         $C = (x = 3? \fcmp x := 400) + (x \not = 3? \fcmp x := x + 1)$
 
         Then we can derive the following triples:
@@ -584,8 +584,8 @@ Reasoning about probrams bla bla bla
 
     The cause of the issue is caused by the non additivity of the base commands,
     in fact:
-    \label{thm:add}
     \begin{theorem}[Additivity of the semantics on attitive base commands]
+        \label{thm:add}
         if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
         = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
         $\forall P_1, P_2 \in A \quad C \in \lang$
@@ -709,7 +709,7 @@ Reasoning about probrams bla bla bla
     \end{prooftree}
 
     \begin{exmp}[$(merge)$ rule is unsound]
-        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp-int}.
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int}.
 
         By picking $P_1 = x \in [0, 1]$ and $P_2 = x \in [2, 2]$ we can 
         obtain the following judgments:
