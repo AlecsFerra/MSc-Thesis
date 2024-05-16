@@ -502,10 +502,11 @@ Reasoning about probrams bla bla bla
                 \end{prooftree}
 
             \item $C^\star$:
-                By definition $\bsem{C^\star}(P) = lfp(\lambda P' \rr P \lor 
-                \bsem{C}(S')$ and let's call this value $K$, by $K$ being 
-                a fixpoint the following fact is true $K = P \lor \bsem{C}(K)$
-                hence the following facts are true:
+                By definition $\bsem{C^\star}(P) = lfp(\lambda p' \rr p \lor 
+                \bsem{c}(s'))$ and let's call this value $K$, since $K$ is 
+                a fixpoint of $\lambda P' \rr P \lor \bsem{C}(S')$:
+                $$K = P \lor \bsem{C}(K)$$
+                Hence:
                 \begin{itemize}
                     \item $\alpha_1$: $K \geq P$
                     \item $\alpha_2$: $K \geq \bsem{C}(K)$
@@ -518,6 +519,233 @@ Reasoning about probrams bla bla bla
                     \noLine
                     \UnaryInfC{$\vdash \atriple{K}{C}{\bsem{C}(K)}$}
                     \AxiomC{$\alpha_2$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{K}{C}{K}$}
+                    \RightLabel{$(\star)$}
+                    \UnaryInfC{$\vdash \atriple{K}{C^\star}{K}$}
+                    \AxiomC{$K \leq K$}
+                    \RightLabel{$(\leq)$}
+                    \TrinaryInfC{$\vdash \atriple{P}{C^\star}{K}$}
+                \end{prooftree}
+        \end{itemize}
+    \end{proofs}
+
+
+    \begin{theorem}[Relative completeness]
+        \label{thm:completeness}
+        $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
+    \end{theorem}
+    \begin{proofs}
+        By definition of $\atriple{P}{C}{Q} \iff Q \geq \bsem{C}(P)$
+
+        \begin{prooftree}
+            \AxiomC{$P \leq P$}
+            \AxiomC{By Theorem \ref{thm:post-completeness}}
+            \noLine
+            \UnaryInfC{$\vdash \atriple{P}{C}{\bsem{C}(P)}$}
+            \AxiomC{$Q \geq \bsem{C}(P)$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+        \end{prooftree}
+    \end{proofs}
+
+\subsection{Merge rules}
+    In standard Hoare loigc the following rule is valid:
+    \begin{prooftree}
+        \AxiomC{$\vdash \htriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \htriple{P_2}{C}{Q}$}
+        \RightLabel{$(merge)$}
+        \BinaryInfC{$\vdash \htriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+
+    And can be used to easily merge the results obtained by different analysis,
+    but in general the same rule in the context of abstract Hoare logic:
+    \begin{prooftree}
+        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+        \RightLabel{$(merge)$}
+        \BinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+    is unsound.
+
+    \begin{exmp}[Unsoundness of the rule $(merge)$]
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int} and
+        $C = (x = 3? \fcmp x := 400) + (x \not = 3? \fcmp x := x + 1)$
+
+        Then we can derive the following triples:
+        \begin{itemize}
+            \item $\vdash \atriple{x \in [1, 2]}{C}{x \in [2, 3]}$
+            \item $\vdash \atriple{x \in [4, 5]}{C}{x \in [5, 6]}$
+        \end{itemize}
+
+        But applying the rule $(merge)$ would allow to derive the following:
+        $\vdash \atriple{x \in [1, 5]}{C}{x \in [2, 6]}$, that is unsound since
+        $\bsem{C}(x \in [1, 5]) = x \in [2, 400]$.
+    \end{exmp}
+
+
+    The cause of the issue is caused by the non additivity of the base commands,
+    in fact:
+    \begin{theorem}[Additivity of the semantics on attitive base commands]
+        \label{thm:add}
+        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+        $\forall P_1, P_2 \in A \quad C \in \lang$
+        $$\bsem{C}(P_1) \lor \bsem{C}(P_2) = \bsem{C}(P_1 \lor P_2)$$
+    \end{theorem}
+    \begin{proofs}
+        By structural induction on $C$:
+        \begin{itemize}
+            \item $\mathbb{0}$:
+                By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
+                and $\bsem{\mathbb{0}}(P_i) = \bot$
+
+            \item $\mathbb{1}$:
+                By definition $i \in \{1, 2\} \; \bsem{\mathbb{1}}(P_i) = P_i$
+                and $\bsem{\mathbb{1}}(P_1 \lor P_2) = P_1 \lor P_2$
+
+            \item $b$:
+                \begin{align*}
+                    \bsem{b}(P_1 \lor P_2)
+                        &= \bsem{b}(P_1) \lor \bsem{b}(P_2)
+                        &\text{By additivity of $\bsem{b}$} \\
+                \end{align*}
+
+            \item $C_1 \fcmp C_2$:
+                \begin{align*}
+                    \bsem{C_1 \fcmp C_2}(P_1 \lor P_2)
+                        &= \bsem{C_2}(\bsem{C_1}(P_1 \lor P_2)) \\
+                        &= \bsem{C_2}(\bsem{C_1}(P_1) \lor \bsem{C_1}(P_2))
+                        &\text{By inductive} \\
+                        &&\text{hypothesis} \\
+                        &= \bsem{C_1 \fcmp C_2}(P_1) 
+                            \lor \bsem{C_2 \fcmp C_2}(P_2)
+                        &\text{By inductive} \\ && \text{hypothesis} \\
+                \end{align*}
+
+            \item $C_1 + C_2$:
+                \begin{align*}
+                    \bsem{C_1 + C_2}(P_1 \lor P_2)
+                        &= \bsem{C_1}(P_1 \lor P_2) \lor \bsem{C_2}(P_1 \lor P_2) \\
+                        &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) \\
+                            & \; \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
+                        &\text{By inductive hypothesis} \\
+                        &= \bsem{C_1 + C_2}(P_1) \lor \bsem{C_1 + C_2}(P_2)
+                        &\text{Rearranging $\lor$} \\
+                \end{align*}
+
+            \item $C^\star$:
+                \begin{align*}
+                    \bsem{C^\star}(P_1 \lor P_2)
+                        &= lfp(\lambda P' \rr P_1 \lor P_2 \lor \bsem{C}(P')) \\
+                \end{align*}
+
+                Let $F_i = lfp(\lambda P' \rr P_i \lor \bsem{C}(P'))$
+
+
+                \begin{align*}
+                    (\lambda P' \rr P_1 \vee P_2 \vee_A \bsem{C}(P'))(F_1 \lor F_2)
+                        &= P_1 \vee P_2 \vee \bsem{C}(F_1 \vee F_2) \\
+                        & \text{By inductive hypothesis}  \\
+                        &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2) \\
+                        &= P_1 \vee \bsem{C}(F_1) \vee P_2 \vee \bsem{C}(F_2) \\
+                        &= F_1 \lor F_2
+                \end{align*}
+
+                Thus $F_1 \lor F_2$ is a fixpoint for 
+                $\lambda P' \rr P_i \lor \bsem{C}(P')$.
+
+                Following the same reasoning is also the least one by 
+                $F_1 \lor F_2$ beeing the smallest $K \geq F_1$ and 
+                $K \geq F_2$
+        \end{itemize}
+    \end{proofs}
+
+    \begin{theorem}[Soundness of the rule $merge$ on attitive base commands]
+        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+        $\forall P_2, P_2, Q \in A \quad C \in \lang$
+        $$\bsem{C}(P_1) \leq Q \text{ and } \bsem{C}(P_2) \leq Q \implies
+        \bsem{C}(P_1 \lor P_2) \leq Q$$
+    \end{theorem}
+    \begin{proofs}
+        Let $S_i = \bsem{C}(P_i)$ by Theorem \ref{thm:add} 
+        $\bsem{C}(P_1 \lor P_2) = \bsem{C}(P_1) \vee \bsem{C}(P_2) \leq Q \lor Q
+        = Q$
+    \end{proofs}
+
+    But requiring all the base commands to be additive is a strong requirement
+    with $\pow(\state)$ the requirement is equivalent as requiring $\gamma$ 
+    especially when the base commands are defined trough a Galois connection
+    to be additive, a requiring satisfied by a very small portion of abstract
+    domains utilized in practice.
+
+    \begin{theorem}[Base commands additivity]
+        Given a Galois connection $\langle D, \leq_D \rangle 
+        \galois{\alpha}{\gamma} \langle A, \leq_A \rangle$ and
+        $\bsem[D]{b}$ additive.
+        $$\alpha \circ \bsem[D]{b} \circ \gamma \text{ additive }
+        \impliedby \gamma \text{ additive }$$
+    \end{theorem}
+    \begin{proofs}
+        \begin{align*}
+            \alpha(\bsem{b}(\gamma(P_1 \lor P_2)))
+                &= \alpha(\bsem{b}(\gamma(P_1) \lor \gamma(P_2))) \\
+                &= \alpha(\bsem{b}(\gamma(P_1)) \lor \bsem{b}(\gamma(P_2))) \\
+                &= \alpha(\bsem{b}(\gamma(P_1))) \lor \alpha(\bsem{b}(\gamma(P_2))) \\
+        \end{align*}
+    \end{proofs}
+
+\subsubsection{Local condition}
+    Given that additivity conditions on the domain $A$ are too restrictive we
+    will look at local conditions.
+    
+    One could think that requiring $\gamma$ to be additive on $P_1 \lor P_2$
+    is enough giving a rule like this:
+    \begin{prooftree}
+        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+        \AxiomC{$\gamma(P_1 \lor P_2) = \gamma(P_1) \lor \gamma(P_2)$}
+        \RightLabel{$(merge)$}
+        \TrinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+    \end{prooftree}
+
+    \begin{exmp}[$(merge)$ rule is unsound]
+        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int}.
+
+        By picking $P_1 = x \in [0, 1]$ and $P_2 = x \in [2, 2]$ we can 
+        obtain the following judgments:
+        \begin{itemize}
+            \item $\atriple{P_1}C{\bot}$
+            \item $\atriple{P_2}C{\bot}$
+        \end{itemize}
+
+        And by applying the $(merge)$ rule we can obtain:
+        $\atriple{P_1 \lor P_2}{C}{Q}$ but by running command $C$ on 
+        $P_1 \lor P_2$ we obtain $x \in [1, 1]$.
+
+        \begin{align*}
+            \bsem{C}(P_1 \lor P_2) 
+                &= \bsem{C}(x \in [0, 2]) \\
+                &= \bsem{x = 1?}(\bsem{x = 0? + x = 2?}(x \in [0, 2])) \\
+                &= \bsem{x = 1?}(\bsem{x = 0?}(x \in [0, 2])\lor 
+                    \bsem{x = 2?}(x \in [0, 2])) \\
+                &= \bsem{x = 1?}(x \in [0, 0])\lor 
+                    (x \in [2, 2])$
+
+                \begin{itemize}
+                    \item $\alpha_1$: $K \geq P$
+                    \item $\alpha_2$: $K \geq \bsem{C}(K)$
+                \end{itemize}
+
+                \begin{prooftree}
+                    \AxiomC{$\alpha_1$}
+                    \AxiomC{$K \leq K$}
+                    \AxiomC{(Inductive hypothesis)}
+                    \noLine
+                    \UnaryInfC{$\vdash \atriple{K}{C}{\bsem{C}(K)}$}
+                    \AxiomC{$\alpha_2$}
+                    \RightLabel{$(\leq)$}
                     \TrinaryInfC{$\vdash \atriple{K}{C}{K}$}
                     \RightLabel{$(\star)$}
                     \UnaryInfC{$\vdash \atriple{K}{C^\star}{K}$}
