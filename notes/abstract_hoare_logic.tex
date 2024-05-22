@@ -83,8 +83,8 @@ Reasoning about probrams bla bla bla
     definition:
     \begin{definition}[$\lang$ language syntax]
         \begin{align*}
-            \lang & \cceq \mathbb{0}    & \text{Always non terminating program} \\
-                  & \smid \mathbb{1}    & \text{Identity program (skip)}\\
+            \lang %& \cceq \mathbb{0}    & \text{Always non terminating program} \\
+                  & \cceq \mathbb{1}    & \text{Identity program (skip)}\\
                   & \smid b             & \text{Base command}\\
                   & \smid C_1 \fcmp C_2 & \text{Program composition}\\
                   & \smid C_1 + C_2     & \text{Non deterministic choice}\\
@@ -101,7 +101,7 @@ Reasoning about probrams bla bla bla
     \begin{definition}[$\lang$ language semantics]
         \begin{align*}
             \sem{\cdot}         & \;:\; \pow(\state) \rr \pow(\state) \\
-            \sem{\mathbb{0}}    &= const \; \emptyset \\
+            %\sem{\mathbb{0}}    &= const \; \emptyset \\
             \sem{\mathbb{1}}    &= id \\
             \sem{b}             &= \lambda P \rr \{ x 
                 \mid \basesem{b}(p)\downarrow = x \; \land p \: \in P \} \\
@@ -134,7 +134,7 @@ Reasoning about probrams bla bla bla
     \begin{definition}[Best abstract inductive semantics]
         \begin{align*}
             \bsem{\cdot}         & \;:\; A \rr A \\
-            \bsem{\mathbb{0}}    &= const \; \bot_A \\
+            %\bsem{\mathbb{0}}    &= const \; \bot_A \\
             \bsem{\mathbb{1}}    &= id_A \\
             \bsem{b}             &= \lambda P \rr \basesem{b}(P) \\
             \bsem{C_1 \fcmp C_2} &= \bsem{C_2} \ocirc \bsem{C_1} \\
@@ -188,11 +188,11 @@ Reasoning about probrams bla bla bla
     valid triples from smaller ones:
 
     \begin{definition}[Abstract Hoare inference rules]
-        \begin{prooftree}
-            \AxiomC{$ $}
-            \RightLabel{$(\mathbb{0})$}
-            \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
-        \end{prooftree}
+        % \begin{prooftree}
+        %     \AxiomC{$ $}
+        %     \RightLabel{$(\mathbb{0})$}
+        %     \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
+        % \end{prooftree}
         
         \begin{prooftree}
             \AxiomC{$ $}
@@ -283,20 +283,20 @@ Reasoning about probrams bla bla bla
         By structural induction on the last rule applied in the derivation of
         $\vdash \atriple{P}{C}{Q}$:
         \begin{itemize}
-            \item $(\mathbb{0})$:
-                Then the last step in the derivation was:
-                \begin{prooftree}
-                    \AxiomC{$ $}
-                    \RightLabel{$(\mathbb{0})$}
-                    \UnaryInfC{$\vdash 
-                        \atriple{P}{\mathbb{0}}{\bot}$}
-                \end{prooftree}
+            %\item $(\mathbb{0})$:
+            %    Then the last step in the derivation was:
+            %    \begin{prooftree}
+            %        \AxiomC{$ $}
+            %        \RightLabel{$(\mathbb{0})$}
+            %        \UnaryInfC{$\vdash 
+            %            \atriple{P}{\mathbb{0}}{\bot}$}
+            %    \end{prooftree}
 
-                The triple is valid since:
-                \begin{align*}
-                    \bsem{\mathbb{0}}(P)
-                        &= \bot_A &\text{By definition of $\bsem{\cdot}$}
-                \end{align*}
+            %    The triple is valid since:
+            %    \begin{align*}
+            %        \bsem{\mathbb{0}}(P)
+            %            &= \bot_A &\text{By definition of $\bsem{\cdot}$}
+            %    \end{align*}
 
             \item $(\mathbb{1})$:
                 Then the last step in the derivation was: 
@@ -428,13 +428,13 @@ Reasoning about probrams bla bla bla
     \begin{proofs}
         By structural induction on $C$:
         \begin{itemize}
-            \item $\mathbb{0}$:
-                By definition $\bsem{\mathbb{0}}(P) = \bot$
-                \begin{prooftree}
-                    \AxiomC{$ $}
-                    \RightLabel{$(\mathbb{0})$}
-                    \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
-                \end{prooftree}
+            %\item $\mathbb{0}$:
+            %    By definition $\bsem{\mathbb{0}}(P) = \bot$
+            %    \begin{prooftree}
+            %        \AxiomC{$ $}
+            %        \RightLabel{$(\mathbb{0})$}
+            %        \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
+            %    \end{prooftree}
 
             \item $\mathbb{1}$:
                 By definition $\bsem{\mathbb{1}}(P) = P$
@@ -594,9 +594,9 @@ Reasoning about probrams bla bla bla
     \begin{proofs}
         By structural induction on $C$:
         \begin{itemize}
-            \item $\mathbb{0}$:
-                By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
-                and $\bsem{\mathbb{0}}(P_i) = \bot$
+            %\item $\mathbb{0}$:
+            %    By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
+            %    and $\bsem{\mathbb{0}}(P_i) = \bot$
 
             \item $\mathbb{1}$:
                 By definition $i \in \{1, 2\} \; \bsem{\mathbb{1}}(P_i) = P_i$
