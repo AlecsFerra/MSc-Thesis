@@ -41,7 +41,7 @@
 }
 
 \newcommand{\bca}[2]{
-    #2_{bai}^{#1}
+    #2_{ais}^{#1}
 }
 
 \newcommand{\bsem}[2][A]{
@@ -50,6 +50,10 @@
 
 \newcommand{\basesem}[2][A]{
     \sem{#2}_{base}
+}
+
+\newcommand{\pow}[1]{
+    \mathcal{P}(#1)
 }
 
 \def\fcmp{\mathbin{\raise 0.6ex\hbox{\oalign{\hfil$\scriptscriptstyle      
@@ -61,7 +65,7 @@
 \def\prr{\hookrightarrow}
 \def\lang{\mathbb{C}}
 \def\state{\mathbb{S}}
-\def\pow{\mathcal{P}}
+
 
 \title{Note}
 
@@ -75,9 +79,12 @@ Reasoning about probrams bla bla bla
 
 \subsection{Syntax}
     We start by defining an imperative programming language with non 
-    deterministic choice and parametric on a set $Base$ of base commands,
-    common choices for the set of base commands usually contain a command
-    for assignments and boolean guards.
+    deterministic choices and non deterministic iteration.
+
+    To keep the framework as general as possible the language is parametric 
+    on a set $Base$ of base commands, common choices for the set of base 
+    commands usually include commands for variable assignement and boolean 
+    guards.
 
     The set of valid $\lang$ programs is defined by the following inductive 
     definition:
@@ -94,13 +101,14 @@ Reasoning about probrams bla bla bla
     \end{definition}
 
 \subsection{Semantics}
-    Given a set $\state$ of states and a family of partial functions
-    $\basesem{b} : \state \prr \state$ we can define inductively the semantics
-    of a program in $\lang$ by structural induction on the terms:
-    
+    Given a set $\state$ that represent the collection of all the possible 
+    states and family of partial functions $\basesem{b} : \state \prr \state$ 
+    we can define inductively the denotational semantics of $\lang$ programs:
+   
     \begin{definition}[$\lang$ language semantics]
+        \label{def:deno}
         \begin{align*}
-            \sem{\cdot}         & \;:\; \pow(\state) \rr \pow(\state) \\
+            \sem{\cdot}         & \;:\; \pow{\state} \rr \pow{\state} \\
             %\sem{\mathbb{0}}    &= const \; \emptyset \\
             \sem{\mathbb{1}}    &= id \\
             \sem{b}             &= \lambda P \rr \{ x 
@@ -112,121 +120,155 @@ Reasoning about probrams bla bla bla
         \end{align*}
     \end{definition}
 
+    Clearly our definition is monotone
     \begin{theorem}[$\sem{\cdot}$ is monotone]
         $$P \subseteq Q \implies \sem{C}(P) \subseteq \sem{C}(Q)$$
     \end{theorem}
 
-    This framework is general enough to cover non deterministic imperative 
-    languages, for example if we include a base command for boolean guards $e?$
-    where $e$ is a boolean valued expression on $\state$ we can define the 
-    usual control flow statements $\texttt{if} \; b \; \texttt{then} \; C_1 \; 
-    \texttt{else} \; C_2$ as $(e ? \fcmp C_1) + (\neg e ? \fcmp C_2)$ and
-    $\texttt{while} \; e \; \texttt{do} \; C \; \texttt{done}$ as $(e? \fcmp
-    C)^\star \fcmp \neg e ?$.
+    This framework is general enough to describe non deterministic imperative 
+    languages. 
 
-\section{Best Abstract Inductive semantics}
-    We can abstract the \textit{Best Abstract Inductive Semantics} of a program 
-    in $\lang$ parametrically on a complete lattice $A$ that has as elements 
-    collections of program states and a family of monotone functions 
-    $\basesem{b} : A \rr A \quad \forall \; b \in Base$ by structural 
-    induction on the syntax of $\lang$:
+    For example if we include a base command for boolean guards $e?$ whose
+    semantics is to discard all the states that don't satisfy the assertion $e$,
+    we can easily define the usual control flow statements:
+    \begin{itemize}
+        \item $\texttt{if} \; b \; \texttt{then} \; C_1 \; \texttt{else} \; C_2$ 
+            can be encoded as $(e ? \fcmp C_1) + (\neg e ? \fcmp C_2)$
+        \item $\texttt{while} \; e \; \texttt{do} \; C \; \texttt{done}$
+            can be encoded as $(e? \fcmp C)^\star \fcmp \neg e ?$
+    \end{itemize}
 
-    \begin{definition}[Best abstract inductive semantics]
-        \begin{align*}
-            \bsem{\cdot}         & \;:\; A \rr A \\
-            %\bsem{\mathbb{0}}    &= const \; \bot_A \\
-            \bsem{\mathbb{1}}    &= id_A \\
-            \bsem{b}             &= \lambda P \rr \basesem{b}(P) \\
-            \bsem{C_1 \fcmp C_2} &= \bsem{C_2} \ocirc \bsem{C_1} \\
-            \bsem{C_1 + C_2}     &= \lambda P \rr 
-                \bsem{C_1}(P) \lor_A \bsem{C_2}(P) \\
-            \bsem{C^\star}       &= \lambda P \rr lfp(\lambda P' \rr
-                P \lor_A \bsem{C} P')
-        \end{align*}
-    \end{definition}
+\section{Abstract Inductive Semantics}
 
+From the theory of abstract interpretation we know that we can be even more
+general and define the semantics of our programs on some complete lattice $A$, 
+this definition is also parametric on a family of monotone functions 
+$\basesem{b}^A : A \rightarrow A \quad \forall \; b \in Base$ that describe the
+behaviour of the base commands.
 
-    \begin{theorem}[Semantic equivalence]
-        If we take as the lattice $\mathcal{P}(\state)$ and as $\bsem{b} = \lambda P 
-        \rr \{ x \mid \sem{b}(p)\downarrow = x \; \land \; p \in P \}$ the two 
-        semantics are identical.
+Since in this context we aren't necessarily interested in approximating the
+denotational interpreter we will call from now on the following definition
+\textit{Abstract Inductive Semantics}.
 
-        $$\bsem[\mathcal{P}(\state)]{C}(P) = \sem{C}(P)$$
-    \end{theorem}
+\begin{definition}[Abstract inductive semantics]
+    \begin{align*}
+        \bsem{\cdot}         & \;:\; A \rightarrow A \\
+        %\bsem{\mathbb{0}}    &= const \; \bot_A \\
+        \bsem{\mathbb{1}}    &= id_A \\
+        \bsem{b}             &= \lambda P \rightarrow \basesem{b}^A(P) \\
+        \bsem{C_1 \fcmp C_2} &= \bsem{C_2} \circ \bsem{C_1} \\
+        \bsem{C_1 + C_2}     &= \lambda P \rightarrow \bsem{C_1}(P) \lor_A \bsem{C_2}(P) \\
+        \bsem{C^\star}       &= \lambda P \rightarrow lfp(\lambda P' \rightarrow P \lor_A \bsem{C} P')
+    \end{align*}
+\end{definition}
+
+Clearly if the domain $A$ is the lattice $\pow{\state}$ and we keep the 
+semantics of the base commands as in Definition \ref{def:deno} we are giving 
+describing the denotational semantics:
+\begin{theorem}[Semantic equivalence]
+    \label{thm:semeq}
+    If we take as the lattice $\pow{\state}$ and as 
+    $\bsem{b} = \lambda P \rightarrow 
+    \{ x \mid \sem{b}(p)\downarrow = x \; \land \; p \in P \}$, the two 
+    semantics are identical.
     
-    \begin{theorem}[$\bsem{\cdot}$ is monotone]
-        $$P \leq_A Q \implies \bsem{C}(P) \leq_A \bsem{C}(Q)$$
-    \end{theorem}
+    $$\bsem[\pow{\state}]{C}(P) = \sem{C}(P)$$
+\end{theorem}
 
-\subsection{Obtaining BAIs from other BAIs via Galois connections}
-    Given a Galois connection $\langle D, \leq_D \rangle \galois{\alpha}{\gamma}
-    \langle A, \leq_A \rangle$ if we have define a \textit{Best Abstract 
-    Inductive Semantics} on $D$ with the semantics of basic commands 
-    $\bsem[D]{b}$ we can define a \textit{Best Abstract Inductive Semantics} 
-    on $A$ with semantics of basic commands $\bsem[A]{b} = \alpha \circ 
-    \bsem[D]{b} \circ \gamma$.
+And the definition is still monotone with respect to the order on $A$:
+\begin{theorem}[$\bsem{\cdot}$ is monotone]
+    $$P \leq_A Q \implies \bsem{C}(P) \leq_A \bsem{C}(Q)$$
+\end{theorem}
 
-    \begin{theorem}[Soundness]
-        $$\alpha(\bsem[D]{C}(P) \leq_D \bsem[A]{C}(\alpha(P))$$
-        (Here soundness is intended in an abstract interpretation sense)
-    \end{theorem}
+\subsection{Galois connections}
+
+Given a Galois connection $\langle D, \leq_D \rangle \galois{\alpha}{\gamma} 
+\langle A, \leq_A \rangle$, if we have defined a 
+\textit{Abstract Inductive Semantics} on the domain $D$ with the semantics of 
+basic commands $\bsem[D]{b}$, we can define an \textit{Abstract Inductive 
+Semantics} on the domain $A$ with the semantics of basic 
+commands $\bsem[A]{b} = \alpha \circ \bsem[D]{b} \circ \gamma$.
+
+\begin{theorem}[Soundness]
+    $$\alpha(\bsem[D]{C}(P)) \leq_D \bsem[A]{C}(\alpha(P))$$
+    (Here, soundness is intended in an abstract interpretation sense)
+\end{theorem}
+
+All this results come from the theory of abstract interpretation.
 
 \section{Abstract Hoare logic}
-    In this section we will define when an Abstract Hoare triple is valid, give
-    some inference rules for it \todo{BLAH}.
+    
 
     \begin{definition}[Abstract Hoare triple]
         Fixed a complete lattice $A$ and the semantics of the base commands 
-        $\bsem{b}$, an \textit{Abstract Hoare triple} is valid if and only if 
+        $\basesem{b}^A$, an \textit{Abstract Hoare triple} is valid if and only if 
         executing the bai of a command $C$ of some precondition captured by the
         element $P$ of $A$ is overapproximated by some element $Q$ of $A$:
         $$\atriple{P}{C}{Q} \iff \bsem{C}(P) \leq_A Q$$
     \end{definition}
 
-\subsection{Inference rule}
-    As in standard Hoare logic we can give a set of inference rules to derive
-    valid triples from smaller ones:
+    The definition is nonother that the definition of the standard Hoare triples
+    ($\htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$) but defined with respect
+    to the \textit{Abstract inductive semantics}.
 
-    \begin{definition}[Abstract Hoare inference rules]
-        % \begin{prooftree}
-        %     \AxiomC{$ $}
-        %     \RightLabel{$(\mathbb{0})$}
-        %     \UnaryInfC{$\vdash \atriple{P}{\mathbb{0}}{\bot}$}
-        % \end{prooftree}
+
+    \subsection{Inference Rule}
+    As in Hoare logic, we can provide a set of rules to derive valid triples 
+    compositionally.
+
+    \begin{definition}[Abstract Hoare rules]$\;$\\
         
+        % Rule for the identity command
         \begin{prooftree}
             \AxiomC{$ $}
             \RightLabel{$(\mathbb{1})$}
             \UnaryInfC{$\vdash \atriple{P}{\mathbb{1}}{P}$}
         \end{prooftree}
+        The identity command does not change the state, so if $P$ holds before,
+        it will hold after the execution.
 
-
+        % Rule for a basic command
         \begin{prooftree}
             \AxiomC{$ $}
             \RightLabel{$(b)$}
-            \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}(P)}$}
+            \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}^A(P)}$}
         \end{prooftree}
+        For a basic command $b$, if $P$ holds before the execution, then 
+        $\basesem{b}^A(P)$ holds after the execution.
 
+        % Rule for sequential composition
         \begin{prooftree}
             \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
             \AxiomC{$\vdash \atriple{Q}{C_2}{R}$}
             \RightLabel{$(\mathbb{\fcmp})$}
             \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}{R}$}
         \end{prooftree}
+        If executing $C_1$ from state $P$ leads to state $Q$, and executing $C_2$
+        from state $Q$ leads to state $R$, then executing $C_1$ followed by $C_2$
+        from state $P$ leads to state $R$.
 
+        % Rule for nondeterministic choice
         \begin{prooftree}
             \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
             \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
             \RightLabel{$(+)$}
             \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
         \end{prooftree}
+        If executing either $C_1$ or $C_2$ from state $P$ leads to state $Q$, 
+        then executing the nondeterministic choice $C_1 + C_2$ from state $P$
+        also leads to state $Q$.
 
+        % Rule for iteration (Kleene star)
         \begin{prooftree}
             \AxiomC{$\vdash \atriple{P}{C}{P}$}
             \RightLabel{$(*)$}
             \UnaryInfC{$\vdash \atriple{P}{C ^ *}{P}$}
         \end{prooftree}
+        If executing command $C$ from state $P$ leads back to state $P$, then 
+        executing $C$ repeatedly (zero or more times) from state $P$ also leads
+        back to state $P$.
 
+        % Rule for strengthening the precondition and weakening the postcondition
         \begin{prooftree}
             \AxiomC{$P \leq P'$}
             \AxiomC{$\vdash \atriple{P'}{C}{Q'}$}
@@ -234,48 +276,14 @@ Reasoning about probrams bla bla bla
             \RightLabel{$(\leq)$}
             \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
         \end{prooftree}
+        If $P$ is stronger than $P'$ and $Q'$ is stronger than $Q$, then we can
+        derive $\atriple{P}{C}{Q}$ from $\atriple{P'}{C}{Q'}$.
+
     \end{definition}
 
-    \begin{exmp}[Derivation in the integer interval domain]
-        \label{exmp:int}
-        We will start by defining our running example the integer interval
-        domain: The elements of the interval domain on one variable are defined
-        by $Int = \{ [x, y] \mid x \leq y \quad x, y \in \mathbb{Z} \cup 
-        \{ +\infty , -\infty \} \} \cup \{ \bot \}$ where the order relation is 
-        given by $\bot \leq_{Int} a \; \forall a \in Int$ and $[a, b] 
-        \leq_{Int} [c, d] \iff c \leq a \land b \leq d$ and clearly $\top = 
-        [-\infty, + \infty]$. The definition can be lifted pointwise for domains
-        with an arbitrary number of variables.
+    All the rules follow the spirit of those in Hoare logic.
 
-        As basic command we will add $e ?$ for boolean tests discarding all the
-        states that don't satisfy the condition $e$ and $x := y$ assigning the
-        result of evaluating expression $y$ to the variable $x$ and fix 
-        $\bsem{b} = \alpha \circ \sem{b} \circ \gamma$.
-
-        Then the following is a valid derivation for program 
-        $C = (x := 1 + x := 2) \fcmp x := x + 1$
-        
-        \scalebox{.4}{
-        \parbox{1cm}{
-        \begin{prooftree}
-            \AxiomC{$\top \leq \top$}
-            \AxiomC{$\vdash \atriple{\top}{x := 1}{x \in [1, 1]}$}
-            \AxiomC{$x \in [1, 1] \leq x \in [1, 2]$}
-            \TrinaryInfC{$\vdash \atriple{\top}{x := 1}{x \in [1, 2]}$}
-            \AxiomC{$\top \leq \top$}
-            \AxiomC{$\vdash \atriple{\top}{x := 2}{x \in [2, 2]}$}
-            \AxiomC{$x \in [2, 2] \leq x \in [1, 2]$}
-            \TrinaryInfC{$\vdash \atriple{\top}{x := 2}{x \in [1, 2]}$}
-            \BinaryInfC{$\vdash \atriple{\top}{x := 1 + x := 2}{x \in [1, 2]}$}
-            \AxiomC{$\vdash \atriple{x \in [1, 2]}{x := x + 1}{x \in [2, 3]}$}
-            \BinaryInfC{$\vdash \atriple{\top}{C}{x \in [2, 3]}$}
-        \end{prooftree}
-        }}
-
-        And clearly $\bsem{C}(\top) = x \in [2, 3]$.
-    \end{exmp}
-
-
+    Clearly as in Hoare logic the proof system is sound:
     \begin{theorem}[The proofsystem is sound]
         $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
     \end{theorem}
@@ -319,13 +327,13 @@ Reasoning about probrams bla bla bla
                     \AxiomC{$ $}
                     \RightLabel{$(b)$}
                     \UnaryInfC{$\vdash 
-                    \atriple{P}{b}{\basesem{b}(P)}$}
+                    \atriple{P}{b}{\basesem{b}^A(P)}$}
                 \end{prooftree}
 
                 The triple is valid since:
                 \begin{align*}
                     \bsem{b}(P)
-                        &= \basesem{b}(P)
+                        &= \basesem{b}^A(P)
                         & \text{By definition of $\bsem{\cdot}$}
                 \end{align*}
 
@@ -421,6 +429,8 @@ Reasoning about probrams bla bla bla
         \end{itemize}
     \end{proofs}
 
+    And as Hoare logic is also relative complete in general.
+
     \begin{theorem}[Relative $\bsem{\cdot}$-completeness]
         \label{thm:post-completeness}
         $$\vdash \atriple{P}{C}{\bsem{C}(P)}$$
@@ -445,11 +455,11 @@ Reasoning about probrams bla bla bla
                 \end{prooftree}
 
             \item $b$:
-                By definition $\bsem{b}(P) = \basesem{b}(P)$
+                By definition $\bsem{b}(P) = \basesem{b}^A(P)$
                 \begin{prooftree}
                     \AxiomC{$ $}
                     \RightLabel{$(b)$}
-                    \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}(P)}$}
+                    \UnaryInfC{$\vdash \atriple{P}{b}{\basesem{b}^A(P)}$}
                 \end{prooftree}
 
             \item $C_1 \fcmp C_2$:
@@ -547,259 +557,433 @@ Reasoning about probrams bla bla bla
         \end{prooftree}
     \end{proofs}
 
-\subsection{Merge rules}
-    In standard Hoare loigc the following rule is valid:
-    \begin{prooftree}
-        \AxiomC{$\vdash \htriple{P_1}{C}{Q}$}
-        \AxiomC{$\vdash \htriple{P_2}{C}{Q}$}
-        \RightLabel{$(merge)$}
-        \BinaryInfC{$\vdash \htriple{P_1 \lor P_2}{C}{Q}$}
-    \end{prooftree}
+\subsection{Instantiations of Abstract Hoare logic}
+    In this chapter we will show that Abstract Hoare Logic is general enough 
+    that given a suitable domain is able to obtain the same judgements as other 
+    Hoare-Like logics
 
-    And can be used to easily merge the results obtained by different analysis,
-    but in general the same rule in the context of abstract Hoare logic:
-    \begin{prooftree}
-        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
-        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
-        \RightLabel{$(merge)$}
-        \BinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
-    \end{prooftree}
-    is unsound.
 
-    \begin{exmp}[Unsoundness of the rule $(merge)$]
-        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int} and
-        $C = (x = 3? \fcmp x := 400) + (x \not = 3? \fcmp x := x + 1)$
+\subsubsection{Hoare logic}
+    As already shown in Theorem \ref{thm:semeq} when the domain is chosen to
+    be $\pow{\state}$ the semantics corresponds to the denotational 
+    semantics of $\lang$ hence Abstract Hoare logic instantiated to the 
+    $\pow{\state}$ domain gives us a sound and (relative) complete logic
+    equivalent to standard Hoare logic.
 
-        Then we can derive the following triples:
-        \begin{itemize}
-            \item $\vdash \atriple{x \in [1, 2]}{C}{x \in [2, 3]}$
-            \item $\vdash \atriple{x \in [4, 5]}{C}{x \in [5, 6]}$
-        \end{itemize}
+\subsubsection{Hyper Hoare logic}
+    Hyper properties are used to express behaviour of some program with respect
+    to all the possible executions, these property cannot be represented
+    by some element of $\pow{\state}$ but they can be by elements of
+    $\pow{\pow{\state}}$.
 
-        But applying the rule $(merge)$ would allow to derive the following:
-        $\vdash \atriple{x \in [1, 5]}{C}{x \in [2, 6]}$, that is unsound since
-        $\bsem{C}(x \in [1, 5]) = x \in [2, 400]$.
+    \begin{exmp}[Determinism]
+        To prove that a program $C$ is deterministic (up to termination) 
+        using standard Hoare logic would require us to prove an infinite 
+        number of triples:
+        $\forall P \in \pow{\state}$ such that $|P| = 1$
+        $\htriple{P}{C}{Q}$ where $|Q| = 1$. 
+
+        Meaning that from the singleton collection of states that satisfy $P$ 
+        executing $C$ would reach another singleton collection of states $Q$.
+
+        This property could be easily be proved by a single triple
+        $\htriple{\{P \mid |P| = 1\}}{C}{\{Q \mid |Q| = 1\}}$ if we could pick
+        as pre and post condition elements of 
+        $\pow{\pow{\state}}$.
     \end{exmp}
 
+    We will pick as the domain the following lattice:
+    \begin{definition}[Hyper domain]
+        Fixed a domain $B$ and some set $K$ his hyper domain $H(B)_K$ is
+        $$H(B)_K = K \rr (B + undef)$$
 
-    The cause of the issue is caused by the non additivity of the base commands,
-    in fact:
-    \begin{theorem}[Additivity of the semantics on attitive base commands]
-        \label{thm:add}
-        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
-        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
-        $\forall P_1, P_2 \in A \quad C \in \lang$
-        $$\bsem{C}(P_1) \lor \bsem{C}(P_2) = \bsem{C}(P_1 \lor P_2)$$
+        The lattice on $B + undef$ is defined as the one
+        on $B$ but with $\emptyset > undef$, and the one on 
+        $K \rr (B + undef)$ is the pointwise lift
+        of the one on $(B + undef)$.
+
+        The semantics of the base commands instead is simply the pointwise lift
+        of the semantics of base commands for $\pow{B}$:
+        $$\basesem{b}^{H(B)_K}(\chi) = 
+            \lambda r \rr \basesem{b}^{B}(\chi(r))$$
+    \end{definition}
+
+    The abstract semantics defined by $H(B)_K$ is the pointwise lift of the one
+    defined by $B$:
+    \begin{theorem}[Hyper semantics is the pointwise lift of the base semantics]
+        \label{thm:hyper-add}
+        $$\bsem[H(B)_K]{C}(\mathcal{\chi}) = \lambda r \rr \bsem[B]{C}(\chi(r))$$
     \end{theorem}
     \begin{proofs}
         By structural induction on $C$:
         \begin{itemize}
-            %\item $\mathbb{0}$:
-            %    By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
-            %    and $\bsem{\mathbb{0}}(P_i) = \bot$
-
             \item $\mathbb{1}$:
-                By definition $i \in \{1, 2\} \; \bsem{\mathbb{1}}(P_i) = P_i$
-                and $\bsem{\mathbb{1}}(P_1 \lor P_2) = P_1 \lor P_2$
+                \begin{align*}
+                    \bsem[H(B)_K]{\mathbb{1}}(\chi) 
+                        &= \chi \\
+                        &= \lambda r \rr \chi(r) \\
+                        &= \lambda r \rr \bsem[B]{\mathbb{1}}(\chi(r))
+                \end{align*}
 
             \item $b$:
                 \begin{align*}
-                    \bsem{b}(P_1 \lor P_2)
-                        &= \bsem{b}(P_1) \lor \bsem{b}(P_2)
-                        &\text{By additivity of $\bsem{b}$} \\
+                    \bsem[H(B)_K]{b}(\chi) 
+                        &= \lambda r \rr \bsem[B]{b}(\chi(r))
                 \end{align*}
 
             \item $C_1 \fcmp C_2$:
                 \begin{align*}
-                    \bsem{C_1 \fcmp C_2}(P_1 \lor P_2)
-                        &= \bsem{C_2}(\bsem{C_1}(P_1 \lor P_2)) \\
-                        &= \bsem{C_2}(\bsem{C_1}(P_1) \lor \bsem{C_1}(P_2))
-                        &\text{By inductive} \\
-                        &&\text{hypothesis} \\
-                        &= \bsem{C_1 \fcmp C_2}(P_1) 
-                            \lor \bsem{C_2 \fcmp C_2}(P_2)
-                        &\text{By inductive} \\ && \text{hypothesis} \\
+                    \bsem[H(B)_K]{C_1 \fcmp C_2}(\chi) 
+                        &= \bsem[H(B)_K]{C_2}(\bsem[H(B)_K]{C_1}(\chi)) \\
+                        &= \bsem[H(B)_K]{C_2}(\lambda r_1 \rr 
+                            \bsem[B]{C_1}(\chi(r_1))
+                        &\text{By inductive hypothesis} \\
+                        &= \lambda r_2 \rr \bsem[B]{C_2}(\lambda r_1 \rr 
+                            \bsem[B]{C_1}(\chi(r_1))(r_2))
+                        &\text{By inductive hypothesis} \\
+                        &= \lambda r_2 \rr 
+                            \bsem[B]{C_2}(\bsem[B]{C_1}(\chi(r_2))) \\
+                        &= \lambda r_2 \rr \bsem[B]{C_1 \fcmp C_2}(\chi(r_2)) \\
                 \end{align*}
 
             \item $C_1 + C_2$:
                 \begin{align*}
-                    \bsem{C_1 + C_2}(P_1 \lor P_2)
-                        &= \bsem{C_1}(P_1 \lor P_2) \lor \bsem{C_2}(P_1 \lor P_2) \\
-                        &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) \\
-                            & \; \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
+                    \bsem[H(B)_K]{C_1 + C_2}(\chi)
+                        &= \bsem[H(B)_K]{C_1}(\chi) 
+                            \lor \bsem[H(B)_K]{C_2}(\chi) \\
+                        &= (\lambda r_1 \rr \bsem[B]{C_1}(\chi(r_1)))
+                            \lor (\lambda r_2 \rr \bsem[B]{C_1}(\chi(r_2)))
                         &\text{By inductive hypothesis} \\
-                        &= \bsem{C_1 + C_2}(P_1) \lor \bsem{C_1 + C_2}(P_2)
-                        &\text{Rearranging $\lor$} \\
+                        &= \lambda r \rr \bsem[B]{C_1}(\chi(r))
+                            \lor \bsem[B]{C_2}(\chi(r)) \\
+                        &= \lambda r \rr \bsem[B]{C_1 + C_2}(\chi(r))
                 \end{align*}
 
             \item $C^\star$:
                 \begin{align*}
-                    \bsem{C^\star}(P_1 \lor P_2)
-                        &= lfp(\lambda P' \rr P_1 \lor P_2 \lor \bsem{C}(P')) \\
+                    \bsem[H(B)_K]{C^\star}(\chi)
+                        &= lfp(\lambda \psi \rr 
+                            \chi \lor \bsem[H(B)_K]{C}(\psi)) \\
+                        &= lfp(\lambda \psi \rr 
+                            \chi \lor \lambda r \rr \bsem[B]{C}(\psi(r)))
+                        &\text{By inductive hypothesis} \\
+                        &= lfp(\lambda \psi \rr \lambda r \rr
+                            \chi(r) \lor \bsem[B]{C}(\psi(r))) \\
+                        &\text{By $H(B)_K$ being the pointwise lift of 
+                            $B + undef$} \\
+                        &\text{his least fixpoint is the fixpoint of his
+                            components} \\
+                        &= \lambda r \rr lfp(\lambda P 
+                            \rr \chi(r) \lor \bsem[B]{C} P) \\
+                        &= \lambda r \rr \bsem[B]{C^\star}(\chi(r))
                 \end{align*}
 
-                Let $F_i = lfp(\lambda P' \rr P_i \lor \bsem{C}(P'))$
-
-
-                \begin{align*}
-                    (\lambda P' \rr P_1 \vee P_2 \vee_A \bsem{C}(P'))(F_1 \lor F_2)
-                        &= P_1 \vee P_2 \vee \bsem{C}(F_1 \vee F_2) \\
-                        & \text{By inductive hypothesis}  \\
-                        &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2) \\
-                        &= P_1 \vee \bsem{C}(F_1) \vee P_2 \vee \bsem{C}(F_2) \\
-                        &= F_1 \lor F_2
-                \end{align*}
-
-                Thus $F_1 \lor F_2$ is a fixpoint for 
-                $\lambda P' \rr P_i \lor \bsem{C}(P')$.
-
-                Following the same reasoning is also the least one by 
-                $F_1 \lor F_2$ beeing the smallest $K \geq F_1$ and 
-                $K \geq F_2$
         \end{itemize}
     \end{proofs}
-
-    \begin{theorem}[Soundness of the rule $merge$ on attitive base commands]
-        if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
-        = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
-        $\forall P_2, P_2, Q \in A \quad C \in \lang$
-        $$\bsem{C}(P_1) \leq Q \text{ and } \bsem{C}(P_2) \leq Q \implies
-        \bsem{C}(P_1 \lor P_2) \leq Q$$
-    \end{theorem}
-    \begin{proofs}
-        Let $S_i = \bsem{C}(P_i)$ by Theorem \ref{thm:add} 
-        $\bsem{C}(P_1 \lor P_2) = \bsem{C}(P_1) \vee \bsem{C}(P_2) \leq Q \lor Q
-        = Q$
-    \end{proofs}
-
-    But requiring all the base commands to be additive is a strong requirement
-    with $\pow(\state)$ the requirement is equivalent as requiring $\gamma$ 
-    especially when the base commands are defined trough a Galois connection
-    to be additive, a requiring satisfied by a very small portion of abstract
-    domains utilized in practice.
-
-    \begin{theorem}[Base commands additivity]
-        Given a Galois connection $\langle D, \leq_D \rangle 
-        \galois{\alpha}{\gamma} \langle A, \leq_A \rangle$ and
-        $\bsem[D]{b}$ additive.
-        $$\alpha \circ \bsem[D]{b} \circ \gamma \text{ additive }
-        \impliedby \gamma \text{ additive }$$
-    \end{theorem}
-    \begin{proofs}
-        \begin{align*}
-            \alpha(\bsem{b}(\gamma(P_1 \lor P_2)))
-                &= \alpha(\bsem{b}(\gamma(P_1) \lor \gamma(P_2))) \\
-                &= \alpha(\bsem{b}(\gamma(P_1)) \lor \bsem{b}(\gamma(P_2))) \\
-                &= \alpha(\bsem{b}(\gamma(P_1))) \lor \alpha(\bsem{b}(\gamma(P_2))) \\
-        \end{align*}
-    \end{proofs}
-
-\subsubsection{Local condition}
-    Given that additivity conditions on the domain $A$ are too restrictive we
-    will look at local conditions.
     
-    One could think that requiring $\gamma$ to be additive on $P_1 \lor P_2$
-    is enough giving a rule like this:
-    \begin{prooftree}
-        \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
-        \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
-        \AxiomC{$\gamma(P_1 \lor P_2) = \gamma(P_1) \lor \gamma(P_2)$}
-        \RightLabel{$(merge)$}
-        \TrinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
-    \end{prooftree}
+    \begin{definition}[Hyper instantiation]
+        Given a complete lattice $B$ and a set $K$ and his denotation on 
+        $\pow{B}$ the instantiation of the hyper domain $H(\pow{B})_K$
+        is an injective function $idx : \pow{B} \rr K$
+    \end{definition}
 
-    \begin{exmp}[$(merge)$ rule is unsound]
-        Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int}.
+    Given any hyper instantiation we can define:
+    $$\alpha(\chi) = \{ \chi(k)\downarrow \; \mid k \in K\}$$
+    and:
+    $$\gamma(\mathcal{X}) = \lambda r \rr \begin{cases}
+        P & \exists P \in \mathcal{X} \;s.t. \; idx(P) = r \\
+        undef & otherwise
+    \end{cases}$$
 
-        By picking $P_1 = x \in [0, 1]$ and $P_2 = x \in [2, 2]$ we can 
-        obtain the following judgments:
-        \begin{itemize}
-            \item $\atriple{P_1}C{\bot}$
-            \item $\atriple{P_2}C{\bot}$
-        \end{itemize}
-
-        And by applying the $(merge)$ rule we can obtain:
-        $\atriple{P_1 \lor P_2}{C}{Q}$ but by running command $C$ on 
-        $P_1 \lor P_2$ we obtain $x \in [1, 1]$.
-
+    \begin{theorem}[Idk]\label{thm:hyperpost} 
+        $$\alpha(\bsem[H(\pow{B})_K]{C}(\gamma(\mathcal{X}))) = 
+        \{ \bsem[\pow{B}]{C}(P) \mid P \in \mathcal{X} \}$$
+    \end{theorem}
+    \begin{proofs}
         \begin{align*}
-            \bsem{C}(P_1 \lor P_2) 
-                &= \bsem{C}(x \in [0, 2]) \\
-                &= \bsem{x = 1?}(\bsem{x = 0? + x = 2?}(x \in [0, 2])) \\
-                &= \bsem{x = 1?}(\bsem{x = 0?}(x \in [0, 2])\lor 
-                    \bsem{x = 2?}(x \in [0, 2])) \\
-                &= \bsem{x = 1?}(x \in [0, 0])\lor 
-                    (x \in [2, 2])) \\
-                &= \bsem{x = 1?}(x \in [0, 2]) \\
-                &= x \in [1, 1] \\
+            \alpha(\bsem[H(\pow{B})_K]{C}(\gamma(\mathcal{X})))
+                &= \alpha(\lambda r \rr 
+                    \bsem[\pow{B})]{C}(\gamma(\mathcal{X})(r)))
+                &\text{By theorem \ref{thm:hyper-add}} \\
+                &= \{ \bsem[\pow{B})]{C}(\gamma(\mathcal{X})(r))\downarrow \;
+                    \mid k \in K \}
+                &\text{By the definition of $\alpha$}\\
+                &= \{ \bsem[\pow{B})]{C}(P) \mid P \in \mathcal{X} \}
+                &\text{By the definition of $\gamma$ and injectivity}\\
         \end{align*}
+    \end{proofs}
 
+    Let $B = \state$ since $|\state| = |\mathbb{N}|$ there is a bijection $n:
+    \state \rr \mathbb{N}$ and since $|\pow{\mathbb{N}}| = |\mathbb{R}|$ there is
+    another bijection $m : \pow{\mathbb{N}} \rr \mathbb{R}$,
+    let the hyper instatiation for $H(\pow{\state})_K$ be $\lambda r \rr 
+    m(n(r))$.
+
+    Hence from theorem \ref{thm:hyperpost} 
+    $\bsem[H(\pow{\state})_\mathbb{R}]{C}(P)$ computer the strongest hyper 
+    post condition of program $C$ from the hyper precondition $P$.
+
+    It follows that the abstract Hoare logic on the domain 
+    $H(\pow{\state})_\mathbb{R}$ is a sound and complete proofsystem for
+    deriving hyperproperties.
+
+    \begin{exmp}[Determinism in abstract Hoare logic]
+        ...
     \end{exmp}
 
-    The issue is caused by the imprecision added by the $\lor$ 
-    introduced by the non deterministic choice.
+% \subsection{Merge rules}
+%     In standard Hoare logic the following rule is valid:
+%     \begin{prooftree}
+%         \AxiomC{$\vdash \htriple{P_1}{C}{Q}$}
+%         \AxiomC{$\vdash \htriple{P_2}{C}{Q}$}
+%         \RightLabel{$(merge)$}
+%         \BinaryInfC{$\vdash \htriple{P_1 \lor P_2}{C}{Q}$}
+%     \end{prooftree}
+% 
+%     And can be used to easily merge the results obtained by different analysis,
+%     but in general the same rule in the context of abstract Hoare logic:
+%     \begin{prooftree}
+%         \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+%         \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+%         \RightLabel{$(merge)$}
+%         \BinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+%     \end{prooftree}
+%     is unsound.
+% 
+%     \begin{exmp}[Unsoundness of the rule $(merge)$]
+%         Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int} and
+%         $C = (x = 3? \fcmp x := 400) + (x \not = 3? \fcmp x := x + 1)$
+% 
+%         Then we can derive the following triples:
+%         \begin{itemize}
+%             \item $\vdash \atriple{x \in [1, 2]}{C}{x \in [2, 3]}$
+%             \item $\vdash \atriple{x \in [4, 5]}{C}{x \in [5, 6]}$
+%         \end{itemize}
+% 
+%         But applying the rule $(merge)$ would allow to derive the following:
+%         $\vdash \atriple{x \in [1, 5]}{C}{x \in [2, 6]}$, that is unsound since
+%         $\bsem{C}(x \in [1, 5]) = x \in [2, 400]$.
+%     \end{exmp}
+% 
+% 
+%     The cause of the issue is caused by the non additivity of the base commands,
+%     in fact:
+%     \begin{theorem}[Additivity of the semantics on attitive base commands]
+%         \label{thm:add}
+%         if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+%         = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+%         $\forall P_1, P_2 \in A \quad C \in \lang$
+%         $$\bsem{C}(P_1) \lor \bsem{C}(P_2) = \bsem{C}(P_1 \lor P_2)$$
+%     \end{theorem}
+%     \begin{proofs}
+%         By structural induction on $C$:
+%         \begin{itemize}
+%             %\item $\mathbb{0}$:
+%             %    By definition $\bsem{\mathbb{0}}(P_1 \lor P_2) = \bot$
+%             %    and $\bsem{\mathbb{0}}(P_i) = \bot$
+% 
+%             \item $\mathbb{1}$:
+%                 By definition $i \in \{1, 2\} \; \bsem{\mathbb{1}}(P_i) = P_i$
+%                 and $\bsem{\mathbb{1}}(P_1 \lor P_2) = P_1 \lor P_2$
+% 
+%             \item $b$:
+%                 \begin{align*}
+%                     \bsem{b}(P_1 \lor P_2)
+%                         &= \bsem{b}(P_1) \lor \bsem{b}(P_2)
+%                         &\text{By additivity of $\bsem{b}$} \\
+%                 \end{align*}
+% 
+%             \item $C_1 \fcmp C_2$:
+%                 \begin{align*}
+%                     \bsem{C_1 \fcmp C_2}(P_1 \lor P_2)
+%                         &= \bsem{C_2}(\bsem{C_1}(P_1 \lor P_2)) \\
+%                         &= \bsem{C_2}(\bsem{C_1}(P_1) \lor \bsem{C_1}(P_2))
+%                         &\text{By inductive} \\
+%                         &&\text{hypothesis} \\
+%                         &= \bsem{C_1 \fcmp C_2}(P_1) 
+%                             \lor \bsem{C_2 \fcmp C_2}(P_2)
+%                         &\text{By inductive} \\ && \text{hypothesis} \\
+%                 \end{align*}
+% 
+%             \item $C_1 + C_2$:
+%                 \begin{align*}
+%                     \bsem{C_1 + C_2}(P_1 \lor P_2)
+%                         &= \bsem{C_1}(P_1 \lor P_2) \lor \bsem{C_2}(P_1 \lor P_2) \\
+%                         &=\bsem{C_1}(P_1) \lor \bsem{C_2}(P_2) \\
+%                             & \; \lor \bsem{C_2}(P_1) \lor \bsem{C_2}(P_2)
+%                         &\text{By inductive hypothesis} \\
+%                         &= \bsem{C_1 + C_2}(P_1) \lor \bsem{C_1 + C_2}(P_2)
+%                         &\text{Rearranging $\lor$} \\
+%                 \end{align*}
+% 
+%             \item $C^\star$:
+%                 \begin{align*}
+%                     \bsem{C^\star}(P_1 \lor P_2)
+%                         &= lfp(\lambda P' \rr P_1 \lor P_2 \lor \bsem{C}(P')) \\
+%                 \end{align*}
+% 
+%                 Let $F_i = lfp(\lambda P' \rr P_i \lor \bsem{C}(P'))$
+% 
+% 
+%                 \begin{align*}
+%                     (\lambda P' \rr P_1 \vee P_2 \vee_A \bsem{C}(P'))(F_1 \lor F_2)
+%                         &= P_1 \vee P_2 \vee \bsem{C}(F_1 \vee F_2) \\
+%                         & \text{By inductive hypothesis}  \\
+%                         &= P_1 \vee P_2 \vee \bsem{C}(F_1) \vee \bsem{C}(F_2) \\
+%                         &= P_1 \vee \bsem{C}(F_1) \vee P_2 \vee \bsem{C}(F_2) \\
+%                         &= F_1 \lor F_2
+%                 \end{align*}
+% 
+%                 Thus $F_1 \lor F_2$ is a fixpoint for 
+%                 $\lambda P' \rr P_i \lor \bsem{C}(P')$.
+% 
+%                 Following the same reasoning is also the least one by 
+%                 $F_1 \lor F_2$ beeing the smallest $K \geq F_1$ and 
+%                 $K \geq F_2$
+%         \end{itemize}
+%     \end{proofs}
+% 
+%     \begin{theorem}[Soundness of the rule $merge$ on attitive base commands]
+%         if $\forall P_1, P_2 \in A$ and $b \in Base$ $\bsem{B}(P_1 \lor P_2)
+%         = \bsem{B}(P_1) \lor \bsem{P_2}$ then:
+%         $\forall P_2, P_2, Q \in A \quad C \in \lang$
+%         $$\bsem{C}(P_1) \leq Q \text{ and } \bsem{C}(P_2) \leq Q \implies
+%         \bsem{C}(P_1 \lor P_2) \leq Q$$
+%     \end{theorem}
+%     \begin{proofs}
+%         Let $S_i = \bsem{C}(P_i)$ by Theorem \ref{thm:add} 
+%         $\bsem{C}(P_1 \lor P_2) = \bsem{C}(P_1) \vee \bsem{C}(P_2) \leq Q \lor Q
+%         = Q$
+%     \end{proofs}
+% 
+%     But requiring all the base commands to be additive is a strong requirement
+%     with $\pow{\state}$ the requirement is equivalent as requiring $\gamma$ 
+%     especially when the base commands are defined trough a Galois connection
+%     to be additive, a requiring satisfied by a very small portion of abstract
+%     domains utilized in practice.
+% 
+%     \begin{theorem}[Base commands additivity]
+%         Given a Galois connection $\langle D, \leq_D \rangle 
+%         \galois{\alpha}{\gamma} \langle A, \leq_A \rangle$ and
+%         $\bsem[D]{b}$ additive.
+%         $$\alpha \circ \bsem[D]{b} \circ \gamma \text{ additive }
+%         \impliedby \gamma \text{ additive }$$
+%     \end{theorem}
+%     \begin{proofs}
+%         \begin{align*}
+%             \alpha(\bsem{b}(\gamma(P_1 \lor P_2)))
+%                 &= \alpha(\bsem{b}(\gamma(P_1) \lor \gamma(P_2))) \\
+%                 &= \alpha(\bsem{b}(\gamma(P_1)) \lor \bsem{b}(\gamma(P_2))) \\
+%                 &= \alpha(\bsem{b}(\gamma(P_1))) \lor \alpha(\bsem{b}(\gamma(P_2))) \\
+%         \end{align*}
+%     \end{proofs}
 
-    In fact the following equivalence between programs that is true
-    on the concrete domain $(C_1 + C_2) \fcmp C_3 
-    \equiv (C_1 \fcmp C_3) + (C_2 \fcmp C_3)$ it's not true in the 
-    abstract, the program $C' = (x = 0? \fcmp x = 1?) + (x = 2? 
-    \fcmp x = 1?)$ that should be equivalent to $C$ it's not:
-    $\bsem{C'}(P_1 \lor P_2) = \bot$.
-
-    The fact that programs $C$ and $C'$ are different when interpreted by
-    $\bsem{\cdot}$ means that we can't look at them as a KAT, in fact
-    this would violate the axiom $(p + q)r = pr + qr$. It should also
-    be noted that the dual axiom $r(p + q) = rp + rq$ instead holds.
-
-    \begin{theorem}
-        $\forall C_1 C_2 C_3$
-        $$\bsem{C_1 \fcmp (C_2 + C_3)} = \bsem{(C_1 \fcmp C_2) + (C_1 \fcmp C_3)}$$
-    \end{theorem}
-    \begin{proofs}
-        \begin{align*}
-            \bsem{C_1 \fcmp (C_2 + C_3)}(P)
-                &= \bsem{C_2}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_1}(P)) \\
-                &= \bsem{C_1 \fcmp C_2}(P) \lor \bsem{C_1 \fcmp C_3}(P) \\
-                &= \bsem{C_1 \fcmp C_2 + C_1 \fcmp C_3}(P) 
-        \end{align*}
-    \end{proofs}
-
-    Requiring $(C_1 + C_2) \fcmp C_3 \equiv (C_1 \fcmp C_3) 
-    + (C_2 \fcmp C_3)$ is equivalent to requiring the abstract semantics
-    of every program to be additive:
-
-    \begin{theorem}
-        $$\forall C_1 C_2 C_3 \quad \bsem{(C_1 + C_2) \fcmp C_3} =
-        \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$$
-        $$\iff$$ 
-        $$\forall P_1 P_2 (decidable) C' \quad
-        \bsem{C'}(P_1 \lor P_2) = \bsem{C_1}(P_1) \lor \bsem{C_2}(P_2)$$
-    \end{theorem}
-    \begin{proofs}
-        \begin{itemize}
-            \item $(\impliedby)$:
-                \begin{align*}
-                    \bsem{(C_1 + C_2) \fcmp C_3}(P)
-                        &= \bsem{C_3}(\bsem{C_1}(P) \lor \bsem{C_2}(P)) \\
-                        &= \bsem{C_3}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_2}(P)) \\
-                        &= \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}(P)
-                \end{align*}
-            \item $(\implies)$:
-                For every proposition $P$ we can construct a program 
-                $c(P)$ such that $\bsem{c(P)}(Q) = P$ (we just need to provide
-                a program for every join-irriducible element in $A$)
-
-                \begin{align*}
-                    \bsem{C}(P_1 \lor P_2)
-                        &= \bsem{C}(\bsem{c(P_1)}(Q) \lor \bsem{c(P_2)}(Q)) \\
-                        &= \bsem{C}(\bsem{c(P_1) + c(P_2)}(Q)) \\
-                        &= \bsem{(c(P_1) + c(P_2)) \fcmp C}(Q)) \\
-                        &= \bsem{(c(P_1) \fcmp C) + (c(P_2) \fcmp C)}(Q)) \\
-                        &= \bsem{C}(\bsem{c(P_1)}(Q)) \lor \bsem{C}(\bsem{c(P_2)}(Q)) \\
-                        &= \bsem{C}(P_1) \lor \bsem{C}(P_2) \\
-                \end{align*}
-        \end{itemize}
-    \end{proofs}
-
+% \subsubsection{Local condition}
+%     Given that additivity conditions on the domain $A$ are too restrictive we
+%     will look at local conditions.
+%     
+%     One could think that requiring $\gamma$ to be additive on $P_1 \lor P_2$
+%     is enough giving a rule like this:
+%     \begin{prooftree}
+%         \AxiomC{$\vdash \atriple{P_1}{C}{Q}$}
+%         \AxiomC{$\vdash \atriple{P_2}{C}{Q}$}
+%         \AxiomC{$\gamma(P_1 \lor P_2) = \gamma(P_1) \lor \gamma(P_2)$}
+%         \RightLabel{$(merge)$}
+%         \TrinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q}$}
+%     \end{prooftree}
+% 
+%     \begin{exmp}[$(merge)$ rule is unsound]
+%         Let $A$ and $\bsem{b}$ be the same as in \ref{exmp:int}.
+% 
+%         By picking $P_1 = x \in [0, 1]$ and $P_2 = x \in [2, 2]$ we can 
+%         obtain the following judgments:
+%         \begin{itemize}
+%             \item $\atriple{P_1}C{\bot}$
+%             \item $\atriple{P_2}C{\bot}$
+%         \end{itemize}
+% 
+%         And by applying the $(merge)$ rule we can obtain:
+%         $\atriple{P_1 \lor P_2}{C}{Q}$ but by running command $C$ on 
+%         $P_1 \lor P_2$ we obtain $x \in [1, 1]$.
+% 
+%         \begin{align*}
+%             \bsem{C}(P_1 \lor P_2) 
+%                 &= \bsem{C}(x \in [0, 2]) \\
+%                 &= \bsem{x = 1?}(\bsem{x = 0? + x = 2?}(x \in [0, 2])) \\
+%                 &= \bsem{x = 1?}(\bsem{x = 0?}(x \in [0, 2])\lor 
+%                     \bsem{x = 2?}(x \in [0, 2])) \\
+%                 &= \bsem{x = 1?}(x \in [0, 0])\lor 
+%                     (x \in [2, 2])) \\
+%                 &= \bsem{x = 1?}(x \in [0, 2]) \\
+%                 &= x \in [1, 1] \\
+%         \end{align*}
+% 
+%     \end{exmp}
+% 
+%     The issue is caused by the imprecision added by the $\lor$ 
+%     introduced by the non deterministic choice.
+% 
+%     In fact the following equivalence between programs that is true
+%     on the concrete domain $(C_1 + C_2) \fcmp C_3 
+%     \equiv (C_1 \fcmp C_3) + (C_2 \fcmp C_3)$ it's not true in the 
+%     abstract, the program $C' = (x = 0? \fcmp x = 1?) + (x = 2? 
+%     \fcmp x = 1?)$ that should be equivalent to $C$ it's not:
+%     $\bsem{C'}(P_1 \lor P_2) = \bot$.
+% 
+%     The fact that programs $C$ and $C'$ are different when interpreted by
+%     $\bsem{\cdot}$ means that we can't look at them as a KAT, in fact
+%     this would violate the axiom $(p + q)r = pr + qr$. It should also
+%     be noted that the dual axiom $r(p + q) = rp + rq$ instead holds.
+% 
+%     \begin{theorem}
+%         $\forall C_1 C_2 C_3$
+%         $$\bsem{C_1 \fcmp (C_2 + C_3)} = \bsem{(C_1 \fcmp C_2) + (C_1 \fcmp C_3)}$$
+%     \end{theorem}
+%     \begin{proofs}
+%         \begin{align*}
+%             \bsem{C_1 \fcmp (C_2 + C_3)}(P)
+%                 &= \bsem{C_2}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_1}(P)) \\
+%                 &= \bsem{C_1 \fcmp C_2}(P) \lor \bsem{C_1 \fcmp C_3}(P) \\
+%                 &= \bsem{C_1 \fcmp C_2 + C_1 \fcmp C_3}(P) 
+%         \end{align*}
+%     \end{proofs}
+% 
+%     Requiring $(C_1 + C_2) \fcmp C_3 \equiv (C_1 \fcmp C_3) 
+%     + (C_2 \fcmp C_3)$ is equivalent to requiring the abstract semantics
+%     of every program to be additive:
+% 
+%     \begin{theorem}
+%         $$\forall C_1 C_2 C_3 \quad \bsem{(C_1 + C_2) \fcmp C_3} =
+%         \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$$
+%         $$\iff$$ 
+%         $$\forall P_1 P_2 (decidable) C' \quad
+%         \bsem{C'}(P_1 \lor P_2) = \bsem{C_1}(P_1) \lor \bsem{C_2}(P_2)$$
+%     \end{theorem}
+%     \begin{proofs}
+%         \begin{itemize}
+%             \item $(\impliedby)$:
+%                 \begin{align*}
+%                     \bsem{(C_1 + C_2) \fcmp C_3}(P)
+%                         &= \bsem{C_3}(\bsem{C_1}(P) \lor \bsem{C_2}(P)) \\
+%                         &= \bsem{C_3}(\bsem{C_1}(P)) \lor \bsem{C_3}(\bsem{C_2}(P)) \\
+%                         &= \bsem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}(P)
+%                 \end{align*}
+%             \item $(\implies)$:
+%                 For every proposition $P$ we can construct a program 
+%                 $c(P)$ such that $\bsem{c(P)}(Q) = P$ (we just need to provide
+%                 a program for every join-irriducible element in $A$)
+% 
+%                 \begin{align*}
+%                     \bsem{C}(P_1 \lor P_2)
+%                         &= \bsem{C}(\bsem{c(P_1)}(Q) \lor \bsem{c(P_2)}(Q)) \\
+%                         &= \bsem{C}(\bsem{c(P_1) + c(P_2)}(Q)) \\
+%                         &= \bsem{(c(P_1) + c(P_2)) \fcmp C}(Q)) \\
+%                         &= \bsem{(c(P_1) \fcmp C) + (c(P_2) \fcmp C)}(Q)) \\
+%                         &= \bsem{C}(\bsem{c(P_1)}(Q)) \lor \bsem{C}(\bsem{c(P_2)}(Q)) \\
+%                         &= \bsem{C}(P_1) \lor \bsem{C}(P_2) \\
+%                 \end{align*}
+%         \end{itemize}
+%     \end{proofs}
+% 
 \end{document}
 
