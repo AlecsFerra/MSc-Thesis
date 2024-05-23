@@ -33,7 +33,7 @@
 }
 
 \newcommand{\atriple}[4][A]{
-    \langle #2 \rangle_#1 \; #3 \; \langle #4 \rangle
+    \langle #2 \rangle_{#1} \; #3 \; \langle #4 \rangle
 }
 
 \newcommand*{\sem}[1]{
@@ -728,7 +728,96 @@ All this results come from the theory of abstract interpretation.
     deriving hyperproperties.
 
     \begin{exmp}[Determinism in abstract Hoare logic]
-        ...
+        As explained in example \ref{exmp:determinism} we can espress that
+        a command is deterministic (up to termination) proving that the
+        hyperproperty $\{P \mid |P| = 1 \}$ is both a pre and a post condition
+        of the command.
+
+        Let's assume that we are working on $\lang$ with assignement on only
+        one variable, so that we can represent states with a single integer.
+
+        The encoding of the property that we want to use as a precondition
+        is $$\mathcal{P} = \lambda r \rr \begin{cases}
+            \{ x \} & \exists {x} \in \pow{\state} \;s.t. \; idx(P) = r \\
+            undef & otherwise
+        \end{cases}$$
+
+        And we can prove that the program $\mathbb{1}$ is deterministic:
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(\mathbb{1})$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {\mathbb{1}}{P}$}
+        \end{prooftree}
+
+        Since $\alpha(P) = \{..., \{-1\}, \{0\}, \{1\}, ...\}$ we have proven
+        that the command is deterministic.
+
+        The same can be done with the increment function
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(:=)$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1}{Q}$}
+        \end{prooftree}
+
+        Where $Q = \lambda r \rr \begin{cases}
+            \{ x + 1\} & \exists \{x\} \in \pow{\state} \;s.t. \; idx(P) = r \\
+            undef & otherwise
+        \end{cases}$
+
+        And clearly $\alpha(Q) = \{..., \{-1\}, \{0\}, \{1\}, ...\}$ hence
+        proving that the command is deterministic.
+
+        We can prove that a non deterministic choice between two identical 
+        programs is also deterministic:
+
+        \begin{prooftree}
+            \AxiomC{$ $}
+            \RightLabel{$(:=)$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1}{Q}$}
+            \AxiomC{$ $}
+            \RightLabel{$(:=)$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1}{Q}$}
+            \RightLabel{$(+)$}
+            \BinaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1 + x := x + 1}{Q}$}
+        \end{prooftree}
+
+        But thankfully we cannot do the same with two different programs.
+
+        \scalebox{.7}{
+        \parbox{1cm}{
+        \begin{prooftree}
+            \AxiomC{$P \leq P$}
+            \AxiomC{$ $}
+            \RightLabel{$(\mathbb{1})$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {\mathbb{1}}{P}$}
+            \AxiomC{$P \leq P \lor Q$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {\mathbb{1}}{P \lor Q}$}
+            \AxiomC{$P \leq P$}
+            \AxiomC{$ $}
+            \RightLabel{$(:=)$}
+            \UnaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1}{Q}$}
+            \AxiomC{$Q \leq P \lor Q$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1}{P \lor Q}$}
+            \RightLabel{$(+)$}
+            \BinaryInfC{$\vdash \atriple[K(\pow{\state})_\mathbb{R}]{P}
+                {x := x + 1 + x := x + 1}{P \lor Q}$}
+        \end{prooftree}
+        }}
+
+        And clearly $\alpha(P \lor Q) = 
+        \{..., \{-1, 0\}, \{0, 1\}, \{1, 2\}, ...\}$.
+
     \end{exmp}
 
 % \subsection{Merge rules}
