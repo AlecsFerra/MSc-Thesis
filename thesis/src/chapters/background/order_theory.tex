@@ -132,3 +132,31 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
 Two direct consequences that both the greatest and the least fixpoint of
 $f$ exists and are respectively $\top$ and $\bot$ of $\fix(f)$.
 
+\begin{theorem}[Post-fixpoint inequality]
+  \label{thm:post-lfp}
+  Let $f$ be a monotone function on a complete lattice then
+  $$f(x) \leq x \implies \lfp(f) \leq x$$
+\end{theorem}
+\begin{proof}
+  By theorem \ref{thm:knaster} $\lfp(f) = \bigwedge\{ y \mid y \geq f(y) \}$
+  thus $\lfp(f) \leq x$ since $x \in \{ y \mid y \geq f(y) \}$.
+\end{proof}
+
+\begin{theorem}[$\lfp$ monotonicity]
+  \label{thm:lfp-mono}
+  Let $L$ be a complete lattice then if $P \leq Q$ and $f$ is monotone
+  $$lfp(\lambda X. P \join f(X)) \leq lfp(\lambda X. Q \join f(X))$$
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    P \join f(\lfp(\lambda X . Q \join f(X)))
+      &\leq Q \join f(\lfp(\lambda X . Q \join f(X)))
+      &\text{Since $P \leq Q$} \\
+      &= \lfp(\lambda X . Q \join f(X))
+      &\text{By definition of fixpoint} \\
+  \end{align*}
+  Thus by theorem \ref{thm:post-lfp} pick $f = \lambda X . P \join f(X)$ and
+  $x = lfp(\lambda X. Q \join f(X))$ it follows that
+  $lfp(\lambda X. P \join f(X)) \leq lfp(\lambda X. Q \join f(X))$.
+\end{proof}
+

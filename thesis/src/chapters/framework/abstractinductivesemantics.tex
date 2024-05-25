@@ -25,85 +25,85 @@ arbitrary complete lattice.
   \todo[inline]{Ma è ben definito $C^\fix$?, servirebbe la semantica monotona
     per avere l'esistenza di ogni lfp}
 
-% \begin{theorem}[Monotonicity]
-%   \label{thm:asem-mono} 
-%   $\forall \; C \in \lang$ $\asem{C}$ is monotone.
-% \end{theorem}
-% \begin{proof}
-%   We want to prove that $\forall P, Q \in A$ and $C \in \lang$
-%   $$P \leq_A Q \implies \asem{C}(P) \leq_A \asem{C}(Q)$$
-%   By structural induction on $C$:
-%   \begin{itemize}
-%     \item $\skip$:
-%       \begin{align*}
-%         \sem{\skip}(P) 
-%           &= P & \text{By definition of $\asem{\skip}$}\\
-%           &\leq Q \\
-%           &= \sem{\skip}(Q) & \text{By definition of $\asem{\skip}$}\\
-%       \end{align*}
-% 
-%     \item $b$:
-%       \begin{align*}
-%         \sem{b}(P) 
-%           &= \bsem{b}^A(P)
-%           & \text{By definition of $\asem{b}$}\\
-%           &\leq \bsem{b}^A(Q)
-%           & \text{By definition}\\
-%           &= \sem{b}(Q) & \text{By definition of $\asem{b}$}\\
-%       \end{align*}
-% 
-%     \item $C_1 \fcmp C_2$:
-% 
-%       By inductive hypothesis $\asem{C_1}$ is monotone hence
-%       $\asem{C_1}(P) \leq_A \asem{C_2}(Q)$
-% 
-%       \begin{align*}
-%         \sem{C_1 \fcmp C_2}(P) 
-%           &= \asem{C_2}(\asem{C_1}(P))
-%           &\text{By definition of $\asem{C_1 \fcmp C_2}$}\\
-%           &\leq_A \asem{C_2}(\asem{C_1}(Q))
-%           &\text{By inductive hypothesis on $\asem{C_2}$} \\
-%       \end{align*}
-%   
-%     \item $C_1 + C_2$:
-%       \begin{align*}
-%         \asem{C_1 + C_2}(P) 
-%           &= \asem{C_1}(P) \join_A \asem{C_2}(P)
-%           &\text{By definition of $\asem{C_1 + C_2}$}\\
-%           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(P)
-%           &\text{By inductive hypothesis on $\asem{C_1}$} \\
-%           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(Q)
-%           &\text{By inductive hypothesis on $\asem{C_2}$} \\
-%           &= \asem{C_1 + C_2}(Q) 
-%           &\text{By definition of $\asem{C_1 + C_2}$}\\
-%       \end{align*}
-%     
-%     \item $C^\fix$:
-% 
-%       \begin{align*}
-%         \asem{C^\fix}(P) 
-%           &= lfp(\lambda P'. P \join_A \asem{C}(P'))
-%           &\text{By definition of $\asem{C^\fix}$}\\
-%           &\leq_A lfp(\lambda P'. Q \join_A \asem{C}(P'))
-%           &\text{By theorem \ref{thm:lfp-order}}\\
-%           &= \asem{C^\fix}(Q) 
-%           &\text{By definition of $\asem{C^\fix}$}\\
-%       \end{align*}
-% 
-%   \end{itemize}
-% 
-% \end{proof}
-% 
-% 
-% \begin{lemma}[$\sem{\cdot}$ well-defined]
-%   $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
-% \end{lemma}
-% \begin{proof}
-%   From theorems \ref{thm:asem-mono} and 
-%   \ref{thm:knaster} all the least fixpoints in the definition of 
-%   $\sem{C^\fix}$ exists; for all the other commands the semantics is 
-%   trivially well-defined.
-% \end{proof}
+\begin{theorem}[Monotonicity]
+  \label{thm:asem-mono} 
+  $\forall \; C \in \lang$ $\asem{C}$ is monotone.
+\end{theorem}
+\begin{proof}
+  We want to prove that $\forall P, Q \in A$ and $C \in \lang$
+  $$P \leq_A Q \implies \asem{C}(P) \leq_A \asem{C}(Q)$$
+  By structural induction on $C$:
+  \begin{itemize}
+    \item $\skip$:
+      \begin{align*}
+        \sem{\skip}(P) 
+          &= P & \text{By definition of $\asem{\skip}$}\\
+          &\leq Q \\
+          &= \sem{\skip}(Q) & \text{By definition of $\asem{\skip}$}\\
+      \end{align*}
+
+    \item $b$:
+      \begin{align*}
+        \sem{b}(P) 
+          &= \bsem{b}^A(P)
+          & \text{By definition of $\asem{b}$}\\
+          &\leq \bsem{b}^A(Q)
+          & \text{By definition}\\
+          &= \sem{b}(Q) & \text{By definition of $\asem{b}$}\\
+      \end{align*}
+
+    \item $C_1 \fcmp C_2$:
+
+      By inductive hypothesis $\asem{C_1}$ is monotone hence
+      $\asem{C_1}(P) \leq_A \asem{C_2}(Q)$
+
+      \begin{align*}
+        \sem{C_1 \fcmp C_2}(P) 
+          &= \asem{C_2}(\asem{C_1}(P))
+          &\text{By definition of $\asem{C_1 \fcmp C_2}$}\\
+          &\leq_A \asem{C_2}(\asem{C_1}(Q))
+          &\text{By inductive hypothesis on $\asem{C_2}$} \\
+      \end{align*}
+  
+    \item $C_1 + C_2$:
+      \begin{align*}
+        \asem{C_1 + C_2}(P) 
+          &= \asem{C_1}(P) \join_A \asem{C_2}(P)
+          &\text{By definition of $\asem{C_1 + C_2}$}\\
+          &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(P)
+          &\text{By inductive hypothesis on $\asem{C_1}$} \\
+          &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(Q)
+          &\text{By inductive hypothesis on $\asem{C_2}$} \\
+          &= \asem{C_1 + C_2}(Q) 
+          &\text{By definition of $\asem{C_1 + C_2}$}\\
+      \end{align*}
+    
+    \item $C^\fix$:
+
+      \begin{align*}
+        \asem{C^\fix}(P) 
+          &= lfp(\lambda P'. P \join_A \asem{C}(P'))
+          &\text{By definition of $\asem{C^\fix}$}\\
+          &\leq_A lfp(\lambda P'. Q \join_A \asem{C}(P'))
+          &\text{By theorem \ref{thm:lfp-mono}}\\
+          &= \asem{C^\fix}(Q) 
+          &\text{By definition of $\asem{C^\fix}$}\\
+      \end{align*}
+
+  \end{itemize}
+
+\end{proof}
+
+
+\begin{lemma}[$\sem{\cdot}$ well-defined]
+  $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
+\end{lemma}
+\begin{proof}
+  From theorems \ref{thm:asem-mono} and 
+  \ref{thm:knaster} all the least fixpoints in the definition of 
+  $\sem{C^\fix}$ exists; for all the other commands the semantics is 
+  trivially well-defined.
+\end{proof}
 
 From now on we will refer to the complete lattice used to define the abstract
 inductive semantics as \textit{domain} borrowing the convention from abstract
