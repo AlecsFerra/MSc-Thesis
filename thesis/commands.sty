@@ -1,0 +1,68 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{commands}[Package providing custom commands for the document]
+
+% math mode utils
+\def\mand{\text{ and }}
+
+% Order theory
+\def\meet{\land}
+\def\join{\lor}
+
+\def\lfp{\text{lfp}}
+\def\gfp{\text{gfp}}
+\def\fix{\text{fix}}
+\def\max{\text{max \;}}
+\def\min{\text{min \;}}
+
+% Sets
+\newcommand{\pow}[1]{
+    \wp(#1)
+}
+\def\nat{\mathbb{N}}
+
+% Language
+\def\lang{\mathbb{L}}
+\def\skip{\mathbb{1}}
+\def\fcmp{\mathbin{\raise 0.6ex\hbox{\oalign{\hfil$\scriptscriptstyle      
+    \mathrm{o}$\hfil\cr\hfil$\scriptscriptstyle\mathrm{9}$\hfil}}}}
+\def\ass{:=}
+
+% Definitions
+% ::= 
+\def\cceq{\mathrel{\vcenter{\hbox{::}}{=}}\;}
+% |
+\def\smid{\quad|\quad}
+\def\topartial{\hookrightarrow}
+\newcommand{\defeq}{\stackrel{\text{def}}{=}}
+
+% Semantics
+\def\states{\mathbb{S}}
+\newcommand{\sem}[1]{
+    \llbracket #1 \rrbracket
+}
+\newcommand{\bsem}[1]{
+  \sem{#1}_{base}
+}
+\newcommand{\asem}[2][A]{
+  \sem{#2}_{ais}^{#1}
+}
+
+% theorems and styling
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{observation}{Observation}[chapter]
+\newtheorem{assumption}{Assumption}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+
+\newtheorem*{question*}{Question}
+\newtheorem*{solution*}{Solution}
+

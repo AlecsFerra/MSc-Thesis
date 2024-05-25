@@ -1,0 +1,182 @@
+\section{The $\lang$ programming language}
+
+\subsection{Syntax}
+
+The $\lang$ language is inspired by Dijkstra's guarded command languages
+\cite{Dijkstra74} but with the goal of beeing as general as possible by beeing
+parametric on a set of \textit{base commands}. The $\lang$ language is general
+enough to describe any imperative non deterministic programming language.
+
+\begin{definition}[$\lang$ language syntax]
+  Given a set $Base$ of base commands, the set on valid $\lang$ programs is 
+  defined by the following inductive definition:
+
+  \begin{align*}
+    \lang \; & \cceq \skip         & \text{Skip}\\
+             & \smid b             & \text{Base command}\\
+             & \smid C_1 \fcmp C_2 & \text{Program composition}\\
+             & \smid C_1 + C_2     & \text{Non deterministic choice}\\
+             & \smid C^\fix        & \text{Iteration}\\
+  \end{align*}
+
+  Where $C, C_1, C_2 \in \lang$ and $b \in Base$.
+
+  \begin{example} \label{exmp:base-commands-syntax}
+    Usually the set of base commands contains a command $e ?$ to discard 
+    execution that don't satisfy the predicate $e$ and $x \ass y$ to assing the 
+    value $y$ to the variable $x$.
+  \end{example}
+\end{definition}
+
+
+\subsection{Semantics}
+
+Fixed a set $\states$ of states (usually a collection of associations between
+variables names and values) and a family of partial functions $\bsem{\cdot} 
+: \states \topartial \states$ we can define the denotational semantics of programs 
+in $\lang$, the \textit{collecting semantics} is a function $\sem{\cdot} : \lang 
+\to \pow{\states} \to \pow{\states}$ that associates a program $C$ and set of 
+initial states to the set of states reached after executing the program $C$ 
+from the initial states.
+
+\begin{definition}[$\lang$ denotational semantics]
+  Given a set $\states$ of states and a family of partial functions 
+  $\bsem{b} : \states \topartial \states$ $\forall b \in Base$ the denotational 
+  semantics is defined as follows:
+
+  \begin{align*}
+      \sem{\cdot}         & \;\;:\; \lang \to \pow{\states} \to \pow{\states} \\
+      \sem{\skip}         &\defeq id \\
+      \sem{b}             &\defeq \lambda P . \{ \bsem{b}(p)\downarrow \; \mid 
+        p \in P \} \\
+      \sem{C_1 \fcmp C_2} &\defeq \sem{C_2} \circ \sem{C_1} \\
+      \sem{C_1 + C_2}     &\defeq \lambda P . \sem{C_1} P \cup \sem{C_2} P \\
+      \sem{C^\fix}        &\defeq \lambda P . \lfp(\lambda P'. P \cup \sem{C} P')
+  \end{align*}
+
+  \begin{example}
+    We can define the semantics of the base commands introduced in 
+    \ref{exmp:base-commands-syntax} as:
+    $$\bsem{e ?}(\sigma) \defeq \begin{cases}
+      \; \sigma & \sigma \models e \\
+      \; \uparrow & otherwise
+    \end{cases}$$
+    $$\bsem{x \ass y}(\sigma) \defeq \sigma[x/eval(y, \sigma)]$$
+    Where $eval$ is some evaluate function for the expressions on the left-hand
+    side of assignments.
+  \end{example}
+
+  \begin{theorem}[Complete lattice]
+    \label{thm:sem-lattice}
+    $(\pow{\states}, \subseteq)$ is a complete lattice.
+  \end{theorem}
+  \begin{proof}
+    To prove that $(\pow{\states}, \subseteq)$ is a complete lattice we exhibit:
+    $\forall P \subseteq \pow{states}$
+    \begin{itemize}
+      \item $\inf P = \bigcap P$, it's clearly a lowerbound, and it's the 
+        greatest since any other set $Z \supsetneq \bigcap P$ contains some
+        not in any of the elements in $P$.
+      \item $\sup P = \bigcup P$, it's clearly an upper bound, and it's the
+        smallest one since any other set $Z \subsetneq \bigcup P$ is missing
+        some element that is in one of the elements of $P$.
+    \end{itemize}
+  \end{proof}
+
+  \begin{theorem}[Monotonicity]
+    \label{thm:sem-mono}
+    $\forall \; C \in \lang$ $\sem{C}$ is monotone.
+  \end{theorem}
+  \begin{proof}
+    We want to prove that $\forall P, Q \in \pow{\states}$ and $C \in \lang$
+    $$P \subseteq Q \implies \sem{C}(P) \subseteq \sem{C}(Q)$$
+    By structural induction on $C$:
+    \begin{itemize}
+      \item $\skip$:
+        \begin{align*}
+          \sem{\skip}(P) 
+            &= P & \text{By definition of $\sem{\skip}$}\\
+            &\subseteq Q \\
+            &= \sem{\skip}(Q) & \text{By definition of $\sem{\skip}$}\\
+        \end{align*}
+
+      \item $b$:
+        \begin{align*}
+          \sem{b}(P) 
+            &= \{ \bsem{b}(x)\downarrow \; \mid x \in P \} 
+            & \text{By definition of $\sem{b}$}\\
+            &\subseteq \{ \bsem{b}(x)\downarrow \; \mid x \in Q \} 
+            & \text{Since $P \subseteq Q$}\\
+            &= \sem{b}(Q) & \text{By definition of $\sem{b}$}\\
+        \end{align*}
+
+      \item $C_1 \fcmp C_2$:
+
+        By inductive hypothesis $\sem{C_1}$ is monotone hence
+        $\sem{C_1}(P) \subseteq \sem{C_2}(Q)$
+
+        \begin{align*}
+          \sem{C_1 \fcmp C_2}(P) 
+            &= \sem{C_2}(\sem{C_1}(P))
+            &\text{By definition of $\sem{C_1 \fcmp C_2}$}\\
+            &\subseteq \sem{C_2}(\sem{C_1}(Q))
+            &\text{By inductive hypothesis on $\sem{C_2}$} \\
+        \end{align*}
+    
+      \item $C_1 + C_2$:
+        \begin{align*}
+          \sem{C_1 + C_2}(P) 
+            &= \sem{C_1}(P) \cup \sem{C_2}(P)
+            &\text{By definition of $\sem{C_1 + C_2}$}\\
+            &\subseteq \sem{C_1}(Q) \cup \sem{C_2}(P)
+            &\text{By inductive hypothesis on $\sem{C_1}$} \\
+            &\subseteq \sem{C_1}(Q) \cup \sem{C_2}(Q)
+            &\text{By inductive hypothesis on $\sem{C_2}$} \\
+            &= \sem{C_1 + C_2}(Q) 
+            &\text{By definition of $\sem{C_1 + C_2}$}\\
+        \end{align*}
+      
+      \item $C^\fix$:
+
+        \begin{align*}
+          \sem{C^\fix}(P) 
+            &= lfp(\lambda P'. P \cup \sem{C}(P'))
+            &\text{By definition of $\sem{C^\fix}$}\\
+            &\subseteq lfp(\lambda P'. Q \cup \sem{C}(P'))
+            &\text{By theorem Kleene-Knaster-Tarski}\\
+            &= \sem{C^\fix}(Q) 
+            &\text{By definition of $\sem{C^\fix}$}\\
+        \end{align*}
+
+    \end{itemize}
+
+  \end{proof}
+
+  \begin{lemma}[$\sem{\cdot}$ well-defined]
+    $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
+  \end{lemma}
+  \begin{proof}
+    From theorems \ref{thm:sem-lattice}, \ref{thm:sem-mono} and 
+    \ref{thm:knaster} all the least fixpoints in the definition of 
+    $\sem{C^\fix}$ exists; for all the other commands the semantics is 
+    trivially well-defined.
+  \end{proof}
+
+  \begin{observation}
+    When the set of base commands contains a command to discard executions we
+    can define the usual deterministic control flow commands as syntactic sugar.
+
+    $$if \; b \; then \; C_1 \; else \; C_2 \defeq (b ? \fcmp C_1) 
+    + (\neg b ? \fcmp C_2)$$
+    $$while \; b \; do \; C \defeq (b? \fcmp C)^\fix \fcmp \neg b ?$$
+  \end{observation}
+
+  \begin{observation}
+    Some other languages usually provide an iteration command usually denoted
+    $C^\star$ whose semantics is $\sem{C^\star}(P) \defeq \bigcup_{n \in \nat}
+    \sem{C}^n(P)$, this is equivalent to $C^\fix$, the reasoning on why a
+    fixpoint formulation was chosen will become clear in 
+    \ref{obs:abstract-fix}.
+  \end{observation}
+
+\end{definition}

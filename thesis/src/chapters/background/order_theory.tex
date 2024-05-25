@@ -1,0 +1,134 @@
+\section{Order theory}\label{sec:backround:order_theory}
+
+When defining the semantics of programming languages, the theory of 
+\textit{partially ordered sets} and \textit{lattices} is fundamental. These 
+concepts are at the core of denotational semantics \cite{Scott70} and 
+\textit{Abstract Interpretation} \cite{Cousot77}, where the semantics of 
+programming languages and abstract interpreters are defined as monotone 
+functions over some complete lattice.
+
+\subsection{Partial Orders}
+
+\begin{definition}[Partial order]
+  A partial order on a set $X$ is a relation $\leq \subseteq X \times X$ 
+  such that the following properties hold:
+  \begin{itemize}
+    \item Reflexivity: $\forall x \in X, \; (x, x) \in \; \leq$
+    \item Anti-symmetry: $\forall x, y \in X, \; (x, y) \in \; \leq \mand
+      (y, x) \in \; \leq \implies x = y$
+    \item Transitivity: $\forall x, y, z \in X, \; (x, y) \in \; \leq \mand 
+      (y, z) \in \; \leq \implies (x, z) \in \;\leq$
+  \end{itemize}
+    
+\end{definition}
+
+Given a partial order $\leq$, we will use $\geq$ to denote the converse 
+relation $\{ (y, x) \mid (x, y) \in \;\leq \}$ and $<$ to denote 
+$\{ (x, y) \mid (x, y) \in \;\leq \; \text{and} \; x \neq y \}$.
+
+From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
+
+\begin{definition}[Partially ordered set]
+  A partially ordered set (or poset) is a pair $(X, \leq)$ in which $\leq$ is a 
+  partial order on $X$.
+\end{definition}
+
+\begin{definition}[Monotone function]
+  Given two ordered sets $(X, \leq)$ and $(Y, \sqsubseteq)$, a function 
+  $f : X \to Y$ is said to be monotone if $x \leq y \implies f(x) \sqsubseteq 
+  f(y)$.
+\end{definition}
+
+\begin{definition}[Galois connection]
+  Let $(C, \sqsubseteq)$ and $(A, \leq)$ be two partially ordered sets, a 
+  Galois connection written $\langle C, \sqsubseteq \rangle 
+  \galois{\alpha}{\gamma} \langle A, \leq \rangle$, are a pair of functions:
+  $\gamma : A \to D$ and $\alpha : D \to A$ such that:
+  \begin{itemize}
+    \item $\gamma$ is monotone
+    \item $\alpha$ is monotone
+    \item $\forall c \in C$ $c \sqsubseteq \gamma(\alpha(c))$
+    \item $\forall a \in A$ $a \leq \alpha(\gamma(a))$
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Fixpoint]
+  Given a function $f : X \to X$, a fixpoint of $f$ is an element $x \in X$ 
+  such that $x = f(x)$.
+
+  We denote the set of all fixpoints of a function as $\fix(f) = 
+  \{ x \mid x \in X \mand x = f(x) \}$.
+\end{definition}
+
+\begin{definition}[Least and Greatest fixpoints]
+  Given a function $f : X \to X$,
+  \begin{itemize}
+    \item We denote the \textit{least fixpoint} as $\lfp(f) = \min \fix(f)$.
+    \item We denote the \textit{greatest fixpoint} as $\gfp(f) = \max \fix(f)$.
+  \end{itemize}
+\end{definition}
+
+\subsection{Lattices}
+
+\begin{definition}[Meet-semilattice]
+  A poset $(X, \leq)$ is a meet-semilattice if $\forall x, y \in X, \exists z 
+  \in X$ such that $z = \inf \{x, y\}$, called the \textit{meet}.
+
+  Usually, the meet of two elements $x, y \in X$ is written as $x \meet y$.
+\end{definition}
+
+\begin{definition}[Join-semilattice]
+  A poset $(X, \leq)$ is a join-semilattice if $\forall x, y \in X, \exists z 
+  \in X$ such that $z = \sup \{x, y\}$, called the \textit{join} or 
+  \textit{least upper bound}.
+
+  Usually, the join of two elements $x, y \in X$ is written as $x \join y$.
+\end{definition}
+
+\begin{observation}
+  Both join and meet operations are idempotent, associative, and commutative.
+\end{observation}
+
+\begin{definition}[Lattice]
+  A poset $(X, \leq)$ is a lattice if it is both a join-semilattice and a 
+  meet-semilattice.
+\end{definition}
+
+\begin{definition}[Complete lattice]
+  A lattice $(X, \leq)$ is said to be complete if $\forall \; Y \subseteq X$:
+  \begin{itemize}
+    \item $\exists \; z \in X$ such that $z = \sup \; Y$
+    \item $\exists \; z \in X$ such that $z = \inf \; Y$
+  \end{itemize}
+
+  We denote the \textit{least element} or \textit{bottom} as $\bot = \inf \; X$ 
+  and the \textit{greatest element} or \textit{top} as $\top = \sup \; X$.
+\end{definition}
+
+\begin{observation}
+  A complete lattice cant be empty.
+\end{observation}
+
+\begin{definition}[Point-wise lift]
+  Given a complete lattice $L$ and a set $A$ we call \textit{point-wise} lift
+  of $L$ the set of all functions $A \to L$ ordered point-wise $f \leq g \iff
+  \forall a \in A \; f(a) \leq f(g)$.
+\end{definition}
+
+\begin{theorem}[Point-wise fixpoint]
+  The leaft-fixpoint and greatest fixpoint on some point-wise lifted lattice on 
+  a monotone function defined point-wise is the point-wise lift of the function.
+
+  $$\lfp(\lambda p' a . f(p'(a))) = \lambda a . \lfp(\lambda p' . f(a))$$
+  $$\gfp(\lambda p' a . f(p'(a))) = \lambda a . \gfp(\lambda p' . f(a))$$
+\end{theorem}
+
+\begin{theorem}[Knaster-Tarski theorem]
+  \label{thm:knaster}
+  Let $(L, \leq)$ be a complete lattice and let $f : L \to L$ be a monotone 
+  function. Then $(\text{fix}(f), \leq)$ is also a complete lattice.
+\end{theorem}
+
+Two direct consequences that both the greatest and the least fixpoint of
+$f$ exists and are respectively $\top$ and $\bot$ of $\fix(f)$.
+

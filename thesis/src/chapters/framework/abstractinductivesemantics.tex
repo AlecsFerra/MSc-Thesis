@@ -1,0 +1,146 @@
+\section{Abstract inductive semantics}
+
+From the theory of abstract interpretation we know that the definition of the
+denotational semantics can be modified to work on any complete lattice as long
+that we can provide sensible function for the base commands. The rationale
+behind is the same as in the denotational semantics but instead representing
+collections of states with $\pow{\states}$ now they are represented by an
+arbitrary complete lattice.
+
+\begin{definition}[Abstract inductive semantics]
+  Given a complete lattice $A$ and a family of monotone functions $\bsem{b}^A : A
+  \to A$ $\forall b \in Base$ the abstract inductive semantics is defined as 
+  follows:
+
+  \begin{align*}
+      \asem{\cdot}         & \;\;:\; \lang \to A \to A \\
+      \asem{\skip}         &\defeq id \\
+      \asem{b}             &\defeq \bsem{b}^A \\
+      \asem{C_1 \fcmp C_2} &\defeq \asem{C_2} \circ \asem{C_1} \\
+      \asem{C_1 + C_2}     &\defeq \lambda P . \asem{C_1} P \join_A \asem{C_2} P \\
+      \asem{C^\fix}        &\defeq \lambda P . \lfp(\lambda P'. P \join_A \asem{C} P')
+  \end{align*}
+\end{definition}
+
+  \todo[inline]{Ma è ben definito $C^\fix$?, servirebbe la semantica monotona
+    per avere l'esistenza di ogni lfp}
+
+% \begin{theorem}[Monotonicity]
+%   \label{thm:asem-mono} 
+%   $\forall \; C \in \lang$ $\asem{C}$ is monotone.
+% \end{theorem}
+% \begin{proof}
+%   We want to prove that $\forall P, Q \in A$ and $C \in \lang$
+%   $$P \leq_A Q \implies \asem{C}(P) \leq_A \asem{C}(Q)$$
+%   By structural induction on $C$:
+%   \begin{itemize}
+%     \item $\skip$:
+%       \begin{align*}
+%         \sem{\skip}(P) 
+%           &= P & \text{By definition of $\asem{\skip}$}\\
+%           &\leq Q \\
+%           &= \sem{\skip}(Q) & \text{By definition of $\asem{\skip}$}\\
+%       \end{align*}
+% 
+%     \item $b$:
+%       \begin{align*}
+%         \sem{b}(P) 
+%           &= \bsem{b}^A(P)
+%           & \text{By definition of $\asem{b}$}\\
+%           &\leq \bsem{b}^A(Q)
+%           & \text{By definition}\\
+%           &= \sem{b}(Q) & \text{By definition of $\asem{b}$}\\
+%       \end{align*}
+% 
+%     \item $C_1 \fcmp C_2$:
+% 
+%       By inductive hypothesis $\asem{C_1}$ is monotone hence
+%       $\asem{C_1}(P) \leq_A \asem{C_2}(Q)$
+% 
+%       \begin{align*}
+%         \sem{C_1 \fcmp C_2}(P) 
+%           &= \asem{C_2}(\asem{C_1}(P))
+%           &\text{By definition of $\asem{C_1 \fcmp C_2}$}\\
+%           &\leq_A \asem{C_2}(\asem{C_1}(Q))
+%           &\text{By inductive hypothesis on $\asem{C_2}$} \\
+%       \end{align*}
+%   
+%     \item $C_1 + C_2$:
+%       \begin{align*}
+%         \asem{C_1 + C_2}(P) 
+%           &= \asem{C_1}(P) \join_A \asem{C_2}(P)
+%           &\text{By definition of $\asem{C_1 + C_2}$}\\
+%           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(P)
+%           &\text{By inductive hypothesis on $\asem{C_1}$} \\
+%           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(Q)
+%           &\text{By inductive hypothesis on $\asem{C_2}$} \\
+%           &= \asem{C_1 + C_2}(Q) 
+%           &\text{By definition of $\asem{C_1 + C_2}$}\\
+%       \end{align*}
+%     
+%     \item $C^\fix$:
+% 
+%       \begin{align*}
+%         \asem{C^\fix}(P) 
+%           &= lfp(\lambda P'. P \join_A \asem{C}(P'))
+%           &\text{By definition of $\asem{C^\fix}$}\\
+%           &\leq_A lfp(\lambda P'. Q \join_A \asem{C}(P'))
+%           &\text{By theorem \ref{thm:lfp-order}}\\
+%           &= \asem{C^\fix}(Q) 
+%           &\text{By definition of $\asem{C^\fix}$}\\
+%       \end{align*}
+% 
+%   \end{itemize}
+% 
+% \end{proof}
+% 
+% 
+% \begin{lemma}[$\sem{\cdot}$ well-defined]
+%   $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
+% \end{lemma}
+% \begin{proof}
+%   From theorems \ref{thm:asem-mono} and 
+%   \ref{thm:knaster} all the least fixpoints in the definition of 
+%   $\sem{C^\fix}$ exists; for all the other commands the semantics is 
+%   trivially well-defined.
+% \end{proof}
+
+From now on we will refer to the complete lattice used to define the abstract
+inductive semantics as \textit{domain} borrowing the convention from abstract
+interpretation.
+
+\begin{observation}
+  When picking as a domain the lattice $\pow{\states}$ and as base commands
+  $\bsem{b}^{\pow{\states}}(P) = \{ \bsem{b}(\sigma)\downarrow \; \mid \sigma 
+  \in P \}$ will result in obtaining the denotational semantics from the 
+  abstract inductive semantics. $\forall \; C \in \lang$ $\forall P \in 
+  \pow{\states}$ 
+  $$\asem[\pow{\states}]{C}(P) = \sem{C}(P)$$
+\end{observation}
+
+\begin{observation}
+  \label{obs:abstract-fix}
+  There are some domains where $\exists \; C \in \lang$ such that
+  $\bigvee_{n \in \nat} (\asem{C})^n(P) \neq \lfp(\lambda P'. P \join_A
+  \asem{C}(P'))$.
+\end{observation}
+
+\subsection{Galois connection semantics}
+  Given a Galois connection $\langle C, \sqsubseteq \rangle
+  \galois{\alpha}{\gamma} \langle A, \leq \rangle$ if we have an abstract 
+  inductive semantics on domain $C$ with base commands semantics $\bsem{b}^C$
+  we can obtain another abstract inductive semantics on $A$ by picking as
+  base command semantics $\bsem{b}^A = \alpha \circ \bsem{b}^C \circ \gamma$.
+
+
+  \todo[inline]{Basterebbe soundess dei comandi base, più serve a qualcosa?}
+
+  \begin{theorem}[Soundness]
+
+    The semantics $\asem[A]{\cdot}$ is sound with respect to $\asem[C]{\cdot}$
+    when $\bsem{b}^A = \alpha \circ \bsem{b}^C \circ \gamma$.
+
+    $\forall \; R \in \lang \mand P \in C$
+    $$\alpha(\asem[C]{R}(P)) \leq \asem[A]{R}(\gamma(P))$$
+  \end{theorem}
+  
