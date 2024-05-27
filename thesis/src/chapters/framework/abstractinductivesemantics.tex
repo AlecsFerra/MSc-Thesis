@@ -14,16 +14,13 @@ arbitrary complete lattice.
 
   \begin{align*}
       \asem{\cdot}         & \;\;:\; \lang \to A \to A \\
-      \asem{\skip}         &\defeq id \\
+      \asem{\sskip}         &\defeq id \\
       \asem{b}             &\defeq \bsem{b}^A \\
       \asem{C_1 \fcmp C_2} &\defeq \asem{C_2} \circ \asem{C_1} \\
       \asem{C_1 + C_2}     &\defeq \lambda P . \asem{C_1} P \join_A \asem{C_2} P \\
       \asem{C^\fix}        &\defeq \lambda P . \lfp(\lambda P'. P \join_A \asem{C} P')
   \end{align*}
 \end{definition}
-
-  \todo[inline]{Ma è ben definito $C^\fix$?, servirebbe la semantica monotona
-    per avere l'esistenza di ogni lfp}
 
 \begin{theorem}[Monotonicity]
   \label{thm:asem-mono} 
@@ -34,12 +31,12 @@ arbitrary complete lattice.
   $$P \leq_A Q \implies \asem{C}(P) \leq_A \asem{C}(Q)$$
   By structural induction on $C$:
   \begin{itemize}
-    \item $\skip$:
+    \item $\sskip$:
       \begin{align*}
-        \sem{\skip}(P) 
-          &= P & \text{By definition of $\asem{\skip}$}\\
+        \sem{\sskip}(P) 
+          &= P & \text{By definition of $\asem{\sskip}$}\\
           &\leq Q \\
-          &= \sem{\skip}(Q) & \text{By definition of $\asem{\skip}$}\\
+          &= \sem{\sskip}(Q) & \text{By definition of $\asem{\sskip}$}\\
       \end{align*}
 
     \item $b$:

@@ -12,7 +12,7 @@ enough to describe any imperative non deterministic programming language.
   defined by the following inductive definition:
 
   \begin{align*}
-    \lang \; & \cceq \skip         & \text{Skip}\\
+    \lang \; & \cceq \sskip        & \text{Skip}\\
              & \smid b             & \text{Base command}\\
              & \smid C_1 \fcmp C_2 & \text{Program composition}\\
              & \smid C_1 + C_2     & \text{Non deterministic choice}\\
@@ -46,7 +46,7 @@ from the initial states.
 
   \begin{align*}
       \sem{\cdot}         & \;\;:\; \lang \to \pow{\states} \to \pow{\states} \\
-      \sem{\skip}         &\defeq id \\
+      \sem{\sskip}        &\defeq id \\
       \sem{b}             &\defeq \lambda P . \{ \bsem{b}(p)\downarrow \; \mid 
         p \in P \} \\
       \sem{C_1 \fcmp C_2} &\defeq \sem{C_2} \circ \sem{C_1} \\
@@ -92,12 +92,12 @@ from the initial states.
     $$P \subseteq Q \implies \sem{C}(P) \subseteq \sem{C}(Q)$$
     By structural induction on $C$:
     \begin{itemize}
-      \item $\skip$:
+      \item $\sskip$:
         \begin{align*}
-          \sem{\skip}(P) 
-            &= P & \text{By definition of $\sem{\skip}$}\\
+          \sem{\sskip}(P) 
+            &= P & \text{By definition of $\sem{\sskip}$}\\
             &\subseteq Q \\
-            &= \sem{\skip}(Q) & \text{By definition of $\sem{\skip}$}\\
+            &= \sem{\sskip}(Q) & \text{By definition of $\sem{\sskip}$}\\
         \end{align*}
 
       \item $b$:

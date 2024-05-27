@@ -1,1 +1,364 @@
 \section{Abstract Hoare Logic}
+
+The idea of developing a Hoare-like logic to reason about properties of 
+programs expressible within the theory of lattices using concepts from abstract 
+interpretation is not new. In fact, \cite{Cousot12} already proposed a framework 
+to perform this kind of reasoning. However, the validity of such triples is 
+dependent on the standard definition of Hoare triples, and the proof system 
+provided is incomplete if we ignore the rule to embed standard Hoare triples 
+in the abstract ones.
+
+Our approach will be different. In particular, the meaning of abstract Hoare 
+triples will be dependent on the abstract inductive semantics, and we will 
+provide a sound and (relatively) complete proof system that fully operates in 
+the abstract.
+
+\begin{definition}[Abstract Hoare triple]
+  \label{def:aht}
+  Given an abstract inductive semantics $\asem{\cdot}$ on the complete lattice
+  $A$, the abstract Hoare triple written $\atriple{P}{C}{Q}$ is valid if
+  and only if $\asem{C}(P) \leq_A Q$.
+
+  $$\atriple{P}{C}{Q} \iff \asem{C}(P) \leq_A Q$$
+\end{definition}
+
+The definition is equivalent as the one provided in standard Hoare logic but
+here the abstract inductive semantics is used to procide the strongest 
+postcondition of programs.
+
+\subsection{Proof system}
+As per Hoare logic we will peovide a sound an relatively complete (in the sense
+of \cite{Cook78}) proof system to derive valid abstract Hoare triples in a 
+compositional manner.
+
+
+\begin{definition}[Abstract Hoare rules]$\;$\\
+  \label{def:ahtrules}
+  % Rule for the identity command
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(\sskip)$}
+    \UnaryInfC{$\vdash \atriple{P}{\sskip}{P}$}
+  \end{prooftree}
+  The identity command does not change the state, so if $P$ holds before,
+  it will hold after the execution.
+
+  % Rule for a basic command
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple{P}{b}{\bsem{b}^A(P)}$}
+  \end{prooftree}
+  For a basic command $b$, if $P$ holds before the execution, then 
+  $\bsem{b}^A(P)$ holds after the execution.
+
+  % Rule for sequential composition
+  \begin{prooftree}
+    \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+    \AxiomC{$\vdash \atriple{Q}{C_2}{R}$}
+    \RightLabel{$(\mathbb{\fcmp})$}
+    \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}{R}$}
+  \end{prooftree}
+  If executing $C_1$ from state $P$ leads to state $Q$, and executing $C_2$
+  from state $Q$ leads to state $R$, then executing $C_1$ followed by $C_2$
+  from state $P$ leads to state $R$.
+
+  % Rule for nondeterministic choice
+  \begin{prooftree}
+    \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+    \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
+  \end{prooftree}
+  If executing either $C_1$ or $C_2$ from state $P$ leads to state $Q$, 
+  then executing the nondeterministic choice $C_1 + C_2$ from state $P$
+  also leads to state $Q$.
+
+  % Rule for iteration (Kleene star)
+  \begin{prooftree}
+    \AxiomC{$\vdash \atriple{P}{C}{P}$}
+    \RightLabel{$(\fix)$}
+    \UnaryInfC{$\vdash \atriple{P}{C^\fix}{P}$}
+  \end{prooftree}
+  If executing command $C$ from state $P$ leads back to state $P$, then 
+  executing $C$ repeatedly (zero or more times) from state $P$ also leads
+  back to state $P$.
+
+  % Rule for strengthening the precondition and weakening the postcondition
+  \begin{prooftree}
+    \AxiomC{$P \leq P'$}
+    \AxiomC{$\vdash \atriple{P'}{C}{Q'}$}
+    \AxiomC{$Q' \leq Q$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+  \end{prooftree}
+  If $P$ is stronger than $P'$ and $Q'$ is stronger than $Q$, then we can
+  derive $\atriple{P}{C}{Q}$ from $\atriple{P'}{C}{Q'}$.
+\end{definition}
+
+Note that we denonte abstract hoare triples as defined in defintion \ref{def:aht}
+with the notation $\atriple{P}{C}{Q}$ and intread we denote the triples obtained
+with the inference rules of definition \ref{def:ahtrules} with $\vdash 
+\atriple{P}{C}{Q}$.
+
+The proofsystem is sound:
+\begin{theorem}[Soundness]
+  $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
+\end{theorem}
+\begin{proof}
+  By structural induction on the last rule applied in the derivation of
+  $\vdash \atriple{P}{C}{Q}$:
+  \begin{itemize}
+
+    \item $(\sskip)$:
+      Then the last step in the derivation was: 
+      \begin{prooftree}
+        \AxiomC{$ $}
+        \RightLabel{$(\sskip)$}
+        \UnaryInfC{$\vdash 
+          \atriple{P}{\sskip}{P}$}
+      \end{prooftree}
+
+      The triple is valid since:
+      \begin{align*}
+        \asem{\sskip}(P)
+          &= P &\text{By definition of $\asem{\cdot}$}
+      \end{align*}
+
+      \item $(b)$:
+        Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$ $}
+          \RightLabel{$(b)$}
+          \UnaryInfC{$\vdash 
+          \atriple{P}{b}{\bsem{b}^A(P)}$}
+        \end{prooftree}
+
+        The triple is valid since:
+        \begin{align*}
+          \asem{b}(P)
+            &= \bsem{b}^A(P)
+            & \text{By definition of $\asem{\cdot}$}
+        \end{align*}
+
+      \item $(\fcmp)$: Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+          \AxiomC{$\vdash \atriple{Q}{C_2}{R}$}
+          \RightLabel{$(\mathbb{\fcmp})$}
+          \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}
+            {R}$}
+        \end{prooftree}
+          
+        By inductive hypothesis:
+        $\asem{C_1}(P) \leq_A Q$ and
+        $\asem{C_2}(Q) \leq_A R$.
+
+        The triple is valid since:
+        \begin{align*}
+          \asem{C_1 \fcmp C_2}(P)
+            &= \asem{C_2}(\asem{C_1}(P))
+            &\text{By definition of $\asem{\cdot}$} \\
+            &\leq_A \asem{C_2}(Q)
+            &\text{By monotonicity of $\asem{\cdot}$} \\
+            &\leq_A R
+        \end{align*}
+
+      \item $(+)$: Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$\vdash \atriple{P}{C_1}{Q}$}
+          \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
+          \RightLabel{$(+)$}
+          \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
+        \end{prooftree}
+
+        By inductive hypothesis: $\asem{C_1}(P) \leq Q$ and
+        $\asem{C_2}(P) \leq Q$.
+
+        The triple is valid since:
+        \begin{align*}
+          \asem{C_1 + C_2}(P)
+            &= \asem{C_1}(P) \join_A \asem{C_2}(P)
+            &\text{By definition of $\asem{\cdot}$} \\
+            &\leq_A Q \join_A Q \\
+            &= Q
+        \end{align*}
+
+      \item $(\lfp)$:
+        Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$\vdash \atriple{P}{C}{P}$}
+          \RightLabel{$(\lfp)$}
+          \UnaryInfC{$\vdash \atriple{P}{C ^ \lfp}{P}$}
+        \end{prooftree}
+
+        By inductive hypothesis: $\asem{C}P \leq P$
+
+        \begin{align*}
+          \bsem{C^\lfp}(P)
+            &= \lfp(\lambda P' \to P \join_A \asem{C}(P')) \\
+        \end{align*}
+
+        We will show that $P$ is a fixpoint of 
+        $\lambda P' \to P \join_A \asem{C}(P')$.
+
+        \begin{align*}
+          (\lambda P' \to P \join_A \asem{C}(P'))(P)
+            &= P \join_A \asem{C}(P)
+            & \text{since $\asem{C}(P) \leq P$} \\
+            &= P
+        \end{align*}
+
+        Hence $P$ is a fixpoint of $\lambda P' \to P \join_A \asem{C}(P')$.
+
+        And clearly is bigger than the least one 
+        $\lfp(\lambda P' \to P \join_A \asem{C}(P')) \leq_A P$ thus making the
+        triple valid.
+
+      \item $(\leq)$: Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$P \leq P'$}
+          \AxiomC{$\vdash \atriple{P'}{C}{Q'}$}
+          \AxiomC{$Q' \leq Q$}
+          \RightLabel{$(\leq)$}
+          \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+        \end{prooftree}
+
+        By inductive hypothesis: $\asem{C}(P') \leq_A Q'$.
+        
+        The triple is valid since:
+        \begin{align*}
+          \asem{C}(P)
+            & \asem{C}(P')
+            & \text{By monotonicity of $\asem{\cdot}$}\\
+            & \leq_A Q' & \text{By inductive hypothesis} \\
+            & \leq_A Q
+        \end{align*}
+  \end{itemize}
+\end{proof}
+
+And is also relatively complete, in the sense that the axioms are complete 
+relative to what we can prove in the underlying assertion language, that in
+our case is described by the complete lattice.
+
+We will start by proving a slightly weaker result:
+
+\begin{theorem}[Relative $\asem{\cdot}$-completeness]
+  \label{thm:post-completeness}
+  $$\vdash \atriple{P}{C}{\asem{C}(P)}$$
+\end{theorem}
+\begin{proof}
+  By structural induction on $C$:
+  \begin{itemize}
+
+    \item $\sskip$:
+      By definition $\asem{\sskip}(P) = P$
+      \begin{prooftree}
+        \AxiomC{$ $}
+        \RightLabel{$(\sskip)$}
+        \UnaryInfC{$\vdash \atriple{P}{\sskip}{P}$}
+      \end{prooftree}
+
+      \item $b$:
+        By definition $\asem{b}(P) = \bsem{b}^A(P)$
+        \begin{prooftree}
+          \AxiomC{$ $}
+          \RightLabel{$(b)$}
+          \UnaryInfC{$\vdash \atriple{P}{b}{\bsem{b}^A(P)}$}
+        \end{prooftree}
+
+      \item $C_1 \fcmp C_2$:
+        By definition $\asem{C_1 \fcmp C_2}(P) = 
+        \asem{C_2}(\asem{C_1}(P))$
+
+        \begin{prooftree}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atriple{P}{C_1}{\asem{C_1}(P)}$}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atriple{\asem{C_1}(P)}{C_2}
+            {\asem{C_2}(\asem{C_1}(P))}$}
+          \RightLabel{$(\fcmp)$}
+          \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}
+            {\asem{C_2}(\asem{C_1}(P))}$}
+        \end{prooftree}
+
+
+      \item $C_1 + C_2$:
+        By definition $\bsem{C_1 + C_2}(P) = 
+        \bsem{C_1}(P) \join_A \bsem{C_2}(P)$
+
+        \begin{prooftree}
+          \AxiomC{$P \leq_A P$}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atriple{P}{C_1}{\asem{C_1}(P)}$}
+          \AxiomC{$\asem{C_1}(P) \leq_A \asem{C_1}(P) \join_A \asem{C_2}(P)$}
+          \RightLabel{$(\leq)$}
+          \TrinaryInfC{$\vdash \atriple{P}{C_1}
+            {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
+          \AxiomC{$\pi_1$}
+          \RightLabel{$(+)$}
+          \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}
+            {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
+        \end{prooftree}
+
+        Where $\pi_1$:
+        \begin{prooftree}
+          \AxiomC{$P \leq_A P$}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atriple{P}{C_2}{\asem{C_2}(P)}$}
+          \AxiomC{$\asem{C_2}(P) \leq_A \asem{C_1}(P) \join_A \asem{C_2}(P)$}
+          \RightLabel{$(\leq)$}
+          \TrinaryInfC{$\vdash \atriple{P}{C_2}
+            {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
+        \end{prooftree}
+
+      \item $C^\fix$:
+        By definition $\bsem{C^\fix}(P) = lfp(\lambda P' \to P \join_A
+        \asem{C}(S')$.
+
+        Let $K \defeq lfp(\lambda P' \to P \join_A \asem{C}(S')$
+        hence $K = P \join_A \asem{C}(K)$ since it is a fixpoint, thus
+        \begin{itemize}
+          \item $\alpha_1$: $K \geq_A P$
+          \item $\alpha_2$: $K \geq_A \asem{C}(K)$
+        \end{itemize}
+
+          \begin{prooftree}
+            \AxiomC{$\alpha_1$}
+            \AxiomC{$K \leq_A K$}
+            \AxiomC{(Inductive hypothesis)}
+            \noLine
+            \UnaryInfC{$\vdash \atriple{K}{C}{\asem{C}(K)}$}
+            \AxiomC{$\alpha_2$}
+            \TrinaryInfC{$\vdash \atriple{K}{C}{K}$}
+            \RightLabel{$(\fix)$}
+            \UnaryInfC{$\vdash \atriple{K}{C^\fix}{K}$}
+            \AxiomC{$K \leq_A K$}
+            \RightLabel{$(\leq)$}
+            \TrinaryInfC{$\vdash \atriple{P}{C^\fix}{K}$}
+          \end{prooftree}
+  \end{itemize}
+\end{proof}
+
+Now we can finally show the relative completeness:
+\begin{theorem}[Relative completeness]
+  \label{thm:completeness}
+  $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
+\end{theorem}
+\begin{proof}
+  By definition of $\atriple{P}{C}{Q} \iff Q \geq_A \asem{C}(P)$
+
+  \begin{prooftree}
+    \AxiomC{$P \leq_A P$}
+    \AxiomC{(By Theorem \ref{thm:post-completeness})}
+    \noLine
+    \UnaryInfC{$\vdash \atriple{P}{C}{\asem{C}(P)}$}
+    \AxiomC{$Q \geq_A \asem{C}(P)$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
+  \end{prooftree}
+\end{proof}

@@ -22,7 +22,7 @@
 
 % Language
 \def\lang{\mathbb{L}}
-\def\skip{\mathbb{1}}
+\def\sskip{\mathds{1}}
 \def\fcmp{\mathbin{\raise 0.6ex\hbox{\oalign{\hfil$\scriptscriptstyle      
     \mathrm{o}$\hfil\cr\hfil$\scriptscriptstyle\mathrm{9}$\hfil}}}}
 \def\ass{:=}
@@ -45,6 +45,11 @@
 }
 \newcommand{\asem}[2][A]{
   \sem{#2}_{ais}^{#1}
+}
+
+% Triples
+\newcommand{\atriple}[4][A]{
+    \langle #2 \rangle_{#1} \; #3 \; \langle #4 \rangle
 }
 
 % theorems and styling
