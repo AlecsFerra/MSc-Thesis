@@ -92,3 +92,83 @@
     the completeness theorem, and a careful treatment of the procedure call 
     rules for procedures with global variables in their declarations. }
 }
+
+@article{Fischer79,
+  title = {Propositional dynamic logic of regular programs},
+  journal = {Journal of Computer and System Sciences},
+  volume = {18},
+  number = {2},
+  pages = {194-211},
+  year = {1979},
+  issn = {0022-0000},
+  doi = {https://doi.org/10.1016/0022-0000(79)90046-1},
+  url = {https://www.sciencedirect.com/science/article/pii/0022000079900461},
+  author = {Michael J. Fischer and Richard E. Ladner},
+  abstract = {We introduce a fundamental propositional logical system based on 
+    modal logic for describing correctness, termination and equivalence of 
+    programs. We define a formal syntax and semantics for the propositional 
+    dynamic logic of regular programs and give several consequences of the 
+    definition. Principal conclusions are that deciding satisfiability of length 
+    n formulas requires time dn/logn for some d > 1, and that satisfiability 
+    can be decided in nondeterministic time cn for some c. We provide 
+    applications of the decision procedure to regular expressions, Ianov schemes, 
+    and classical systems of modal logic.}
+}
+
+@article{Hoare69,
+  author = {Hoare, C. A. R.},
+  title = {An axiomatic basis for computer programming},
+  year = {1969},
+  issue_date = {Oct. 1969},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {12},
+  number = {10},
+  issn = {0001-0782},
+  url = {https://doi.org/10.1145/363235.363259},
+  doi = {10.1145/363235.363259},
+  abstract = {In this paper an attempt is made to explore the logical foundations of computer programming by use of techniques which were first applied in the study of geometry and have later been extended to other branches of mathematics. This involves the elucidation of sets of axioms and rules of inference which can be used in proofs of the properties of computer programs. Examples are given of such axioms and rules, and a formal proof of a simple theorem is displayed. Finally, it is argued that important advantage, both theoretical and practical, may follow from a pursuance of these topics.},
+  journal = {Commun. ACM},
+  month = {oct},
+  pages = {576–580},
+  numpages = {5},
+  keywords = {axiomatic method, formal language definition, machine-independent programming, program documentation, programming language design, theory of programming' proofs of programs}
+}
+
+
+@Inbook{Floyd93,
+  author="Floyd, Robert W.",
+  editor="Colburn, Timothy R.
+  and Fetzer, James H.
+  and Rankin, Terry L.",
+  title="Assigning Meanings to Programs",
+  bookTitle="Program Verification: Fundamental Issues in Computer Science",
+  year="1993",
+  publisher="Springer Netherlands",
+  address="Dordrecht",
+  pages="65--81",
+  abstract="This paper attempts to provide an adequate basis for formal definitions of the meanings of programs in appropriately defined programming languages, in such a way that a rigorous standard is established for proofs about computer programs, including proofs of correctness, equivalence, and termination. The basis of our approach is the notion of an interpretation of a program: that is, an association of a proposition with each connection in the flow of control through a program, where the proposition is asserted to hold whenever that connection is taken. To prevent an interpretation from being chosen arbitrarily, a condition is imposed on each command of the program. This condition guarantees that whenever a command is reached by way of a connection whose associated proposition is then true, it will be left (if at all) by a connection whose associated proposition will be true at that time. Then by induction on the number of commands executed, one sees that if a program is entered by a connection whose associated proposition is then true, it will be left (if at all) by a connection whose associated proposition will be true at that time. By this means, we may prove certain properties of programs, particularly properties of the form: `If the initial values of the program variables satisfy the relation Rl, the final values on completion will satisfy the relation R2'.",
+  isbn="978-94-011-1793-7",
+  doi="10.1007/978-94-011-1793-7_4",
+  url="https://doi.org/10.1007/978-94-011-1793-7_4"
+}
+
+
+@InProceedings{Moller21,
+  author="M{\"o}ller, Bernhard
+  and O'Hearn, Peter
+  and Hoare, Tony",
+  editor="Fahrenberg, Uli
+  and Gehrke, Mai
+  and Santocanale, Luigi
+  and Winter, Michael",
+  title="On Algebra of Program Correctness and Incorrectness",
+  booktitle="Relational and Algebraic Methods in Computer Science",
+  year="2021",
+  publisher="Springer International Publishing",
+  address="Cham",
+  pages="325--343",
+  abstract="Variants of Kleene algebra have been used to provide foundations of reasoning about programs, for instance by representing Hoare Logic (HL) in algebra. That work has generally emphasised program correctness, i.e., proving the absence of bugs. Recently, Incorrectness Logic (IL) has been advanced as a formalism for the dual problem: proving the presence of bugs. IL is intended to underpin the use of logic in program testing and static bug finding. Here, we use a Kleene algebra with diamond operators and countable joins of tests, which embeds IL, and which also is complete for reasoning about the image of the embedding. Next to embedding IL, the algebra is able to embed HL, and allows making connections between IL and HL specifications. In this sense, it unifies correctness and incorrectness reasoning in one formalism.",
+  isbn="978-3-030-88701-8"
+}
+

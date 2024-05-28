@@ -1,5 +1,96 @@
 \section{Abstract Hoare Logic}
 
+\subsection{Hoare logic}
+Hoare logic was the first program logic ever designed by Hoare and Floyd 
+\cite{Hoare69, Floyd93} and is based on the core concept of partial correctness 
+assertions. A triple is a formula $\htriple{P}{C}{Q}$ where $P$ and $Q$ are 
+assertions on the initial and final states of running program $C$, respectively. 
+These assertions are partial in the sense that $Q$ is meaningful only when the 
+execution of $C$ terminates.
+
+Hoare logic is organized as a proof system, where the syntax 
+$\vdash \htriple{P}{C}{Q}$ indicates that the triple 
+$\htriple{P}{C}{Q}$ is proved by some combination of rules of the proof system.
+
+The original formulation of Hoare logic was given for an imperative language 
+with imperative constructs, but it can be easily translated for our language 
+$\lang$ following the work in \cite{Moller21}.
+
+\begin{definition}[Hoare triple]
+  \label{def:hoare}
+  Fixed the semantics of the base commands, an Hoare triple written 
+  $\htriple{P}{C}{Q}$ is valid if and only if $\sem{C}(P) \subseteq Q$.
+
+  $$\htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$$
+\end{definition}
+
+\begin{definition}[Hoare logic]$\;$ \\
+  \label{def:hoaretules}
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(\sskip)$}
+    \UnaryInfC{$\vdash \htriple{P}{\sskip}{P}$}
+  \end{prooftree}
+
+  % Rule for a basic command
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(base)$}
+    \UnaryInfC{$\vdash \htriple{P}{b}{\bsem{b}(P)}$}
+  \end{prooftree}
+
+  % Rule for sequential composition
+  \begin{prooftree}
+    \AxiomC{$\vdash \htriple{P}{C_1}{Q}$}
+    \AxiomC{$\vdash \htriple{Q}{C_2}{R}$}
+    \RightLabel{$(seq)$}
+    \BinaryInfC{$\vdash \htriple{P}{C_1 \fcmp C_2}{R}$}
+  \end{prooftree}
+
+  % Rule for nondeterministic choice
+  \begin{prooftree}
+    \AxiomC{$\vdash \htriple{P}{C_1}{Q}$}
+    \AxiomC{$\vdash \htriple{P}{C_2}{Q}$}
+    \RightLabel{$(disj)$}
+    \BinaryInfC{$\vdash \htriple{P}{C_1 + C_2}{Q}$}
+  \end{prooftree}
+
+  \begin{prooftree}
+    \AxiomC{$\vdash \htriple{P}{C}{P}$}
+    \RightLabel{$(iterate)$}
+    \UnaryInfC{$\vdash \htriple{P}{C^\fix}{P}$}
+  \end{prooftree}
+
+  % Rule for strengthening the precondition and weakening the postcondition
+  \begin{prooftree}
+    \AxiomC{$P \subseteq P'$}
+    \AxiomC{$\vdash \htriple{P'}{C}{Q'}$}
+    \AxiomC{$Q' \subseteq Q$}
+    \RightLabel{$(consequence)$}
+    \TrinaryInfC{$\vdash \htriple{P}{C}{Q}$}
+  \end{prooftree}
+\end{definition}
+
+The proof system described in Definition \ref{def:hoaretules} is logically 
+sound, meaning that all the triples provable by it are valid with respect to 
+the definition in \ref{def:hoare}. This result was already present in the 
+original work \cite{Hoare69}.
+
+\begin{theorem}[Soundness]
+  $$\vdash \htriple{P}{C}{Q} \implies \htriple{P}{C}{Q}$$
+\end{theorem}
+
+As observed by Cook in \cite{Cook78}, the reverse implication is not true in 
+general, as a consequence of Gödel's incompleteness theorem. For this reason, 
+Cook developed the concept of relative completeness, in which all instances of 
+$\subseteq$ are provided by an oracle, proving that the incompleteness of the 
+proof system is only caused by the incompleteness of the assertion language.
+
+\begin{theorem}[Relative completeness]
+  $$\htriple{P}{C}{Q} \implies \vdash \htriple{P}{C}{Q}$$
+\end{theorem}
+
+\subsection{Abstracting Hoare logic}
 The idea of developing a Hoare-like logic to reason about properties of 
 programs expressible within the theory of lattices using concepts from abstract 
 interpretation is not new. In fact, \cite{Cousot12} already proposed a framework 
@@ -26,7 +117,7 @@ The definition is equivalent as the one provided in standard Hoare logic but
 here the abstract inductive semantics is used to procide the strongest 
 postcondition of programs.
 
-\subsection{Proof system}
+\subsubsection{Proof system}
 As per Hoare logic we will peovide a sound an relatively complete (in the sense
 of \cite{Cook78}) proof system to derive valid abstract Hoare triples in a 
 compositional manner.
