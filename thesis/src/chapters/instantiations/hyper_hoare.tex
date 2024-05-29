@@ -1,0 +1,64 @@
+\section{Hyper Hoare logic}
+
+\subsection{Introduction to Hyperproperties}
+
+Hyperproperties, introduced in \cite{Clarkson08}, extend traditional program 
+properties by considering relationships between multiple executions of a 
+program, rather than focusing on individual traces. This concept is essential 
+for reasoning about security and correctness properties that involve comparisons 
+across different executions, such as non-interference, information flow security, 
+and program equivalence.
+
+Standard properties, like those utilized in Hoare logic, are elements of the set 
+$\pow{\states}$. In contrast, hyperproperties are elements of the set 
+$\pow{\pow{\states}}$ since as said before they encode relation between different
+executions. A common example is the property of a program being deterministic. 
+Suppose our programs have only one integer variable named \(x\). 
+To prove that a program \(C\) is deterministic, we would need to prove an 
+infinite number of Hoare triples of the form: for each value of 
+\(n \in \mathbb{N}\), there must exist \(m \in \mathbb{N}\) such that 
+$\htriple{\{ x = n \}}{C}{\{ x = m \}}$ is valid. Instead, determinism can be 
+easily encoded in a single hyper triple: $\htriple{\{ P \in \pow{\pow{\states}} 
+\mid |P| = 1 \}}{C}{\{Q \in \pow{\pow{\states}} \mid |Q| = 1\}}$.
+
+\begin{definition}[Strongest Hyper Postcondition]
+  The strongest postcondition of a program \(C\) starting from a collection of 
+  states \(\chi \in \pow{\pow{\states}}\) is defined as:
+  $$\{ \sem{C}(P) \mid P \in \chi \}$$
+\end{definition}
+
+\subsection{Hyper Domains}
+
+Following the approach in Section \ref{chp:inst-hoare}, one might think that 
+using the domain $\pow{\pow{\states}}$ ordered by set inclusion would be 
+sufficient. However, by analyzing abstract inductive semantics, it becomes 
+clear that this approach does not compute the strongest hyper postcondition.
+
+\begin{example}
+  Let $\chi \defeq \{\{1, 2, 3\}, \{5\}\}$. Clearly,
+  $$\asem[\pow{\pow{\states}}]{(x := x + 1) + (x := x + 2)}(\chi) = 
+  \{\{2, 3, 4\}, \{6\}, \{3, 4, 5\}, \{7\}\}$$,
+  which is totally different from the strongest hyper postcondition, 
+  which is $\{\{2, 3, 4, 5\}, \{6, 7\}\}$.
+\end{example}
+
+To address this, we will define a more complex family of domains whose semantics 
+satisfy the distributive property of different executions.
+
+\begin{definition}[Hyper Domain]
+  Given a complete lattice $B$ and a set $K$, the hyper domain $H(B)_K$ is 
+  defined as:
+  $$H(B)_K \defeq K \to B + \textit{undef}.$$
+
+  The complete lattice of $H(B)_K$ is the pointwise lift of the one defined on 
+  $B + \text{undef}$, where $B + \text{undef}$ is the complete lattice defined 
+  on $B$ with \textit{undef} added as a new bottom element.
+\end{definition}
+
+\begin{definition}[Hyper Instantiation]
+  Given an instantiation of the abstract inductive semantics on a domain $B$ 
+  with semantics of the base commands $\bsem{\cdot}^B$, we can instantiate the 
+  abstract inductive semantics for the hyper domain $H(B)_K$ with base 
+  commands defined as follows:
+  $$\bsem{b}^{H(B)_K}(\chi) \defeq \lambda r \to \bsem{b}^B(\chi(r))$$
+\end{definition}
