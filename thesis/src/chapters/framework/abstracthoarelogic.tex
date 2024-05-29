@@ -113,15 +113,14 @@ the abstract.
   $$\atriple{P}{C}{Q} \iff \asem{C}(P) \leq_A Q$$
 \end{definition}
 
-The definition is equivalent as the one provided in standard Hoare logic but
-here the abstract inductive semantics is used to procide the strongest 
+The definition is equivalent as the one provided in definition \cite{def:hoare} 
+but here the abstract inductive semantics is used to procide the strongest 
 postcondition of programs.
 
 \subsubsection{Proof system}
 As per Hoare logic we will peovide a sound an relatively complete (in the sense
 of \cite{Cook78}) proof system to derive valid abstract Hoare triples in a 
 compositional manner.
-
 
 \begin{definition}[Abstract Hoare rules]$\;$\\
   \label{def:ahtrules}
@@ -186,6 +185,9 @@ compositional manner.
   If $P$ is stronger than $P'$ and $Q'$ is stronger than $Q$, then we can
   derive $\atriple{P}{C}{Q}$ from $\atriple{P'}{C}{Q'}$.
 \end{definition}
+
+The proofsystem in nonother than the proofsystem of definition \ref{def:hoaretules}
+where the assertion are replaced by elements of the complete lattice $A$.
 
 Note that we denonte abstract hoare triples as defined in defintion \ref{def:aht}
 with the notation $\atriple{P}{C}{Q}$ and intread we denote the triples obtained

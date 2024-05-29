@@ -163,8 +163,9 @@ from the initial states.
   \end{proof}
 
   \begin{observation}
-    When the set of base commands contains a command to discard executions we
-    can define the usual deterministic control flow commands as syntactic sugar.
+    As observed in \ref{Fischer79} when the set of base commands contains a 
+    command to discard executions we can define the usual deterministic control 
+    flow commands as syntactic sugar.
 
     $$if \; b \; then \; C_1 \; else \; C_2 \defeq (b ? \fcmp C_1) 
     + (\neg b ? \fcmp C_2)$$
