@@ -122,22 +122,5 @@ interpretation.
   \asem{C}(P'))$.
 \end{observation}
 
-\subsection{Galois connection semantics}
-  Given a Galois connection $\langle C, \sqsubseteq \rangle
-  \galois{\alpha}{\gamma} \langle A, \leq \rangle$ if we have an abstract 
-  inductive semantics on domain $C$ with base commands semantics $\bsem{b}^C$
-  we can obtain another abstract inductive semantics on $A$ by picking as
-  base command semantics $\bsem{b}^A = \alpha \circ \bsem{b}^C \circ \gamma$.
-
-
-  \todo[inline]{Basterebbe soundess dei comandi base, più serve a qualcosa?}
-
-  \begin{theorem}[Soundness]
-
-    The semantics $\asem[A]{\cdot}$ is sound with respect to $\asem[C]{\cdot}$
-    when $\bsem{b}^A = \alpha \circ \bsem{b}^C \circ \gamma$.
-
-    $\forall \; R \in \lang \mand P \in C$
-    $$\alpha(\asem[C]{R}(P)) \leq \asem[A]{R}(\gamma(P))$$
-  \end{theorem}
+\subsection{Connection with abstract interpretation}
   

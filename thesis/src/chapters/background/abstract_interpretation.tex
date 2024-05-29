@@ -1,0 +1,51 @@
+\section{Abstract Interpretation}
+
+Abstract interpretation \cite{Cousot77} is the leading technique used for static 
+program analysis. The specification of a program can be expressed as a pair of 
+initial and final sets of states, $Init, Final \in \pow{\states}$, and the task 
+of verifying a program $C$ involves checking if $\sem{C}(Init) \subseteq Final$.
+
+Clearly, this task cannot be performed programmatically in general. The solution 
+proposed by the framework of abstract interpretation is to construct an 
+approximation, usually denoted by $\sem{\cdot}^\#$, that is computable.
+
+\subsection{Abstract Domains}
+
+One of the techniques used by abstract interpretation to make the problem of 
+verification tractable involves representing collections of states with a finite 
+amount of memory.
+
+\begin{definition}[Abstract Domain]
+  A poset $(A, \leq)$ is an abstract domain if there exists a Galois insertion
+  $\langle \pow{\states}, \subseteq \rangle \galoiS{\alpha}{\gamma} \langle A, 
+  \leq \rangle$.
+\end{definition}
+
+\begin{example}[Interval Domain]
+  \label{exmp:interval}
+  Let $Int = \{ [a, b] \mid a, b \in \mathbb{Z} \cup \{+\infty, -\infty \}, a 
+  \leq b \} \cup \{ \bot \}$ be ordered by set inclusion. Then, there is a 
+  Galois insertion from $Int$ to $\pow{\mathbb{Z}}$ defined as:
+  $$\gamma(A) = \begin{cases}
+    \{ x \mid a \leq x \leq b \} & \text{if } A = [a, b] \\
+    \emptyset & \text{otherwise}
+  \end{cases}$$
+  $$\alpha(C) = \begin{cases}
+    [\min C, \max C] & \text{if } C \neq \emptyset \\
+    \bot & \text{otherwise}
+  \end{cases}$$
+\end{example}
+
+The fundamental goal of abstract interpretation is to provide an approximation 
+of the non-computable aspects of program semantics. The core concept is captured 
+by the definition of soundness:
+
+\begin{definition}[Soundness]
+  Given an abstract domain $A$, an abstract function $f^\# : A \to A$ is a 
+  sound approximation of a concrete function $f : \pow{\states} \to 
+  \pow{\states}$ if
+  $$\alpha(f(P)) \leq f^\#(\alpha(P))$$
+\end{definition}
+
+Hence, the goal of abstract interpretation is to construct a sound 
+over-approximation of the program semantics that is computable (efficiently).

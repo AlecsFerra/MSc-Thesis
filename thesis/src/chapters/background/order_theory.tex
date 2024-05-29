@@ -52,6 +52,17 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
   \end{itemize}
 \end{definition}
 
+\begin{definition}[Galois Insertion]
+  Let $\langle C, \sqsubseteq \rangle \galois{\alpha}{\gamma} \langle A, \leq 
+  \rangle$, be a Galois connection, a Galois insertion written 
+  $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq \rangle$
+  are a pair of functions: $\gamma : A \to D$ and $\alpha : D \to A$ such that:
+  \begin{itemize}
+    \item $(\gamma, \alpha)$ are a Galois connection
+    \item $\alpha \circ \gamma = id$
+  \end{itemize}
+\end{definition}
+
 \begin{definition}[Fixpoint]
   Given a function $f : X \to X$, a fixpoint of $f$ is an element $x \in X$ 
   such that $x = f(x)$.
