@@ -113,6 +113,7 @@ interpretation.
   abstract inductive semantics. $\forall \; C \in \lang$ $\forall P \in 
   \pow{\states}$ 
   $$\asem[\pow{\states}]{C}(P) = \sem{C}(P)$$
+  This can be easily assessed by comparing the two definitions.
 \end{observation}
 
 \begin{observation}
@@ -122,5 +123,31 @@ interpretation.
   \asem{C}(P'))$.
 \end{observation}
 
-\subsection{Connection with abstract interpretation}
-  
+\subsection{Connection with Abstract Interpretation}
+
+It turns out that the definition of abstract inductive semantics is closely 
+related to the one of abstract semantics in \cite{Cousot77}.
+
+\begin{theorem}[Abstract Interpretation Basis]
+  If $A$ is an abstract domain and $\bsem{\cdot}^A$ is a sound 
+  over-approximation of $\bsem{\cdot}$, then $\asem{\cdot}$ is a sound 
+  over-approximation of $\sem{\cdot}$.
+\end{theorem}
+
+In particular, the definition of abstract inductive semantics, when the 
+semantics of the base commands is sound, is equivalent to an abstract semantics.
+
+This connection also allows us to obtain abstract inductive semantics through 
+Galois insertion.
+
+\begin{definition}[Abstract Inductive Semantics by Galois Insertion]
+  Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq 
+  \rangle$ be a Galois insertion, and let $\asem[C]{C}$ be some abstract 
+  inductive semantics defined on $C$. Then, the abstract inductive semantics 
+  defined on $A$ with $\bsem{b}^A = \alpha \circ \bsem{c}^C \circ \gamma$ is the 
+  abstract inductive semantics obtained by the Galois insertion between $C$ and $A$.
+\end{definition}
+
+The abstract inductive semantics obtained by Galois insertion between 
+$\pow{\states}$ and any domain $A$ corresponds to the best abstract inductive 
+semantics on $A$.
