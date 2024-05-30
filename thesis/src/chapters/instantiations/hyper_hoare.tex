@@ -35,6 +35,7 @@ sufficient. However, by analyzing abstract inductive semantics, it becomes
 clear that this approach does not compute the strongest hyper postcondition.
 
 \begin{example}
+  \label{exmp:determinism}
   Let $\chi \defeq \{\{1, 2, 3\}, \{5\}\}$. Clearly,
   $$\asem[\pow{\pow{\states}}]{(x := x + 1) + (x := x + 2)}(\chi) = 
   \{\{2, 3, 4\}, \{6\}, \{3, 4, 5\}, \{7\}\}$$,
@@ -62,3 +63,215 @@ satisfy the distributive property of different executions.
   commands defined as follows:
   $$\bsem{b}^{H(B)_K}(\chi) \defeq \lambda r \to \bsem{b}^B(\chi(r))$$
 \end{definition}
+
+Now we prove that the hyper instantiate is dristibutive:
+\begin{theorem}[Distributivity]
+    \label{thm:hyper-add}
+    $$\asem[H(B)_K]{C}(\mathcal{\chi}) = \lambda r \to \asem[B]{C}(\chi(r))$$
+\end{theorem}
+\begin{proof}
+  By structural induction on $C$:
+  \begin{itemize}
+    \item $\sskip$:
+      \begin{align*}
+        \asem[H(B)_K]{\sskip}(\chi) 
+          &= \chi \\
+          &= \lambda r \to \chi(r) \\
+          &= \lambda r \to \asem[B]{\sskip}(\chi(r))
+      \end{align*}
+
+    \item $b$:
+      \begin{align*}
+        \asem[H(B)_K]{b}(\chi) 
+          &= \lambda r \to \asem[B]{b}(\chi(r))
+      \end{align*}
+
+    \item $C_1 \fcmp C_2$:
+      \begin{align*}
+        \asem[H(B)_K]{C_1 \fcmp C_2}(\chi) 
+          &= \asem[H(B)_K]{C_2}(\asem[H(B)_K]{C_1}(\chi)) \\
+          &= \asem[H(B)_K]{C_2}(\lambda r_1 \to 
+            \asem[B]{C_1}(\chi(r_1))
+          &\text{By inductive hypothesis} \\
+          &= \lambda r_2 \to \asem[B]{C_2}(\lambda r_1 \to 
+            \asem[B]{C_1}(\chi(r_1))(r_2))
+          &\text{By inductive hypothesis} \\
+          &= \lambda r_2 \to 
+            \asem[B]{C_2}(\asem[B]{C_1}(\chi(r_2))) \\
+          &= \lambda r_2 \to \asem[B]{C_1 \fcmp C_2}(\chi(r_2)) \\
+      \end{align*}
+
+    \item $C_1 + C_2$:
+      \begin{align*}
+        \asem[H(B)_K]{C_1 + C_2}(\chi)
+          &= \asem[H(B)_K]{C_1}(\chi) 
+            \lor \asem[H(B)_K]{C_2}(\chi) \\
+          &= (\lambda r_1 \to \asem[B]{C_1}(\chi(r_1)))
+            \lor (\lambda r_2 \to \asem[B]{C_1}(\chi(r_2)))
+          &\text{By inductive hypothesis} \\
+          &= \lambda r \to \asem[B]{C_1}(\chi(r))
+            \lor \asem[B]{C_2}(\chi(r)) \\
+          &= \lambda r \to \asem[B]{C_1 + C_2}(\chi(r))
+      \end{align*}
+
+    \item $C^\star$:
+      \begin{align*}
+        \asem[H(B)_K]{C^\star}(\chi)
+          &= \lfp(\lambda \psi \to 
+            \chi \lor \asem[H(B)_K]{C}(\psi)) \\
+          &= \lfp(\lambda \psi \to 
+            \chi \lor \lambda r \to \asem[B]{C}(\psi(r)))
+          &\text{By inductive hypothesis} \\
+          &= \lfp(\lambda \psi \to \lambda r \to
+            \chi(r) \lor \asem[B]{C}(\psi(r)))
+          &\text{By theorem \ref{th:pointfix}} \\
+          &= \lambda r \to \lfp(\lambda P 
+            \to \chi(r) \lor \asem[B]{C} P) \\
+          &= \lambda r \to \asem[B]{C^\star}(\chi(r))
+      \end{align*}
+  \end{itemize}
+\end{proof}
+
+
+\subsection{Obtaining Hyper Triples}
+
+By instantiating the hyper domain as $H(\pow{\states})_{\mathbb{R}}$, we will be 
+able to prove that the abstract inductive semantics of 
+$H(\pow{\states})_{\mathbb{R}}$ computes the strongest hyper postcondition.
+
+First, we require an injective function $idx : \pow{\states} \to \mathbb{R}$. 
+Such functions exist since $|\pow{\states}| = |\mathbb{R}|$ if the set of 
+$\states|$ is countable.
+
+We can define the following pair of functions:
+\begin{definition}[Conversion Pair]
+  Given an injective function $idx : \pow{\states} \to \mathbb{R}$, we can 
+  define the conversion pair as follows:
+  $$\alpha(\chi) \defeq \{ \chi(r) \downarrow \; \mid r \in \mathbb{R} \}$$
+  $$\beta(\mathcal{X}) = \lambda r \to \begin{cases}
+    P              & \exists P \in \mathcal{X} \; \text{such that} \; idx(P) = r \\
+    \textit{undef} & \text{otherwise}
+  \end{cases}$$
+\end{definition}
+
+We will now show that by composing the conversion pair with the abstract 
+inductive semantics, we compute exactly the strongest hyper postcondition.
+\begin{theorem}[Abstract Inductive Semantics as Strongest Hyper Postcondition]
+  \label{thm:hyperpost} 
+  $$\alpha(\asem[H(\pow{\states})_\mathbb{R}]{C}(\gamma(\mathcal{X}))) = 
+  \{ \asem[\pow{\states}]{C}(P) \mid P \in \mathcal{X} \}$$
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \alpha(\asem[H(\pow{\states})_\mathbb{R}]{C}(\beta(\mathcal{X})))
+      &= \alpha(\lambda r \to \asem[\pow{\states}]{C}(\beta(\mathcal{X})(r)))
+      &\text{By Theorem \ref{thm:hyper-add}} \\
+      &= \{ \asem[\pow{\states}]{C}(\beta(\mathcal{X})(r))\downarrow \;
+        \mid r \in \mathbb{R} \}
+      &\text{By the definition of $\alpha$}\\
+      &= \{ \asem[\pow{\states}]{C}(P) \mid P \in \mathcal{X} \}
+      &\text{By the definition of $\beta$ and injectivity}\\
+  \end{align*}
+\end{proof}
+
+Thus, the instantiation provides us with a sound and complete Hoare-like logic 
+for hyperproperties when we apply $\alpha$ on the pre and post conditions.
+
+\begin{example}[Determinism in Abstract Hoare Logic]
+As explained in Example \ref{exmp:determinism}, we can express that a command is 
+deterministic (up to termination) by proving that the hyperproperty 
+$\{P \mid |P| = 1\}$ is both a precondition and a postcondition of the command.
+
+Assume that we are working with $\lang$ where assignment involves only one 
+variable, so that we can represent states with a single integer.
+
+The encoding of the property that we want to use as a precondition is:
+$$\mathcal{P} = \lambda r \to \begin{cases}
+  \{ x \} & \exists {x} \in \pow{\states} \; \text{such that} \; idx(P) = r \\
+  \textit{undef} & \text{otherwise}
+\end{cases}$$
+
+We can prove that the program $\sskip$ is deterministic:
+\begin{prooftree}
+  \AxiomC{$ $}
+  \RightLabel{$(\sskip)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {\sskip}{P}$}
+\end{prooftree}
+
+Since $\alpha(P) = \{..., \{-1\}, \{0\}, \{1\}, ...\}$, we have proven that the 
+command is deterministic.
+
+The same can be done with the increment function:
+\begin{prooftree}
+  \AxiomC{$ $}
+  \RightLabel{$(:=)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {x := x + 1}{Q}$}
+\end{prooftree}
+
+Where $Q = \lambda r \to \begin{cases}
+  \{ x + 1\} & \exists \{x\} \in \pow{\states} \; \text{such that} \; idx(P) = r \\
+  \textit{undef} & \text{otherwise}
+\end{cases}$
+
+And clearly $\alpha(Q) = \{..., \{0\}, \{1\}, \{2\}, ...\}$, hence proving that the command is deterministic.
+
+We can prove that a non-deterministic choice between two identical programs is 
+also deterministic:
+\begin{prooftree}
+  \AxiomC{$ $}
+  \RightLabel{$(:=)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {x := x + 1}{Q}$}
+  \AxiomC{$ $}
+  \RightLabel{$(:=)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {x := x + 1}{Q}$}
+  \RightLabel{$(+)$}
+  \BinaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {(x := x + 1) + (x := x + 1)}{Q}$}
+\end{prooftree}
+
+But obviously we cannot do the same with two different programs:
+\begin{prooftree}
+  \AxiomC{$P \leq P$}
+  \AxiomC{$ $}
+  \RightLabel{$(\sskip)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {\sskip}{P}$}
+  \AxiomC{$P \leq P \lor Q$}
+  \RightLabel{$(\leq)$}
+  \TrinaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {\sskip}{P \lor Q}$}
+  \AxiomC{$\pi$}
+  \RightLabel{$(+)$}
+  \BinaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {\sskip + (x := x + 1)}{P \lor Q}$}
+\end{prooftree}
+
+Where $\pi$:
+\begin{prooftree}
+  \AxiomC{$P \leq P$}
+  \AxiomC{$ $}
+  \RightLabel{$(:=)$}
+  \UnaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {x := x + 1}{Q}$}
+  \AxiomC{$Q \leq P \lor Q$}
+  \RightLabel{$(\leq)$}
+  \TrinaryInfC{$\vdash \atriple[H(\pow{\states})_\mathbb{R}]{P}
+    {x := x + 1}{P \lor Q}$}
+\end{prooftree}
+
+And clearly $\alpha(P \lor Q) = 
+\{..., \{-1, 0\}, \{0, 1\}, \{1, 2\}, ...\}$.
+\end{example}
+
+
+\begin{observation}
+  We can clearly see that different elements in the hyper domain correspond to 
+  the same hyperproperty. This is an expected behavior since the 
+  non-deterministic choice does not, in general, "preserve" hyperproperties. 
+  The same trick is performed in other logics that can express hyperproperties 
+  by adding a new disjunction operator that splits the condition.
+\end{observation}
