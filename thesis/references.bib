@@ -181,6 +181,76 @@
   volume={},
   number={},
   pages={51-65},
-  keywords={Safety;Information security;Topology;Delay effects;Computer security;Computer science;Writing;Security policies;safety;liveness},
+  keywords={Safety;Information security;Topology;Delay effects;Computer 
+    security;Computer science;Writing;Security policies;safety;liveness},
   doi={10.1109/CSF.2008.7}
+}
+
+@inproceedings{Mounir17,
+  author = {Assaf, Mounir and Naumann, David A. and Signoles, Julien and Totel, 
+    \'{E}ric and Tronel, Fr\'{e}d\'{e}ric},
+  title = {Hypercollecting semantics and its application to static analysis of 
+    information flow},
+  year = {2017},
+  isbn = {9781450346603},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3009837.3009889},
+  doi = {10.1145/3009837.3009889},
+  abstract = {We show how static analysis for secure information flow can be 
+    expressed and proved correct entirely within the framework of abstract 
+    interpretation. The key idea is to define a Galois connection that directly 
+    approximates the hyperproperty of interest. To enable use of such Galois 
+    connections, we introduce a fixpoint characterisation of hypercollecting 
+    semantics, i.e. a "set of sets" transformer. This makes it possible to 
+    systematically derive static analyses for hyperproperties entirely within 
+    the calculational framework of abstract interpretation. We evaluate this 
+    technique by deriving example static analyses. For qualitative information 
+    flow, we derive a dependence analysis similar to the logic of Amtoft and 
+    Banerjee (SAS '04) and the type system of Hunt and Sands (POPL '06). For 
+    quantitative information flow, we derive a novel cardinality analysis that 
+    bounds the leakage conveyed by a program instead of simply deciding whether 
+    it exists. This encompasses problems that are hypersafety but not k-safety. 
+    We put the framework to use and introduce variations that achieve precision 
+    rivalling the most recent and precise static analyses for information flow.},
+  booktitle = {Proceedings of the 44th ACM SIGPLAN Symposium on Principles of 
+    Programming Languages},
+  pages = {874–887},
+  numpages = {14},
+  keywords = {abstract interpretation, hyperproperties, information flow, static analysis},
+  location = {Paris, France},
+  series = {POPL '17}
+}
+
+@InProceedings{Mastroeni18,
+  author="Mastroeni, Isabella and Pasqua, Michele",
+  editor="Podelski, Andreas",
+  title="Verifying Bounded Subset-Closed Hyperproperties",
+  booktitle="Static Analysis",
+  year="2018",
+  publisher="Springer International Publishing",
+  address="Cham",
+  pages="263--283",
+  abstract="Hyperproperties are quickly becoming very popular in the context of 
+    systems security, due to their expressive power. They differ from classic 
+    trace properties since they are represented by sets of sets of executions 
+    instead of sets of executions. This allows us, for instance, to capture 
+    information flow security specifications, which cannot be expressed as trace 
+    properties, namely as predicates over single executions. In this work, we 
+    reason about how it is possible to move standard abstract 
+    interpretation-based static analysis methods, designed for trace properties, 
+    towards the verification of hyperproperties. In particular, we focus on the 
+    verification of bounded subset-closed hyperproperties which are easier to 
+    verify than generic hyperproperties. It turns out that a lot of interesting 
+    specifications (e.g., Non-Interference) lie in this category.",
+  isbn="978-3-319-99725-4"
+}
+
+@unknown{Darnier2023,
+  author = {Dardinier, Thibault and Müller, Peter},
+  year = {2023},
+  month = {01},
+  pages = {},
+  title = {Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties (extended version)},
+  doi = {10.48550/arXiv.2301.10037}
 }

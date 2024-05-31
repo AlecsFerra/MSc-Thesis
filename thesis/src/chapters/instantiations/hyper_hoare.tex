@@ -1,4 +1,4 @@
-\section{Hyper Hoare logic}
+\section{Hoare logic for hyperproperties}
 
 \subsection{Introduction to Hyperproperties}
 
@@ -27,24 +27,46 @@ easily encoded in a single hyper triple: $\htriple{\{ P \in \pow{\pow{\states}}
   $$\{ \sem{C}(P) \mid P \in \chi \}$$
 \end{definition}
 
-\subsection{Hyper Domains}
 
-Following the approach in Section \ref{chp:inst-hoare}, one might think that 
-using the domain $\pow{\pow{\states}}$ ordered by set inclusion would be 
-sufficient. However, by analyzing abstract inductive semantics, it becomes 
-clear that this approach does not compute the strongest hyper postcondition.
+\subsection{Inductive Definition of the Strongest Hyper Post Condition}
+
+To obtain a sound and (relative) complete logic for hyperproperties using
+our framework, we need to construct an abstract semantics that computes
+exactly that property. This problem was already studied in \cite{Mounir17,
+Mastroeni18} but in the context of abstract interpretation. In all of them,
+what was obtained was an overapproximation of the strongest hyper postcondition
+that in abstract interpretation is enough but in our context isn't if we want
+to keep the relative completeness. In particular,
+the hyper semantics of \texttt{if b then} $C_1$ \texttt{else} $C_2$ is given
+as (translated in $\lang$) $\{ \sem{b ? \fcmp C_1} T \cup 
+\sem{\neg b ? \fcmp C_2} \mid T \in \mathbb{T}\}$, thus making the definition
+non-inductive. In particular, given any program $C$, we can perform the analysis
+of \texttt{if true then} $C$ and perform the analysis of any program without 
+practically ever using the hyper semantics, and it didn't solve the 
+overapproximation problem in loops.
+
+The root of the problem is that in $\pow{\pow{\states}}$ with the standard 
+ordering on the powerset, the least upper bound is unable to distinguish between
+different executions.
 
 \begin{example}
   \label{exmp:determinism}
   Let $\chi \defeq \{\{1, 2, 3\}, \{5\}\}$. Clearly,
   $$\asem[\pow{\pow{\states}}]{(x := x + 1) + (x := x + 2)}(\chi) = 
-  \{\{2, 3, 4\}, \{6\}, \{3, 4, 5\}, \{7\}\}$$,
+  \{\{2, 3, 4\}, \{6\}, \{3, 4, 5\}, \{7\}\},$$
   which is totally different from the strongest hyper postcondition, 
   which is $\{\{2, 3, 4, 5\}, \{6, 7\}\}$.
 \end{example}
 
+To our knowledge, there is no literature on an abstract inductive semantics that
+exactly computes the strongest hyper postcondition.
+
+\subsection{Hyper Domains}
+
 To address this, we will define a more complex family of domains whose semantics 
-satisfy the distributive property of different executions.
+satisfy the distributive property of different executions. We will use a set $K$ 
+to keep track of each execution and define the join operation in such a way that 
+it does not confuse different executions together.
 
 \begin{definition}[Hyper Domain]
   Given a complete lattice $B$ and a set $K$, the hyper domain $H(B)_K$ is 
@@ -133,28 +155,45 @@ Now we prove that the hyper instantiate is dristibutive:
 \end{proof}
 
 
-\subsection{Obtaining Hyper Triples}
+\subsection{Inductive definition for Hyper postconditions}
+
+Our goal with the hyper domains was to address the issue caused by taking 
+$\pow{\pow{\states}}$ as the domain. However, our abstract inductive semantics 
+now uses a different domain. To handle this, we need a way to convert the 
+standard representation of hyperproperties to the new one using hyper domains 
+and vice versa. To achieve this, we define a pair of functions called the 
+conversion pair to perform the operation. Since there could be infinite 
+functions converting a standard hyperproperty into the version using hyper 
+domains (since we have infinite representation for the same property), we can 
+use a single abstraction (an injective function) to represent them all. 
+All the results are independent of the chosen indexing function.
+
+\begin{definition}[Conversion Pair]
+  Given an injective function $idx : B \to K$, we can 
+  define the conversion pair as follows:
+  \begin{align*}
+    \alpha &\;\;:\; H(B)_K \to \pow{B} \\
+    \alpha(\chi) &\defeq \{ \chi(r) \downarrow \; \mid r \in K \} \\
+    \\
+    \beta &\;\;:\; \pow{B} \to H(B)_K \\
+    \beta(\mathcal{X}) &\defeq \lambda r \to \begin{cases}
+      P              & \exists P \in \mathcal{X} \; \text{such that} \; idx(P) = r \\
+      \textit{undef} & \text{otherwise}
+    \end{cases}
+  \end{align*}
+\end{definition}
 
 By instantiating the hyper domain as $H(\pow{\states})_{\mathbb{R}}$, we will be 
 able to prove that the abstract inductive semantics of 
 $H(\pow{\states})_{\mathbb{R}}$ computes the strongest hyper postcondition.
 
-First, we require an injective function $idx : \pow{\states} \to \mathbb{R}$. 
-Such functions exist since $|\pow{\states}| = |\mathbb{R}|$ if the set of 
-$\states|$ is countable.
+We have an infinite amount of injective functions $\pow{\states} \to 
+\mathbb{R}$ since if $\states$ is countable then $|\pow{\states}| = 
+|\pow{\mathbb{N}}| = |\mathbb{R}|$ thus at least one conversion pair exists,
+and since all the results are independent of witch one we choose we won't 
+specify one.
 
-We can define the following pair of functions:
-\begin{definition}[Conversion Pair]
-  Given an injective function $idx : \pow{\states} \to \mathbb{R}$, we can 
-  define the conversion pair as follows:
-  $$\alpha(\chi) \defeq \{ \chi(r) \downarrow \; \mid r \in \mathbb{R} \}$$
-  $$\beta(\mathcal{X}) = \lambda r \to \begin{cases}
-    P              & \exists P \in \mathcal{X} \; \text{such that} \; idx(P) = r \\
-    \textit{undef} & \text{otherwise}
-  \end{cases}$$
-\end{definition}
-
-We will now show that by composing the conversion pair with the abstract 
+Now show that by composing the conversion pair with the abstract 
 inductive semantics, we compute exactly the strongest hyper postcondition.
 \begin{theorem}[Abstract Inductive Semantics as Strongest Hyper Postcondition]
   \label{thm:hyperpost} 
@@ -174,7 +213,8 @@ inductive semantics, we compute exactly the strongest hyper postcondition.
   \end{align*}
 \end{proof}
 
-Thus, the instantiation provides us with a sound and complete Hoare-like logic 
+\subsection{Hyper Hoare triples}
+The instantiation provides us with a sound and complete Hoare-like logic 
 for hyperproperties when we apply $\alpha$ on the pre and post conditions.
 
 \begin{example}[Determinism in Abstract Hoare Logic]
@@ -267,7 +307,6 @@ And clearly $\alpha(P \lor Q) =
 \{..., \{-1, 0\}, \{0, 1\}, \{1, 2\}, ...\}$.
 \end{example}
 
-
 \begin{observation}
   We can clearly see that different elements in the hyper domain correspond to 
   the same hyperproperty. This is an expected behavior since the 
@@ -275,3 +314,13 @@ And clearly $\alpha(P \lor Q) =
   The same trick is performed in other logics that can express hyperproperties 
   by adding a new disjunction operator that splits the condition.
 \end{observation}
+
+There is already a sound and (relative) complete Hoare-like logic, Hyper Hoare 
+Logic (\cite{Darnier2023}). While arguably more usable since it was developed 
+specifically for this goal, it is equivalent to the logic obtained via the 
+abstract Hoare logic framework. We can observe that they also had to diverge from 
+the usage of the classical disjunction connective (which is equivalent to the 
+least upper bound in $\pow{\pow{\states}}$) and had to define an exotic version 
+of disjunction ($\otimes$) that is able to distinguish between different 
+executions. The resemblance to the least upper bound for the hyperdomains is 
+striking.
