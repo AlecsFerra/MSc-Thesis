@@ -1,7 +1,39 @@
 \chapter{Introduction and Background}
 
-In this chapter we give a brief introduction in the backround knowledge
-required to understand the rest of the thesis:
+The verification of program correctness is a critical task in computer science, 
+ensuring that software behaves as expected under all possible conditions. 
+Hoare logic, introduced by Hoare in the late 1960s, has been a foundational tool 
+in this area. It provides a formal system for reasoning about the correctness of 
+programs by using assertions about the program state before and after execution.
+
+However, traditional Hoare logic is limited to reasoning about properties that
+are expressible as elements of $\pow{\states}$ which restricts its applicability 
+in modern contexts where properties of interest often involve relationships 
+between multiple executions or assertions must be computed automatically by some 
+program.
+
+To address these limitations, this thesis presents an extension of Hoare logic 
+into an abstract framework that can handle a wider variety of program properties, 
+including those involving multiple executions. By incorporating principles from 
+order theory and abstract interpretation, we develop an abstract Hoare logic 
+framework. This framework allows us to reason about program properties in a more 
+general setting, providing a sound and relatively complete method for program 
+verification.
+
+
+We also introduce and explore the concept of hyperproperties within this 
+framework. Hyperproperties, which describe relationships between different 
+executions of a program, are crucial for expressing and verifying complex 
+security and correctness properties. Our framework can be specialized to logic 
+for hyperproperties, and in doing so, we also develop an inductive definition 
+for the strongest hyper postcondition of a program, which, to the best of our 
+knowledge, has not been previously achieved.
+
+The thesis is structured as follows: We begin with a review of order theory and 
+abstract interpretation, which form the theoretical foundation for our work. We 
+then introduce the minimal version of the abstract Hoare logic framework and 
+demonstrate its instantiation for various abstract domains. Finally, we provide 
+some useful extensions to the proof system that make its usage easier.
 
 \subimport{./}{order_theory}
 \subimport{./}{abstract_interpretation}
