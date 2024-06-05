@@ -130,6 +130,7 @@ It turns out that the definition of abstract inductive semantics is closely
 related to the one of abstract semantics in \cite{Cousot77}.
 
 \begin{theorem}[Abstract Interpretation Basis]
+  \label{thm:sound-ai}
   If $A$ is an abstract domain and $\bsem{\cdot}^A$ is a sound 
   over-approximation of $\bsem{\cdot}$, then $\asem{\cdot}$ is a sound 
   over-approximation of $\sem{\cdot}$.
@@ -142,6 +143,7 @@ This connection also allows us to obtain abstract inductive semantics through
 Galois insertion.
 
 \begin{definition}[Abstract Inductive Semantics by Galois Insertion]
+  \label{def:aisgi}
   Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq 
   \rangle$ be a Galois insertion, and let $\asem[C]{C}$ be some abstract 
   inductive semantics defined on $C$. Then, the abstract inductive semantics 

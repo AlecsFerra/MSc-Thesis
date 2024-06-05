@@ -1,4 +1,5 @@
 \section{Abstract Hoare Logic}
+\label{chp:intro-ahorare}
 
 \subsection{Hoare logic}
 Hoare logic was the first program logic ever designed by Hoare and Floyd 
@@ -87,6 +88,7 @@ $\subseteq$ are provided by an oracle, proving that the incompleteness of the
 proof system is only caused by the incompleteness of the assertion language.
 
 \begin{theorem}[Relative completeness]
+  \label{thm:hlogic-complete}
   $$\htriple{P}{C}{Q} \implies \vdash \htriple{P}{C}{Q}$$
 \end{theorem}
 
@@ -196,6 +198,7 @@ with the inference rules of definition \ref{def:ahtrules} with $\vdash
 
 The proofsystem is sound:
 \begin{theorem}[Soundness]
+  \label{thm:atriple-sound}
   $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
 \end{theorem}
 \begin{proof}

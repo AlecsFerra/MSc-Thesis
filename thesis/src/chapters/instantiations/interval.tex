@@ -1,1 +1,196 @@
-\section{Interval logic}
+\section{Interval Logic and Algebraic Hoare Logic}
+
+\subsection{Algebraic Hoare Logic}
+
+As explained in section \ref{chp:intro-ahorare}, Abstract Hoare Logic was
+inspired by Algebraic Hoare Logic \cite{Cousot12}. Both logics can be used to
+prove properties chosen in computer-representable abstract domains.
+
+\begin{definition}[Algebraic Hoare triple]
+  Given two Galois insertions $\langle \pow{\states}, \subseteq \rangle
+  \galoiS{\alpha_1}{\gamma_1} \langle A, \leq \rangle$ and $\langle
+  \pow{\states}, \subseteq \rangle \galoiS{\alpha_2}{\gamma_2} \langle B,
+  \sqsubseteq \rangle$, an Algebraic Hoare triple written $\ctriple{P}{C}{Q}$ is
+  valid if and only if $\htriple{\gamma_1(P)}{C}{\gamma_2(Q)}$ is valid.
+  $$\ctriple{P}{C}{Q} \iff \htriple{\gamma_1(P)}{C}{\gamma_2(Q)}$$
+\end{definition}
+
+From this definition, we see that the definition of Algebraic Hoare Logic is
+deeply connected to standard Hoare Logic and thus to the strongest postcondition
+of the program in the concrete domain.
+
+\begin{definition}[Algebraic Hoare logic proof system\footnote{Rules
+  $(\overline{\join})$ and $(\overline{\meet})$ are missing but will be
+  discussed in section \ref{chp:join-meet-rules}}]$\;$\\
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(\overline{\bot})$}
+    \UnaryInfC{$\ctriple{\bot_1}{C}{Q}$}
+  \end{prooftree}
+
+  \begin{prooftree}
+    \AxiomC{$ $}
+    \RightLabel{$(\overline{\top})$}
+    \UnaryInfC{$\ctriple{P}{C}{\top_2}$}
+  \end{prooftree}
+  
+  \begin{prooftree}
+    \AxiomC{$\htriple{\gamma_1(P)}{C}{\gamma_2(Q)}$}
+    \RightLabel{$(\overline{S})$}
+    \UnaryInfC{$\ctriple{P}{C}{Q}$}
+  \end{prooftree}
+  
+  \begin{prooftree}
+    \AxiomC{$P \leq P'$}
+    \AxiomC{$\ctriple{P'}{C}{Q'}$}
+    \AxiomC{$Q' \sqsubseteq Q$}
+    \RightLabel{$(\overline{\implies})$}
+    \TrinaryInfC{$\ctriple{P}{C}{Q}$}
+  \end{prooftree}
+\end{definition}
+
+This proof system highlights that most of the work is done by rule
+$(\overline{S})$, which embeds Hoare triples in Algebraic Hoare triples. One can
+easily prove that the proof system is relatively complete from the relative
+completeness of Hoare logic. In particular, only the $(\overline{S})$ rule is
+actually needed, since all the implications in the abstract must also hold in
+the concrete.
+
+\subsection{Interval Logic} As shown in Definition \ref{def:aisgi}, via a Galois
+insertion we can obtain a similar family of triples as those in Algebraic Hoare
+Logic when the abstract domains used in the pre- and post-conditions are the
+same.
+
+\begin{example}[Interval logic]
+  \label{exmp:int-logic}
+  Applying Definition \ref{def:aisgi} to the Galois insertion on the interval
+  domain defined in Example \ref{exmp:interval}, we obtain a sound and
+  relatively complete logic to reason about properties of programs that are
+  expressible as intervals.
+\end{example}
+
+\begin{example}[Derivation in interval logic]
+  \label{exmp:int-deriv}
+  Let $C \defeq ((x := 1) + (x := 3)) \fcmp (x = 2? \fcmp x := 5) + (x \neq 2?
+  \fcmp x := x - 1)$
+
+  Then the following derivation is valid:
+
+  \begin{prooftree}
+    \AxiomC{$\pi_1$}
+    \AxiomC{$\pi_3$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{\top}{C}{[0, 5]}$}
+  \end{prooftree}
+
+  $\pi_1$:
+  \begin{prooftree}
+    \AxiomC{$\top \leq \top$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{\top}{x := 1}{[1, 1]}$}
+    \AxiomC{$[1, 1] \leq [1, 3]$}
+    \TrinaryInfC{$\vdash \atriple[Int]{\top}{x := 1}{[1, 3]}$}
+    \AxiomC{$\pi_2$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{\top}{(x := 1) + (x := 3)}{[1, 3]}$}
+  \end{prooftree}
+
+  $\pi_2$:
+  \begin{prooftree}
+    \AxiomC{$\top \leq \top$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{\top}{x := 3}{[3, 3]}$}
+    \AxiomC{$[3, 3] \leq [1, 3]$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atriple[Int]{\top}{x := 3}{[1, 3]}$}
+  \end{prooftree}
+
+  $\pi_3$:
+  \begin{prooftree}
+    \AxiomC{$[1, 3] \leq [1, 3]$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[1, 3]}{x = 2?}{[2]}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[2]}{x := 5}{[5]}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x = 2? \fcmp x := 5}{[5]}$}
+    \AxiomC{$[5, 5] \leq [0, 5]$}
+    \TrinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x = 2? \fcmp x := 5}{[0, 5]}$}
+    \AxiomC{$\pi_4$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{(x = 2? \fcmp x := 5) + (x \neq 2?
+      \fcmp x := x - 1)}{[0, 5]}$}
+  \end{prooftree}
+  
+  $\pi_4$:
+  \begin{prooftree}
+    \AxiomC{$[1, 3] \leq [1, 3]$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2?}{[1, 3]}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[1, 3]}{x := x - 1}{[0, 2]}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2? \fcmp x := x - 1}{[0,
+      2]}$}
+    \AxiomC{$[0, 2] \leq [0, 5]$}
+    \TrinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2? \fcmp x := x - 1}{[0,
+      5]}$}
+  \end{prooftree}
+
+  This is also the best we can derive since $\asem[Int]{C}(\top) = [0, 5]$.
+\end{example}
+
+\subsubsection{Applications}
+This framework, like Algebraic Hoare Logic, can be used to specify how a static
+analyzer for a given abstract domain should work. Since $\asem{\cdot}$ is the
+best abstract analyzer on abstract domain $A$ when it is defined inductively,
+and since the whole proof system is in the abstract, we can check that a
+derivation is indeed correct algorithmically (as long as we can check
+implications and base commands). These are usually the standard requirements for
+an abstract domain to be useful. The same does not hold for Algebraic Hoare
+Logic since deciding the validity of arbitrary triples would require deciding
+the validity of standard Hoare logic triples, and in general, we cannot decide
+implications between arbitrary properties.
+
+\subsection{Relationship}
+Clearly, Algebraic Hoare Logic can derive the same triples that are derivable by
+Abstract Hoare Logic when instantiated through a Galois insertion from
+$\pow{\states}$ as in Example \ref{exmp:int-logic}. From Theorem
+\ref{thm:sound-ai}, $\asem{\cdot}$ is a sound overapproximation of
+$\sem{\cdot}$.
+
+\begin{theorem}
+  $\atriple{P}{C}{Q} \implies \ctriple{P}{C}{Q}$
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \atriple{P}{C}{Q}
+      &\implies \asem{C}(P) \leq Q
+      &\text{From Theorem \ref{thm:atriple-sound}} \\
+      &\implies \sem{C}(\gamma(P)) \subseteq \gamma(Q)
+      &\text{From Theorem \ref{thm:sound-ai}} \\
+      &\implies \htriple{\gamma(P)}{C}{\gamma(Q)}
+      &\text{From Theorem \ref{thm:hlogic-complete}} \\
+      &\implies \ctriple{P}{C}{Q}
+      &\text{From rule $(\overline{S})$} \\
+  \end{align*}
+\end{proof}
+
+However, the converse is not true. The relative completeness of Algebraic Hoare
+Logic is with respect to the best correct approximation of $\sem{\cdot}$ and not
+with respect to $\asem{\cdot}$ as in Abstract Hoare Logic.
+
+\begin{example}[Counter example]
+  From Example \ref{exmp:int-deriv}, we know that $\atriple{\top}{C}{[0, 5]}$ is
+  the best Abstract Hoare triple that we can obtain, but $\sem{C}{\top} = \{0,
+  2\}$. Via Theorem \ref{thm:hlogic-complete}, we can obtain
+  $\htriple{\top}{C}{\{0, 2\}}$. Hence, via the $(\overline{S})$ rule, we can
+  obtain $\ctriple{\top}{C}{[0, 2]}$, which is unobtainable in Abstract Hoare
+  Logic.
+\end{example}
