@@ -1,0 +1,264 @@
+\section{Merge rules}
+\label{chp:join-meet-rules}
+
+When developing software verification tools, the ability to perform multiple 
+local reasoning and then merge the results is particularly useful. One example 
+of this is the conjunction rule in concurrent separation logic \cite{Brookes16}.
+
+In Hoare logic, the following two rules are sound:
+
+\begin{definition}[Merge rules in Hoare logic] $\;$\\
+  \begin{prooftree}
+    \AxiomC{$\htriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\htriple{P_2}{C}{Q_2}$}
+    \RightLabel{$(\lor)$}
+    \BinaryInfC{$\htriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+  \end{prooftree}
+  
+  \begin{prooftree}$\;$\\
+    \AxiomC{$\htriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\htriple{P_2}{C}{Q_2}$}
+    \RightLabel{$(\land)$}
+    \BinaryInfC{$\htriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
+  \end{prooftree}
+\end{definition}
+
+Even though they aren't needed for the completeness of the proof system, performing
+two different analyses and then merging the results of them can be actually useful.
+Already in \cite{Cousot12}, it was noted that the abstract version of the merge
+rules are, in general, unsound in Algebraic Hoare Logic. The same is also true
+for Abstract Hoare logic. We will show a counterexample for the $(\lor)$ rule,
+but the example can be easily modified for the $(\land)$ rule.
+
+\begin{definition}[Merge rules in Abstract Hoare logic] $\;$\\
+  \begin{prooftree}
+    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \RightLabel{$(\lor)$}
+    \BinaryInfC{$\atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+  \end{prooftree}
+  
+  \begin{prooftree}$\;$\\
+    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \RightLabel{$(\land)$}
+    \BinaryInfC{$\atriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
+  \end{prooftree}
+\end{definition}
+
+\begin{example}[Counterexample for the $(\lor)$ rule]
+  Let $\atriple[Int]{\cdot}{\cdot}{\cdot}$ be the Abstract Hoare logic 
+  instantiation of example \ref{exmp:int-logic}, Interval Logic, and
+  let $C \defeq (x = 4? \fcmp x := 50) + (x \neq 4? \fcmp x := x + 1)$. Then we
+  can perform the following two derivations:
+  \begin{prooftree}
+    \AxiomC{$[3, 3] \leq [3, 3]$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[3, 3]}{x = 4?}{\bot}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{\bot}{x := 50}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[3, 3]}{x = 4? \fcmp x := 50}{\bot}$}
+    \AxiomC{$\bot \leq [4, 4]$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atriple[Int]{[3, 3]}{x = 4? \fcmp x := 50}{[4, 4]}$}
+    \AxiomC{$\pi_1$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[3, 3]}{C}{[4, 4]}$}
+  \end{prooftree}
+
+  Where $\pi_1$:
+  \begin{prooftree}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[3, 3]}{x \neq 4?}{[3, 3]}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[3, 3]}{x := x + 1}{[4, 4]}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[3, 3]}{x \neq 4? \fcmp x := x + 1}{[4, 4]}$}
+  \end{prooftree}
+
+  And
+  \begin{prooftree}
+    \AxiomC{$[5, 5] \leq [5, 5]$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[5, 5]}{x = 4?}{\bot}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{\bot}{x := 50}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[5, 5]}{x = 4? \fcmp x := 50}{\bot}$}
+    \AxiomC{$\bot \leq [6, 6]$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atriple[Int]{[5, 5]}{x = 4? \fcmp x := 50}{[6, 6]}$}
+    \AxiomC{$\pi_2$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[5, 5]}{C}{[6, 6]}$}
+  \end{prooftree}
+
+  Where $\pi_2$:
+  \begin{prooftree}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[5, 5]}{x \neq 4?}{[6, 6]}$}
+    \AxiomC{$$}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[5, 5]}{x := x + 1}{[6, 6]}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[5, 5]}{x \neq 4? \fcmp x := x + 1}{[6, 6]}$}
+  \end{prooftree}
+
+  Thus we can construct the following proof tree:
+  \begin{prooftree}
+    \AxiomC{$\vdash \atriple{[5, 5]}{C}{[6, 6]}$}
+    \AxiomC{$\vdash \atriple{[3, 3]}{C}{[4, 4]}$}
+    \BinaryInfC{$\vdash \atriple{[3, 5]}{C}{[4, 6]}$}
+  \end{prooftree}
+
+  But clearly, it's unsound as:
+  \begin{align*}
+    \asem[Int]{C}([3, 5]) &= \asem[Int]{x = 4? \fcmp x := 50}([3, 5])
+      \lor \asem[Int]{x \neq 4? \fcmp x := x + 1}([3, 5]) \\
+                          &= \bsem{x := 50}^{Int}(\bsem{x = 4?}^{Int}([3, 5]))
+      \lor \bsem{x := x + 1}^{Int}(\bsem{x \neq 4?}^{Int}([3, 5])) \\
+                          &= [50, 50] \lor [4, 6] \\
+                          &= [4, 50]
+  \end{align*}
+
+  And $[4, 50] \not \leq [4, 6]$.
+\end{example}
+
+Naively, we could think that the issue is only "local" as $\gamma([3]) \cup 
+\gamma([5]) = \{3, 5\} \neq \{3, 4, 5\} = \gamma([3] \lor [5])$. Since the least
+upper bound is adding new states in the precondition, requiring that
+$\gamma(P_1 \lor P_2) = \gamma(P_1) \cup \gamma(P_2)$ might seem enough, but 
+actually, it is not true. We can construct arbitrary programs that are able to 
+exploit the fact that $\lor$ is generally a convex operation that can add new 
+elements.
+
+\begin{definition}[Local $\join$ rule for abstract Hoare logic] $\;$\\
+  \begin{prooftree}
+    \AxiomC{$\gamma(P_1 \join P_2) = \gamma(P_1) \cup \gamma(P_2)$}
+    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \RightLabel{$(\join-local)$}
+    \TrinaryInfC{$\atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+  \end{prooftree}
+\end{definition}
+
+\begin{example}[Counterexample for the $(\lor-local)$ rule]
+  Let $\atriple[Int]{\cdot}{\cdot}{\cdot}$ be the Abstract Hoare logic 
+  instantiation of example \ref{exmp:int-logic}, Interval Logic, and
+  let $C \defeq (x = 0? + x = 2?) \fcmp x = 1?$
+
+  Then we can perform the following two derivations:
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[0, 1]}{x = 0?}{[0, 0]}$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[0, 1]}{x = 2?}{[\bot]}$}
+    \AxiomC{$\bot \leq [0, 0]$}
+    \RightLabel{$(\leq)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{x = 2?}{[0, 0]}$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{(x = 0?) + (x = 2?)}{[0, 0]}$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[0, 0]}{x = 1?}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{C}{\bot}$}
+  \end{prooftree}
+
+  And
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 0?}{[\bot]}$}
+    \AxiomC{$\bot \leq [2, 2]$}
+    \RightLabel{$(\leq)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 0?}{[2, 2]}$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 2?}{[2, 2]}$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{(x = 0?) + (x = 2?)}{[2, 2]}$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 1?}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{C}{\bot}$}
+  \end{prooftree}
+  
+  Thus we can construct the following proof tree:
+  \begin{prooftree}
+    \AxiomC{$\vdash \atriple{[2, 2]}{C}{\bot}$}
+    \AxiomC{$\vdash \atriple{[0, 1]}{C}{\bot}$}
+    \BinaryInfC{$\vdash \atriple{0, 2}{C}{\bot}$}
+  \end{prooftree}
+
+
+  But clearly is unsound as:
+  \begin{align*}
+    \asem[Int]{C}([0, 2]) &= \bsem{x = 1?}^{Int}(\bsem{x = 0?}^{Int}([0, 2]) 
+      \join \bsem{x = 2}^{Int}([0, 2])) \\
+                          &= \bsem{x = 1?}^{Int}([0, 0] \join [2, 2]) \\
+                          &= \bsem{x = 1?}^{Int}([0, 2]) \\
+                          &= [1, 1]
+  \end{align*}
+
+  And clearly $[1, 1] \not \leq \bot$
+\end{example}
+
+This example highlights the actual root cause of the issue: the imprecision
+introduced by $\join$, and it has nothing to do with the preconditions. In
+particular, we can note that with the program $C' \defeq (x = 1? \fcmp x = 0?)
++ (x = 2? \fcmp x = 0?)$, we don't have the same issue. Even if $C$ and $C'$
+are equivalent programs in the concrete domain ($\pow{\pow{\states}}$), they
+aren't in the $Int$ domain. Hence, $\asem{(C_1 + C_2) \fcmp C_3} = \asem{(C_1
+\fcmp C_3) + (C_2 \fcmp C_3)}$ is not true in general. It's important to note
+that this is also one of the axioms in Kleene Algebra with Test \cite{Kozen97},
+highlighting how this system can't be described by that.
+
+In particular, we can easily show that for a subset of the precondition (the
+precondition that admit a program that can generate them), requiring the
+distributivity rule to hold is equivalent to requiring the semantics to be
+additive.
+
+\begin{theorem}[Equivalence between additivity and distributivity] $\;$\\
+  $\forall \; i \in [1, 3] \;\; \exists \; C_{P_i}$ s.t. 
+  $\forall \; Q \;\; \asem{C_{P_i}}(Q) = P_i$
+
+  $$\asem{(C_1 + C_2) \fcmp C_3}(P_1) = \asem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}(P_1)$$
+  $$\iff$$
+  $$\asem{C'}(P_2 \join P_3) = \asem{C'}(P_2) \join \asem{C'}(P_3)$$
+\end{theorem}
+\begin{proof} $\;$\\
+  \begin{itemize}
+    \item $(\impliedby)$:
+      \begin{align*}
+        \asem{(C_1 + C_2) \fcmp C_3}(P_1)
+          &= \asem{C_3}(\asem{C_1}(P_1) \join \asem{C_2}(P_1)) \\
+          &= \asem{C_3}(\asem{C_1}(P_1)) \join \asem{C_3}(\asem{C_2}(P_1)) \\
+          &= \asem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}(P_1)
+      \end{align*}
+    \item $(\implies)$:
+      \begin{align*}
+        \asem{C'}(P_1 \join P_2) 
+          &= \asem{C'}(\asem{C_{P_2}}(Q) \join \asem{C_{P_3}}(Q)) \\
+          &= \asem{(C_{P_2} + C_{P_3}) \fcmp C'}(Q) \\
+          &= \asem{(C_{P_2} \fcmp C) + (C_{P_3} \fcmp C')}(Q) \\
+          &= \asem{C}(\asem{C_{P_2}}(Q)) \join \asem{C}(\asem{C_{P_3}}(Q)) \\
+          &= \asem{C}(P_2) \join \asem{C}(P_3)
+      \end{align*}
+  \end{itemize}
+\end{proof}
+
+Hence, we can gain intuition that the $\join$ rule is not working because, in
+general, the abstract inductive semantics is not additive, and the root of non
+additivity is the non additivity of the base commands.
