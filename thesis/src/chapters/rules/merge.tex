@@ -262,3 +262,135 @@ additive.
 Hence, we can gain intuition that the $\join$ rule is not working because, in
 general, the abstract inductive semantics is not additive, and the root of non
 additivity is the non additivity of the base commands.
+
+\begin{theorem}[Additivity of the abstract inductive semantics] $\;$\\
+  \label{thm:additivity}
+  If $\bsem{b}^A(P_1 \join P_2) = \bsem{b}^A(P_1) \join \bsem{b}^A(P_2)$
+  $$\asem{C}(P_1 \join P_2) = \asem{C}(P_1) \join \asem{C}(P_2)$$
+\end{theorem}
+\begin{proof}
+  By structural induction on $C$:
+  \begin{itemize}
+    \item $\sskip$:
+      \begin{align*}
+        \asem{\sskip}(P_1 \join P2)
+          &= P_1 \join P_2 
+          &\text{By definition of $\asem{\cdot}$} \\
+          &= \asem{\sskip}(P_1) \join \asem{\sskip}(P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+      \end{align*}
+    \item $b$:
+      \begin{align*}
+        \asem{b}(P_1 \join P2)
+          &= \bsem{b}^A(P_1 \join P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+          &= \bsem{b}^A(P_1) \join \bsem{b}^A(P_2) \\
+          &= \asem{b}(P_1) \join \asem{b}(P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+      \end{align*}
+    \item $C_1 \fcmp C_2$:
+      \begin{align*}
+        \asem{C_1 \fcmp C_2}(P_1 \join P2)
+          &= \asem{C_2}(\asem{C_1}(P_1 \join P_2))
+          &\text{By definition of $\asem{\cdot}$} \\
+          &= \asem{C_2}(\asem{C_1}(P_1) \join \asem{C_1}(P_2))
+          &\text{By inductive hypothesis} \\
+          &= \asem{C_2}(\asem{C_1}(P_1)) \join \asem{C_2}(\asem{C_1}(P_2))
+          &\text{By inductive hypothesis} \\
+          &= \asem{C_1 \fcmp C_2}(P_1) \join \asem{C_1 \fcmp C_2}(P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+      \end{align*}
+    \item $C_1 + C_2$:
+      \begin{align*}
+        \asem{C_1 \fcmp C_2}(P_1 \join P2)
+          &= \asem{C_1}(P_1 \join P_2) \join \asem{C_2}(P_1 \join P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+          &= \asem{C_1}(P_1) \join \asem{C_1}(P_2) \join \asem{C_2}(P_1)
+            \join \asem{C_2}(P_2)
+          &\text{By inductive hypothesis} \\
+          &= \asem{C_1}(P_1) \join \asem{C_2}(P_1) \join \asem{C_1}(P_2)
+            \join \asem{C_2}(P_2) \\
+          &= \asem{C_1 + C_2}(P_1) \join \asem{C_1 + C_2}(P_2)
+          &\text{By definition of $\asem{\cdot}$} \\
+      \end{align*}
+    \item $C^\fix$:
+      \begin{align*}
+        \asem{C^\fix}(P_1 \join P2)
+          &= \lfp(\lambda P' \to P_1 \join P_2 \join \asem{C}(P'))
+          &\text{By definition of $\asem{\cdot}$}
+      \end{align*}
+      Let $F_i \defeq \bsem{C^\fix}(P_i) = \lfp(\lambda P' \to P_i \join 
+      \asem{C}(P'))$
+
+      We will show that $F_1 \join F_2$ is the $\lfp$ of the first equation.
+      \begin{align*}
+        (\lambda P' \to P_1 \join P_2 \join \asem{C}(P'))(F_1 \join F_2)
+          &= P_1 \join P_2 \join \asem{C}(F_1 \join F_2) \\
+          &= P_1 \join P_2 \join \asem{C}(F_1) \join \asem{C}(F_2) 
+          &\text{By inductive hypothesis}\\
+          &= P_1 \join \asem{C}(F_1) \join P_2 \join \asem{C}(F_2) \\
+          &= F_1 \join F_2
+          &\text{By definition of $F_i$}\\
+          &= \asem{C^\fix}(P_1) \join \asem{C^\fix}(P_2)
+          &\text{By definition of $F_i$}\\
+      \end{align*}
+
+      Now we show that it's also the least one, let $P$ be any fixpoint, 
+      $P = P_1 \join P_2 \join \asem{C}(P)$.
+      
+      Then by definition of $\join$ it follows that $P_i \join \asem{C}(P) \leq 
+      P_1 \join P_2 \join \asem{C}(P)$ but by $F_i$ beeing a least fixpoint
+      $F_i \leq P_i \join \asem{C}(P)$ thus $F_1 \join F_2 \leq P_1
+      \join \asem{C}(P) \join P_2 \join \asem{C}(P) = P_1 \join P_2 \join 
+      \asem{C}(P) = P$ hence $F_1 \join F_2$ it's the leas fixpoint.
+  \end{itemize}
+\end{proof}
+
+We can give a sufficient condition for the addivitivity of the abstract 
+inductive semantics:
+\begin{theorem}
+  \label{thm:gamma-add}
+  Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq 
+  \rangle$ be a Galois insertion, if $\asem[C]{\cdot}$ and $\gamma$ are 
+  additive then the abstract inductive semantics $\asem[A]{\cdot}$ obtained
+  via the galois insertion is also additive.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \bsem{b}^A(P_1 \join P_2)
+      &= \alpha(\bsem{b}^C(\gamma(P_1 \join P_2))) \\
+      &= \alpha(\bsem{b}^C(\gamma(P_1))) \join\alpha(\bsem{b}^C(\gamma(P_1))) \\
+      &\text{By the additivity of $\gamma$, $\asem[C]{\cdot}$ and $\alpha$}\\
+      &= \bsem{b}^A(P_1) \join \bsem{b}^A(P_2)
+  \end{align*}
+
+  Then by theorem \ref{thm:additivity} $\asem{\cdot}$ is additive.
+\end{proof}
+
+Last we can show that the abstract inductive semantics beeing additive is 
+enough to make the $(\join)$ rule sound.
+
+\begin{theorem}[Soundness of the $(\join)$ rule]
+  \label{thm:sound-join}
+  Let $\asem{\cdot}$ be additive then:
+  $$\asem{C}(P_1) \leq Q_1 \text{ and } \asem{C}(P_2) \leq Q_2 \implies
+  \asem{C}(P_1 \join P_2) \leq Q_1 \join Q_2$$
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \asem{C}(P_1 \join P_2)
+      &= \asem{C}(P_1) \join \asem{C}(P_2)
+      &\text{By additivity of $\asem{\cdot}$} \\
+      &\leq Q_1 \join Q_2
+  \end{align*}
+\end{proof}
+
+The two theorems \ref{thm:sound-join} and \ref{thm:gamma-add} correspond to the
+result for Algebraic Hoare logic in which the rule $(\overline{\join})$ is sound
+if $\gamma$ is additive.
+
+The same reasoning can be applied for the soundness of the rule $(\meet)$ but
+by requiring the semantics to be co-additive. As expected for the abstract
+inductive semantics obtained via a a Galois insertion, this boils down to 
+requiring $\alpha$ to be co-additive.
+
