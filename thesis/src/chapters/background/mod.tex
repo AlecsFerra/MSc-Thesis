@@ -20,7 +20,6 @@ framework. This framework allows us to reason about program properties in a more
 general setting, providing a sound and relatively complete method for program 
 verification.
 
-
 We also introduce and explore the concept of hyperproperties within this 
 framework. Hyperproperties, which describe relationships between different 
 executions of a program, are crucial for expressing and verifying complex 
@@ -29,11 +28,19 @@ for hyperproperties, and in doing so, we also develop an inductive definition
 for the strongest hyper postcondition of a program, which, to the best of our 
 knowledge, has not been previously achieved.
 
+Furthermore, this thesis introduces and develops the concept of reverse
+abstract Hoare logic, whore approach is to complement traditional forward
+reasoning by examining the necessary conditions for program correctness from
+the end to the start of program execution. This backward reasoning framework
+uses the same ideas (and proofs) from abstract Hoare logic to develop a general
+framework.
+
 The thesis is structured as follows: We begin with a review of order theory and 
 abstract interpretation, which form the theoretical foundation for our work. We 
 then introduce the minimal version of the abstract Hoare logic framework and 
-demonstrate its instantiation for various abstract domains. Finally, we provide 
-some useful extensions to the proof system that make its usage easier.
+demonstrate its instantiation for various abstract domains, we provide 
+some useful extensions to the proof system that make its usage easier and 
+finally we introduce reverse abstract Hoare logic.
 
 \subimport{./}{order_theory}
 \subimport{./}{abstract_interpretation}
