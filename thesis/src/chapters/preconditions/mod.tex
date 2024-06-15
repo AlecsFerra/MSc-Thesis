@@ -172,6 +172,30 @@ We can prove again that the proof system is still sound and complete.
 
 \subsection{Backward-Forward Abstract Inductive Semantics Duality}
 
+\begin{definition}[Reverse semantics]
+  Given an abstract inductive semantics defined on some complete lattice $A$ 
+  with base command semantics $\bsem{\cdot}^A$, we can define the reverse
+  backward abstract inductive semantics as the backward inductive semantics
+  instantiated on the complete lattice $A$ and base command semantics 
+  $(\bsem{\cdot}^A)^{-1}$
+\end{definition}
+
+If we interpret the abstract inductive semantics as the strongest postcondition
+on the domain $A$, then the backward abstract inductive semantics on the domain 
+$A$ is the weakest precondition on the domain $A$.
+
+\begin{observation}
+  \label{obs:weakest-precondition}
+  Following observation \ref{obs:post}, the reverse backward 
+  abstract inductive semantics on the domain $\pow{\states}$ is the weakest 
+  precondition.
+\end{observation}
+
+But we can do something more if in addition to reversing the semantics of the 
+base commands we invert the lattice structure, when executing a non 
+deterministic choice instead of taking the join of the two different execution
+we take their meet.
+
 \begin{definition}[Dual semantics]
   Given an abstract inductive semantics defined on some lattice $A$ with
   base commands semantics $\bsem{\cdot}^A$, we can define the dual backward 
@@ -182,97 +206,67 @@ We can prove again that the proof system is still sound and complete.
 
 If we interpret the abstract inductive semantics as the strongest postcondition
 on the domain $A$, then the backward abstract inductive semantics on the domain 
-$A$ is the weakest precondition on the domain $A$, this is true since on the 
-opposite lattice the role of meets and joins i inverted ($\join_A^{op} = 
+$A$ is the weakest liberal precondition on the domain $A$, this is true since on 
+the opposite lattice the role of meets and joins is inverted ($\join_A^{op} = 
 \meet_A$ and $\lfp_{A^{op}} = \gfp_A$).
 
 \begin{observation}
-  \label{obs:weakest-precondition}
-  Following observation \ref{obs:weakest-precondition}, the fual backward 
+  \label{obs:weakest-liberal-precondition}
+  Following observation \ref{obs:post}, the dual backward 
   abstract inductive semantics on the domain $\pow{\states}^{op}$ is the weakest 
   liberal precondition.
 \end{observation}
 
+For a complete introduction on the differences between the weakest precondition
+and the weakest liberal precondition and expecially their definition as
+predicate transformes see Chapter 2 of \cite{Kaminski19}.
+
 \section{Instantiations}
 
-\subsection{Hoare Logic, Again}
-
-From the instantiations of the backward abstract inductive semantics of 
-observation \ref{obs:weakest-precondition}, we know that 
-$\asemback[\pow{\states}^{op}]{\cdot}$ is the weakest liberal precondition. By 
-looking at the meaning of the backward abstract Hoare triples:
-
-\begin{theorem}[Dual-logic equivalence]
-  $$\atripleback[\pow{\states}^{op}]{Q}{C}{P} \iff \atriple{P}{C}{Q}$$
-\end{theorem}
-\begin{proof}
-\begin{align*}
-  \atripleback[\pow{\states}^{op}]{Q}{C}{P}
-    &\iff \asemback[\pow{\states}^{op}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
-    &\iff wlp(C, Q) \leq_{\pow{\states}^{op}} P \\
-    &\iff wlp(C, Q) \geq_{\pow{\states}} P \\
-    &\iff stp(C, P) \leq_{\pow{\states}} Q \\
-    &\iff \asem{C}(P) \leq_{\pow{\states}} Q \\
-    &\iff \atriple{P}{C}{Q}
-\end{align*}
-\end{proof}
-
-\todo{Mh not sure it is true}
-
-This means that the validity of Backward Abstract Hoare logic triples on the
-opposite powerset of states is equivalent to the same as the one for Abstract 
-Hoare logic on the powerset of states, meaning that they prove the same 
-properties of programs. In particular, in this context, the two proof systems 
-are equivalent since they are both sound and (relatively) complete while 
-proving the same properties.
-
 \subsection{Necessary conditions}
-Estabished that the dual instantiation of Backward Abstract Hoare logic, we can
-look at the backward semantics obtained by not taking the opposite lattice and
-by only inverting the semantics of the base commands.
 
-\begin{definition}[Reverse semantics]
-  Given an abstract inductive semantics defined on some complete lattice $A$ 
-  with base command semantics $\bsem{\cdot}^A$, we can define the reverse
-  backward abstract inductive semantics as the backward inductive semantics
-  instantiated on the complete lattice $A$ and base command semantics 
-  $(\bsem{\cdot}^A)^{-1}$
-\end{definition}
+Using the instantation of the backward abstract inductive semantics of 
+observation \ref{obs:weakest-precondition} the reverse abstract inductive semantics
+defined on $\pow{\states}$ correspond to the weakest-precondition, when 
+instantiating Backward Abstract Hoare logic we obtain a sound and (relative) 
+complete logic to reason about the over approximation of the necessary 
+conditions to reach a state:
 
-Given the usual interpretation on $\pow{\states}$ with semantics of base 
-commands $\bsem{\cdot}^{\pow{\states}}$ were $\asem[\pow{\states}]{\cdot}$ is the 
-strongest postcondition then the backward abstract inductive semantics on the
-the complete lattice $\pow{\states}$ with base command semantics 
-\todo{AAAAA} is the backward semantics defined in
-\cite{Ascari24}.
+\begin{align*}
+  \atripleback[\pow{states}]{Q}{C}{P} 
+    & \iff \asemback[\pow{\states}]{C}(Q) \leq P \\
+    & \iff wp(C, Q) \subseteq P
+\end{align*}
 
-\begin{theorem}[Reverse semantics]
-  Let $\asemback{\cdot}$ be the reverse semantics of $\asem{\cdot}$ then
-  $$\sigma \in \asemback{C}(\{ \sigma' \}) \iff \sigma' \in \asem{C}(\{\sigma\})$$
+This logic was already studied in \cite{Ascari24} under the name of NC, 
+but no proof system was provided, in particular there is proved the connection 
+between Hoare and the Necessary Conditions Logics
+
+\begin{theorem}[Connection between Hoare and the Necessary Conditions Logics]
+  $$\atriple[\pow{\states}]{P}{C}{Q} \iff \atripleback[\pow{\states}]{\neg Q}{C}
+  {\neg P}$$
 \end{theorem}
-\begin{proof}
-  By structural induction on $C$:
-  \begin{itemize}
-    \item $\sskip$:
-      \begin{align*}
-        \asemback{\sskip}(\{\sigma'\})
-          &= \{\sigma'\}
-          &\text{By definition of $\asemback{\cdot}$} \\
-          &= \asem{\sskip}(\{\sigma' \})
-          &\text{By definition of $\asem{\cdot}$} \\
-      \end{align*}
-    
-    \item $\sskip$:
-      \begin{align*}
-        \asemback{\sskip}(\{\sigma'\})
-          &= \bsem{b}(\{\sigma' \})
-      \end{align*}
-  \end{itemize}
-\end{proof}
 
-Given the usual interpretation on $\pow{\states}$ with semantics of base 
-commands $\bsem{\cdot}^{\pow{\states}}$ were $\asem[\pow{\states}]{\cdot}$ is the 
-strongest postcondition then the backward abstract inductive semantics on the
-the complete lattice $\pow{\states}$ with base command semantics 
-$(\bsem{\cdot}^{\pow{\states}})^{-1}$ is the backward semantics defined in
-\cite{Ascari24}.
+\subsection{Necessary liberal preconditions}
+
+Following what we did for Necessary conditions we can do the same but with the
+dual abstract inductive semantics. From observation 
+\ref{obs:weakest-liberal-precondition} we know that the dual abstract inductive 
+semantics defined on $\pow{\states}^{op}$ correspond to the weakest liberal 
+precondition, when instantiating Backward Abstract Hoare logic we obtain a sound
+and (relative) complete logic to reason about under-approximation of partial 
+necessary conditions.
+
+\begin{align*}
+  \atripleback[\pow{states}^{op}]{Q}{C}{P}
+    & \iff \asemback[\pow{\states}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
+    & \iff \asemback[\pow{\states}]{C}(Q) \geq{\pow{\states}} P \\
+    & \iff wlp(C, Q) \supseteq P \\
+\end{align*}
+
+This logic was already introduced in \cite{Zhang22} under the name of ???, 
+but no proof system was provided, An equivalent theorem as the one for
+necessary condition but relating the total correctness (non partial correctness
+as Hoare logic, that is already related to necessary conditions) triples to the 
+negation (as negation of bot the pre and the post condition) of necessary liberal 
+precondition triples.
