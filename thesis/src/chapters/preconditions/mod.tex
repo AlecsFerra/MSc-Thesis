@@ -247,7 +247,7 @@ between Hoare and the Necessary Conditions Logics
   {\neg P}$$
 \end{theorem}
 
-\subsection{Necessary liberal preconditions}
+\subsection{Hoare logic, again}
 
 Following what we did for Necessary conditions we can do the same but with the
 dual abstract inductive semantics. From observation 
@@ -264,9 +264,7 @@ necessary conditions.
     & \iff wlp(C, Q) \supseteq P \\
 \end{align*}
 
-This logic was already introduced in \cite{Zhang22} under the name of ???, 
-but no proof system was provided, An equivalent theorem as the one for
-necessary condition but relating the total correctness (non partial correctness
-as Hoare logic, that is already related to necessary conditions) triples to the 
-negation (as negation of bot the pre and the post condition) of necessary liberal 
-precondition triples.
+This logic is equivalent as Hoare logic since $wlp(C, Q) \supseteq P \iff 
+\sem{C}(P) \subseteq Q$ hence $\atriple[\pow{\states}]{P}{C}{Q} \iff 
+\atripleback[\pow{\states}^{op}]{Q}{C}{P}$
+
