@@ -52,6 +52,14 @@ but the example can be easily modified for the $(\land)$ rule.
   let $C \defeq (x = 4? \fcmp x := 50) + (x \neq 4? \fcmp x := x + 1)$. Then we
   can perform the following two derivations:
   \begin{prooftree}
+    \AxiomC{$\pi_1$}
+    \AxiomC{$\pi_2$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[3, 3]}{C}{[4, 4]}$}
+  \end{prooftree}
+
+  Where $\pi_1$:
+  \begin{prooftree}
     \AxiomC{$[3, 3] \leq [3, 3]$}
     \AxiomC{$$}
     \RightLabel{$(b)$}
@@ -64,12 +72,9 @@ but the example can be easily modified for the $(\land)$ rule.
     \AxiomC{$\bot \leq [4, 4]$}
     \RightLabel{$(\leq)$}
     \TrinaryInfC{$\vdash \atriple[Int]{[3, 3]}{x = 4? \fcmp x := 50}{[4, 4]}$}
-    \AxiomC{$\pi_1$}
-    \RightLabel{$(+)$}
-    \BinaryInfC{$\vdash \atriple[Int]{[3, 3]}{C}{[4, 4]}$}
   \end{prooftree}
 
-  Where $\pi_1$:
+  And $\pi_2$:
   \begin{prooftree}
     \AxiomC{$$}
     \RightLabel{$(b)$}
@@ -83,6 +88,14 @@ but the example can be easily modified for the $(\land)$ rule.
 
   And
   \begin{prooftree}
+    \AxiomC{$\pi_3$}
+    \AxiomC{$\pi_4$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[5, 5]}{C}{[6, 6]}$}
+  \end{prooftree}
+
+  Where $\pi_3$:
+  \begin{prooftree}
     \AxiomC{$[5, 5] \leq [5, 5]$}
     \AxiomC{$$}
     \RightLabel{$(b)$}
@@ -95,12 +108,9 @@ but the example can be easily modified for the $(\land)$ rule.
     \AxiomC{$\bot \leq [6, 6]$}
     \RightLabel{$(\leq)$}
     \TrinaryInfC{$\vdash \atriple[Int]{[5, 5]}{x = 4? \fcmp x := 50}{[6, 6]}$}
-    \AxiomC{$\pi_2$}
-    \RightLabel{$(+)$}
-    \BinaryInfC{$\vdash \atriple[Int]{[5, 5]}{C}{[6, 6]}$}
   \end{prooftree}
 
-  Where $\pi_2$:
+  and $\pi_4$:
   \begin{prooftree}
     \AxiomC{$$}
     \RightLabel{$(b)$}
@@ -157,6 +167,16 @@ elements.
 
   Then we can perform the following two derivations:
   \begin{prooftree}
+    \AxiomC{$\pi_1$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[0, 0]}{x = 1?}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{C}{\bot}$}
+  \end{prooftree}
+
+  Where $\pi_1$:
+  \begin{prooftree}
     \AxiomC{}
     \RightLabel{$(b)$}
     \UnaryInfC{$\vdash \atriple[Int]{[0, 1]}{x = 0?}{[0, 0]}$}
@@ -168,14 +188,19 @@ elements.
     \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{x = 2?}{[0, 0]}$}
     \RightLabel{$(+)$}
     \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{(x = 0?) + (x = 2?)}{[0, 0]}$}
-    \AxiomC{}
-    \RightLabel{$(b)$}
-    \UnaryInfC{$\vdash \atriple[Int]{[0, 0]}{x = 1?}{\bot}$}
-    \RightLabel{$(\fcmp)$}
-    \BinaryInfC{$\vdash \atriple[Int]{[0, 1]}{C}{\bot}$}
   \end{prooftree}
 
   And
+  \begin{prooftree}
+    \AxiomC{$\pi_2$}
+    \AxiomC{}
+    \RightLabel{$(b)$}
+    \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 1?}{\bot}$}
+    \RightLabel{$(\fcmp)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{C}{\bot}$}
+  \end{prooftree}
+  
+  Where $\pi_2$:
   \begin{prooftree}
     \AxiomC{}
     \RightLabel{$(b)$}
@@ -188,11 +213,6 @@ elements.
     \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 2?}{[2, 2]}$}
     \RightLabel{$(+)$}
     \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{(x = 0?) + (x = 2?)}{[2, 2]}$}
-    \AxiomC{}
-    \RightLabel{$(b)$}
-    \UnaryInfC{$\vdash \atriple[Int]{[2, 2]}{x = 1?}{\bot}$}
-    \RightLabel{$(\fcmp)$}
-    \BinaryInfC{$\vdash \atriple[Int]{[2, 2]}{C}{\bot}$}
   \end{prooftree}
   
   Thus we can construct the following proof tree:
@@ -291,26 +311,26 @@ additivity is the non additivity of the base commands.
     \item $C_1 \fcmp C_2$:
       \begin{align*}
         \asem{C_1 \fcmp C_2}(P_1 \join P2)
-          &= \asem{C_2}(\asem{C_1}(P_1 \join P_2))
+          &= \asem{C_2}(\asem{C_1}(P_1 \join P_2)) \\
           &\text{By definition of $\asem{\cdot}$} \\
-          &= \asem{C_2}(\asem{C_1}(P_1) \join \asem{C_1}(P_2))
+          &= \asem{C_2}(\asem{C_1}(P_1) \join \asem{C_1}(P_2)) \\
           &\text{By inductive hypothesis} \\
-          &= \asem{C_2}(\asem{C_1}(P_1)) \join \asem{C_2}(\asem{C_1}(P_2))
+          &= \asem{C_2}(\asem{C_1}(P_1)) \join \asem{C_2}(\asem{C_1}(P_2)) \\
           &\text{By inductive hypothesis} \\
-          &= \asem{C_1 \fcmp C_2}(P_1) \join \asem{C_1 \fcmp C_2}(P_2)
+          &= \asem{C_1 \fcmp C_2}(P_1) \join \asem{C_1 \fcmp C_2}(P_2) \\
           &\text{By definition of $\asem{\cdot}$} \\
       \end{align*}
     \item $C_1 + C_2$:
       \begin{align*}
         \asem{C_1 \fcmp C_2}(P_1 \join P2)
-          &= \asem{C_1}(P_1 \join P_2) \join \asem{C_2}(P_1 \join P_2)
+          &= \asem{C_1}(P_1 \join P_2) \join \asem{C_2}(P_1 \join P_2) \\
           &\text{By definition of $\asem{\cdot}$} \\
           &= \asem{C_1}(P_1) \join \asem{C_1}(P_2) \join \asem{C_2}(P_1)
-            \join \asem{C_2}(P_2)
+            \join \asem{C_2}(P_2) \\
           &\text{By inductive hypothesis} \\
           &= \asem{C_1}(P_1) \join \asem{C_2}(P_1) \join \asem{C_1}(P_2)
             \join \asem{C_2}(P_2) \\
-          &= \asem{C_1 + C_2}(P_1) \join \asem{C_1 + C_2}(P_2)
+          &= \asem{C_1 + C_2}(P_1) \join \asem{C_1 + C_2}(P_2) \\
           &\text{By definition of $\asem{\cdot}$} \\
       \end{align*}
     \item $C^\fix$:
@@ -326,12 +346,12 @@ additivity is the non additivity of the base commands.
       \begin{align*}
         (\lambda P' \to P_1 \join P_2 \join \asem{C}(P'))(F_1 \join F_2)
           &= P_1 \join P_2 \join \asem{C}(F_1 \join F_2) \\
-          &= P_1 \join P_2 \join \asem{C}(F_1) \join \asem{C}(F_2) 
+          &= P_1 \join P_2 \join \asem{C}(F_1) \join \asem{C}(F_2)  \\
           &\text{By inductive hypothesis}\\
           &= P_1 \join \asem{C}(F_1) \join P_2 \join \asem{C}(F_2) \\
-          &= F_1 \join F_2
+          &= F_1 \join F_2 \\
           &\text{By definition of $F_i$}\\
-          &= \asem{C^\fix}(P_1) \join \asem{C^\fix}(P_2)
+          &= \asem{C^\fix}(P_1) \join \asem{C^\fix}(P_2) \\
           &\text{By definition of $F_i$}\\
       \end{align*}
 

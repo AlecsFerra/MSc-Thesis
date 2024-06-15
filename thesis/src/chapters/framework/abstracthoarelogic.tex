@@ -386,6 +386,15 @@ We will start by proving a slightly weaker result:
         \bsem{C_1}(P) \join_A \bsem{C_2}(P)$
 
         \begin{prooftree}
+          \AxiomC{$\pi_1$}
+          \AxiomC{$\pi_2$}
+          \RightLabel{$(+)$}
+          \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}
+            {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
+        \end{prooftree}
+
+        Where $\pi_1$:
+        \begin{prooftree}
           \AxiomC{$P \leq_A P$}
           \AxiomC{(Inductive hypothesis)}
           \noLine
@@ -394,13 +403,9 @@ We will start by proving a slightly weaker result:
           \RightLabel{$(\leq)$}
           \TrinaryInfC{$\vdash \atriple{P}{C_1}
             {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
-          \AxiomC{$\pi_1$}
-          \RightLabel{$(+)$}
-          \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}
-            {\asem{C_1}(P) \join_A \asem{C_2}(P)}$}
         \end{prooftree}
 
-        Where $\pi_1$:
+        and $\pi_2$:
         \begin{prooftree}
           \AxiomC{$P \leq_A P$}
           \AxiomC{(Inductive hypothesis)}

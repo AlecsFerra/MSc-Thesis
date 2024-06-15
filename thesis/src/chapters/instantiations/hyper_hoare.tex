@@ -128,9 +128,9 @@ Now we prove that the hyper instantiate is dristibutive:
         \asem[H(B)_K]{C_1 + C_2}(\chi)
           &= \asem[H(B)_K]{C_1}(\chi) 
             \lor \asem[H(B)_K]{C_2}(\chi) \\
-          &= (\lambda r_1 \to \asem[B]{C_1}(\chi(r_1)))
-            \lor (\lambda r_2 \to \asem[B]{C_1}(\chi(r_2)))
           &\text{By inductive hypothesis} \\
+          &= (\lambda r_1 \to \asem[B]{C_1}(\chi(r_1)))
+            \lor (\lambda r_2 \to \asem[B]{C_1}(\chi(r_2))) \\
           &= \lambda r \to \asem[B]{C_1}(\chi(r))
             \lor \asem[B]{C_2}(\chi(r)) \\
           &= \lambda r \to \asem[B]{C_1 + C_2}(\chi(r))

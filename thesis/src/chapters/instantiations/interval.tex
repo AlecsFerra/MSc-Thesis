@@ -109,6 +109,15 @@ same.
 
   $\pi_3$:
   \begin{prooftree}
+    \AxiomC{$\pi_4$}
+    \AxiomC{$\pi_5$}
+    \RightLabel{$(+)$}
+    \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{(x = 2? \fcmp x := 5) + (x \neq 2?
+      \fcmp x := x - 1)}{[0, 5]}$}
+  \end{prooftree}
+
+  $\pi_4$:
+  \begin{prooftree}
     \AxiomC{$[1, 3] \leq [1, 3]$}
     \AxiomC{$$}
     \RightLabel{$(b)$}
@@ -119,16 +128,21 @@ same.
     \RightLabel{$(\fcmp)$}
     \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x = 2? \fcmp x := 5}{[5]}$}
     \AxiomC{$[5, 5] \leq [0, 5]$}
+    \RightLabel{$(\leq)$}
     \TrinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x = 2? \fcmp x := 5}{[0, 5]}$}
-    \AxiomC{$\pi_4$}
-    \RightLabel{$(+)$}
-    \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{(x = 2? \fcmp x := 5) + (x \neq 2?
-      \fcmp x := x - 1)}{[0, 5]}$}
   \end{prooftree}
   
-  $\pi_4$:
+  $\pi_5$:
   \begin{prooftree}
     \AxiomC{$[1, 3] \leq [1, 3]$}
+    \AxiomC{$\pi_6$}
+    \AxiomC{$[0, 2] \leq [0, 5]$}
+    \TrinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2? \fcmp x := x - 1}{[0,
+      5]}$}
+  \end{prooftree}
+
+  $\pi_6:$
+  \begin{prooftree}
     \AxiomC{$$}
     \RightLabel{$(b)$}
     \UnaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2?}{[1, 3]}$}
@@ -138,9 +152,6 @@ same.
     \RightLabel{$(\fcmp)$}
     \BinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2? \fcmp x := x - 1}{[0,
       2]}$}
-    \AxiomC{$[0, 2] \leq [0, 5]$}
-    \TrinaryInfC{$\vdash \atriple[Int]{[1, 3]}{x \neq 2? \fcmp x := x - 1}{[0,
-      5]}$}
   \end{prooftree}
 
   This is also the best we can derive since $\asem[Int]{C}(\top) = [0, 5]$.
