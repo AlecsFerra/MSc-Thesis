@@ -15,33 +15,11 @@ for Abstract Incorrectness Logic triples $\atriple{P}{C}{Q} \iff \asem{C}(P)
 \geq_A Q$ and perform the same translation that we did for the rules of Hoare
 Logic for the rules of Incorrectness logic.
 
-\subsection{Command composition and Weakest liberal precondition}
-In the definition of the abstract inductive semantics, the meaning of command
-composition is fixed $\asem{C_1 \fcmp C_2} \defeq \asem{C_2} \circ \asem{C_1}$.
-This is generally an arbitrary assumption. In particular, if we interpret the
-semantics of $\asem{\cdot}$ as the strongest postcondition on the lattice $A$,
-the abstract inductive semantics on the opposite lattice $A^{op}$ with base
-commands $\bsem{C}^{A^{op}} = (\bsem{C}^A)^{-1}$, then when the composition is
-inverted, $\asem[A^{op}]{\cdot}$ is the weakest liberal precondition as $\join$
-in the opposite lattice becomes $\meet$ and $\lfp$ becomes $\gfp$. Clearly, the
-proof system needs to be modified in the composition rule that needs to be
-inverted:
-
-\begin{prooftree}
-  \AxiomC{$\vdash \atriple{P}{C_2}{Q}$}
-  \AxiomC{$\vdash \atriple{Q}{C_1}{R}$}
-  \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}{R}$}
-\end{prooftree}
-
-All the other rules are unchanged. The system is still sound and complete. In
-particular, we can note that from the definition $\atriple{Q}{C}{P} \iff
-\asem[A^{op}]{Q} \leq P$, our triples now encode an over-approximation of the
-weakest liberal precondition of program $C$ ending in the states $Q$.
-
-These triples were already described in \cite{Cousot13} under the name of
-necessary precondition, but no proof system was provided. By using this slight
-modification of Abstract Hoare logic, we obtain a sound and complete proof
-system for that.
+\subsection{Hyper domains}
+We used hyper domains to construct program logics that that are able to reason
+about hyperproperties, but we didn't explore what kind of calculi proofsystem 
+they create when they are used to instantiate Reverse Hoare logic and on the 
+opposite lattice.
 
 \section{Related work}
 The idea of systematically constructing program logics is not new. In chapter

@@ -238,9 +238,9 @@ conditions to reach a state:
     & \iff wp(C, Q) \subseteq P
 \end{align*}
 
-This logic was already studied in \cite{Ascari24} under the name of NC, 
-but no proof system was provided, in particular there is proved the connection 
-between Hoare and the Necessary Conditions Logics
+This logic was already studied in \cite{Zhang22} and \cite{Ascari24} under the 
+connection between Hoare logic and the Necessary Conditions logic.
+name of NC, but no proof system was provided, in particular there is proved the 
 
 \begin{theorem}[Connection between Hoare and the Necessary Conditions Logics]
   $$\atriple[\pow{\states}]{P}{C}{Q} \iff \atripleback[\pow{\states}]{\neg Q}{C}
@@ -266,5 +266,7 @@ necessary conditions.
 
 This logic is equivalent as Hoare logic since $wlp(C, Q) \supseteq P \iff 
 \sem{C}(P) \subseteq Q$ hence $\atriple[\pow{\states}]{P}{C}{Q} \iff 
-\atripleback[\pow{\states}^{op}]{Q}{C}{P}$
+\atripleback[\pow{\states}^{op}]{Q}{C}{P}$ the definition of the triple
+and his relationship with Hoare logic was already explored in \cite{Zhang22}
+but no proof system was provided.
 
