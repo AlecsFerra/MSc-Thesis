@@ -1,0 +1,276 @@
+\chapter{Backward Abstract Hoare Logic}
+
+When defining the semantics for $\lang$, we implicitly assumed that the
+abstract inductive semantics is forward by giving the definition $\asem{C_1
+\fcmp C_2} \defeq \asem{C_2} \circ \asem{C_1}$. However, except for the rule
+($\fcmp$), we never explicitly used this fact. We can reuse the theory of
+Abstract Hoare logic to construct a slight variation called Backward Abstract
+Hoare logic, which describes Hoare logics where the semantics is defined
+backward.
+
+\section{Framework}
+
+\subsection{Backward abstract inductive semantics}
+
+To define the backward version of Abstract Hoare logic, we first need a
+backward version of the abstract inductive semantics:
+
+\begin{definition}[Backward abstract inductive semantics]
+  Given a complete lattice $A$ and a family of monotone functions $\bsem{b}^A :
+  A \to A$ for all $b \in Base$, the abstract inductive semantics is defined as
+  follows:
+
+  \begin{align*}
+      \asemback{\cdot}         & \;\;:\; \lang \to A \to A \\
+      \asemback{\sskip}        &\defeq id \\
+      \asemback{b}             &\defeq \bsem{b}^A \\
+      \asemback{C_1 \fcmp C_2} &\defeq \asemback{C_1} \circ \asemback{C_2} \\
+      \asemback{C_1 + C_2}     &\defeq \lambda P . \asemback{C_1} P \join_A \asemback{C_2} P \\
+      \asemback{C^\fix}        &\defeq \lambda P . \lfp(\lambda P'. P \join_A \asemback{C} P')
+  \end{align*}
+\end{definition}
+
+The only difference from the abstract inductive semantics provided in
+definition \ref{def:abstract-inductive-semantics} is the case for $C_1 \fcmp
+C_2$.
+
+We can prove that the backward abstract inductive semantics is still monotone.
+
+\begin{theorem}[Monotonicity]
+  \label{thm:asem-mono-back} 
+  For all $C \in \lang$, $\asemback{C}$ is monotone.
+\end{theorem}
+
+\begin{proof}
+  We modify the inductive case of the proof of theorem \ref{thm:asem-mono} by
+  providing only the case for $\asemback{C_1 \fcmp C_2}$ as all the other cases
+  are identical.
+
+  \begin{itemize}
+    \item $C_1 \fcmp C_2$:
+
+      By inductive hypothesis, $\asemback{C_2}$ is monotone, hence
+      $\asemback{C_2}(P) \leq_A \asemback{C_2}(Q)$.
+
+      \begin{align*}
+        \asemback{C_1 \fcmp C_2}(P) 
+          &= \asemback{C_1}(\asemback{C_2}(P))
+          &\text{By definition of $\asemback{C_1 \fcmp C_2}$}\\
+          &\leq_A \asemback{C_1}(\asemback{C_2}(Q))
+          &\text{By inductive hypothesis on $\asemback{C_1}$} \\
+      \end{align*}
+  \end{itemize}
+\end{proof}
+
+\begin{lemma}[$\asemback{\cdot}$ well-defined]
+  For all $C \in \lang$, $\asemback{C}$ is well-defined.
+\end{lemma}
+\begin{proof}
+  From theorems \ref{thm:asem-mono-back} and \ref{thm:knaster}, all the least
+  fixpoints in the definition of $\asemback{C^\fix}$ exist. For all the other
+  commands, the semantics is trivially well-defined.
+\end{proof}
+
+\subsection{Backward Abstract Hoare Logic}
+
+Now we can provide the definition for the backward abstract Hoare triples,
+which is the same as for abstract Hoare triples, only with the backward
+abstract inductive semantics instead of the usual abstract inductive semantics.
+
+\begin{definition}[Backward Abstract Hoare triple]
+  \label{def:baht}
+  Given an abstract inductive semantics $\asemback{\cdot}$ on the complete
+  lattice $A$, the abstract Hoare triple written $\atripleback{P}{C}{Q}$ is
+  valid if and only if $\asemback{C}(P) \leq_A Q$.
+
+  $$\atripleback{P}{C}{Q} \iff \asemback{C}(P) \leq_A Q$$
+\end{definition}
+
+Clearly, the proof system only needs to be modified to accommodate the new
+semantics for program composition, and all the other rules remain the same.
+
+\begin{definition}[Backward Abstract Hoare rules]$\;$\\
+  We only provide the rule for program composition; all the other rules are
+  identical to those provided in definition \ref{def:ahtrules}.
+
+  % Rule for sequential composition
+  \begin{prooftree}
+    \AxiomC{$\vdash \atripleback{P}{C_2}{Q}$}
+    \AxiomC{$\vdash \atripleback{Q}{C_1}{R}$}
+    \RightLabel{$(\mathbb{\fcmp})$}
+    \BinaryInfC{$\vdash \atripleback{P}{C_1 \fcmp C_2}{R}$}
+  \end{prooftree}
+  If executing $C_2$ from state $P$ leads to state $Q$, and executing $C_1$
+  from state $Q$ leads to state $R$, then executing $C_2$ followed by $C_1$ from
+  state $P$ leads to state $R$. 
+\end{definition}
+
+We can prove again that the proof system is still sound and complete.
+
+\begin{theorem}[Soundness]
+  \label{thm:atriple-sound-back}
+  $$\vdash \atripleback{P}{C}{Q} \implies \atripleback{P}{C}{Q}$$
+\end{theorem}
+
+\begin{proof}
+  We modify the inductive case of the proof of theorem \ref{thm:atriple-sound}
+  by providing only the case for rule $(\fcmp)$ as all the other cases are
+  identical.
+
+  \begin{itemize}
+      \item $(\fcmp)$: Then the last step in the derivation was:
+        \begin{prooftree}
+          \AxiomC{$\vdash \atripleback{P}{C_2}{Q}$}
+          \AxiomC{$\vdash \atripleback{Q}{C_1}{R}$}
+          \RightLabel{$(\mathbb{\fcmp})$}
+          \BinaryInfC{$\vdash \atripleback{P}{C_1 \fcmp C_2}{R}$}
+        \end{prooftree}
+          
+        By inductive hypothesis:
+        $\asemback{C_2}(P) \leq_A Q$ and
+        $\asemback{C_1}(Q) \leq_A R$.
+
+        The triple is valid since:
+        \begin{align*}
+          \asemback{C_1 \fcmp C_2}(P)
+            &= \asemback{C_1}(\asemback{C_2}(P))
+            &\text{By definition of $\asemback{\cdot}$} \\
+            &\leq_A \asemback{C_1}(Q)
+            &\text{By monotonicity of $\asemback{\cdot}$} \\
+            &\leq_A R
+        \end{align*}
+  \end{itemize}
+\end{proof}
+
+\begin{theorem}[Relative $\asemback{\cdot}$-completeness]
+  \label{thm:post-completeness-back}
+  $$\vdash \atripleback{P}{C}{\asemback{C}(P)}$$
+\end{theorem}
+
+\begin{proof}
+  We modify the inductive case of the proof of theorem
+  \ref{thm:post-completeness} by providing only the case for $C_1 \fcmp C_2$ as
+  all the other cases are identical.
+
+  \begin{itemize}
+      \item $C_1 \fcmp C_2$:
+        By definition $\asemback{C_1 \fcmp C_2}(P) = \asemback{C_1}(\asemback{C_2}(P))$
+
+        \begin{prooftree}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atripleback{P}{C_2}{\asemback{C_2}(P)}$}
+          \AxiomC{(Inductive hypothesis)}
+          \noLine
+          \UnaryInfC{$\vdash \atripleback{\asemback{C_2}(P)}{C_1}{\asemback{C_1}(\asemback{C_2}(P))}$}
+          \RightLabel{($\fcmp$)}
+          \BinaryInfC{$\vdash \atripleback{P}{C_1 \fcmp C_2}{\asemback{C_1 \fcmp C_2}(P)}$}
+        \end{prooftree}
+  \end{itemize}
+\end{proof}
+
+
+\subsection{Backward-Forward Abstract Inductive Semantics Duality}
+
+\begin{definition}[Dual semantics]
+  Given an abstract inductive semantics defined on some lattice $A$ with
+  base commands semantics $\bsem{\cdot}^A$, we can define the dual backward 
+  abstract inductive semantics as the backward abstract inductive semantics
+  instantiated on the lattice $A^{op}$ where the semantics of the
+  base commands is defined as $\bsem{\cdot}^{A^{op}} = (\bsem{\cdot}^A)^{-1}$.
+\end{definition}
+
+If we interpret the abstract inductive semantics as the strongest postcondition
+on the domain $A$, then the backward abstract inductive semantics on the domain 
+$A$ is the weakest precondition on the domain $A$, this is true since on the 
+opposite lattice the role of meets and joins i inverted ($\join_A^{op} = 
+\meet_A$ and $\lfp_{A^{op}} = \gfp_A$).
+
+\begin{observation}
+  \label{obs:weakest-precondition}
+  Following observation \ref{obs:weakest-precondition}, the fual backward 
+  abstract inductive semantics on the domain $\pow{\states}^{op}$ is the weakest 
+  liberal precondition.
+\end{observation}
+
+\section{Instantiations}
+
+\subsection{Hoare Logic, Again}
+
+From the instantiations of the backward abstract inductive semantics of 
+observation \ref{obs:weakest-precondition}, we know that 
+$\asemback[\pow{\states}^{op}]{\cdot}$ is the weakest liberal precondition. By 
+looking at the meaning of the backward abstract Hoare triples:
+
+\begin{theorem}[Dual-logic equivalence]
+  $$\atripleback[\pow{\states}^{op}]{Q}{C}{P} \iff \atriple{P}{C}{Q}$$
+\end{theorem}
+\begin{proof}
+\begin{align*}
+  \atripleback[\pow{\states}^{op}]{Q}{C}{P}
+    &\iff \asemback[\pow{\states}^{op}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
+    &\iff wlp(C, Q) \leq_{\pow{\states}^{op}} P \\
+    &\iff wlp(C, Q) \geq_{\pow{\states}} P \\
+    &\iff post(C, P) \leq_{\pow{\states}} Q \\
+    &\iff \asem{C}(P) \leq_{\pow{\states}} Q \\
+    &\iff \atriple{P}{C}{Q}
+\end{align*}
+\end{proof}
+
+This means that the validity of Backward Abstract Hoare logic triples on the
+opposite powerset of states is equivalent to the same as the one for Abstract 
+Hoare logic on the powerset of states, meaning that they prove the same 
+properties of programs. In particular, in this context, the two proof systems 
+are equivalent since they are both sound and (relatively) complete while 
+proving the same properties.
+
+\subsection{Necessary conditions}
+Estabished that the dual instantiation of Backward Abstract Hoare logic, we can
+look at the backward semantics obtained by not taking the opposite lattice and
+by only inverting the semantics of the base commands.
+
+\begin{definition}[Reverse semantics]
+  Given an abstract inductive semantics defined on some complete lattice $A$ 
+  with base command semantics $\bsem{\cdot}^A$, we can define the reverse
+  backward abstract inductive semantics as the backward inductive semantics
+  instantiated on the complete lattice $A$ and base command semantics 
+  $(\bsem{\cdot}^A)^{-1}$
+\end{definition}
+
+Given the usual interpretation on $\pow{\states}$ with semantics of base 
+commands $\bsem{\cdot}^{\pow{\states}}$ were $\asem[\pow{\states}]{\cdot}$ is the 
+strongest postcondition then the backward abstract inductive semantics on the
+the complete lattice $\pow{\states}$ with base command semantics 
+\todo{AAAAA} is the backward semantics defined in
+\cite{Ascari24}.
+
+\begin{theorem}[Reverse semantics]
+  Let $\asemback{\cdot}$ be the reverse semantics of $\asem{\cdot}$ then
+  $$\sigma \in \asemback{C}(\{ \sigma' \}) \iff \sigma' \in \asem{C}(\{\sigma\})$$
+\end{theorem}
+\begin{proof}
+  By structural induction on $C$:
+  \begin{itemize}
+    \item $\sskip$:
+      \begin{align*}
+        \asemback{\sskip}(\{\sigma'\})
+          &= \{\sigma'\}
+          &\text{By definition of $\asemback{\cdot}$} \\
+          &= \asem{\sskip}(\{\sigma' \})
+          &\text{By definition of $\asem{\cdot}$} \\
+      \end{align*}
+    
+    \item $\sskip$:
+      \begin{align*}
+        \asemback{\sskip}(\{\sigma'\})
+          &= \bsem{b}(\{\sigma' \})
+      \end{align*}
+  \end{itemize}
+\end{proof}
+
+Given the usual interpretation on $\pow{\states}$ with semantics of base 
+commands $\bsem{\cdot}^{\pow{\states}}$ were $\asem[\pow{\states}]{\cdot}$ is the 
+strongest postcondition then the backward abstract inductive semantics on the
+the complete lattice $\pow{\states}$ with base command semantics 
+$(\bsem{\cdot}^{\pow{\states}})^{-1}$ is the backward semantics defined in
+\cite{Ascari24}.

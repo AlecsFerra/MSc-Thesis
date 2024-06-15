@@ -47,6 +47,10 @@
   \sem{#2}_{ais}^{#1}
 }
 
+\newcommand{\asemback}[2][A]{
+  \sem{#2}_{bais}^{#1}
+}
+
 % Triples
 \newcommand{\htriple}[3]{
     \{ #1 \} \; #2 \; \{ #3 \}
@@ -54,6 +58,10 @@
 
 \newcommand{\atriple}[4][A]{
     \langle #2 \rangle_{#1} \; #3 \; \langle #4 \rangle
+}
+
+\newcommand{\atripleback}[4][A]{
+    \langle #2 \rangle_{#1}^{\leftarrow} \; #3 \; \langle #4 \rangle^{\leftarrow}
 }
 
 

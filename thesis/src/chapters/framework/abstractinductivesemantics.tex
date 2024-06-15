@@ -8,6 +8,8 @@ collections of states with $\pow{\states}$ now they are represented by an
 arbitrary complete lattice.
 
 \begin{definition}[Abstract inductive semantics]
+
+  \label{def:abstract-inductive-semantics}
   Given a complete lattice $A$ and a family of monotone functions $\bsem{b}^A : A
   \to A$ $\forall b \in Base$ the abstract inductive semantics is defined as 
   follows:
@@ -52,10 +54,10 @@ arbitrary complete lattice.
     \item $C_1 \fcmp C_2$:
 
       By inductive hypothesis $\asem{C_1}$ is monotone hence
-      $\asem{C_1}(P) \leq_A \asem{C_2}(Q)$
+      $\asem{C_1}(P) \leq_A \asem{C_1}(Q)$
 
       \begin{align*}
-        \sem{C_1 \fcmp C_2}(P) 
+        \asem{C_1 \fcmp C_2}(P) 
           &= \asem{C_2}(\asem{C_1}(P))
           &\text{By definition of $\asem{C_1 \fcmp C_2}$}\\
           &\leq_A \asem{C_2}(\asem{C_1}(Q))
@@ -93,12 +95,12 @@ arbitrary complete lattice.
 
 
 \begin{lemma}[$\sem{\cdot}$ well-defined]
-  $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
+  $\forall \; C \in \lang$ $\asem{C}$ is well-defined.
 \end{lemma}
 \begin{proof}
   From theorems \ref{thm:asem-mono} and 
   \ref{thm:knaster} all the least fixpoints in the definition of 
-  $\sem{C^\fix}$ exists; for all the other commands the semantics is 
+  $\asem{C^\fix}$ exists; for all the other commands the semantics is 
   trivially well-defined.
 \end{proof}
 
