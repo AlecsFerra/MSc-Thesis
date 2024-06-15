@@ -280,18 +280,18 @@ The proofsystem is sound:
             &= Q
         \end{align*}
 
-      \item $(\lfp)$:
+      \item $(\fix)$:
         Then the last step in the derivation was:
         \begin{prooftree}
           \AxiomC{$\vdash \atriple{P}{C}{P}$}
-          \RightLabel{$(\lfp)$}
+          \RightLabel{$(\fix)$}
           \UnaryInfC{$\vdash \atriple{P}{C ^ \lfp}{P}$}
         \end{prooftree}
 
         By inductive hypothesis: $\asem{C}P \leq P$
 
         \begin{align*}
-          \bsem{C^\lfp}(P)
+          \bsem{C^\fix}(P)
             &= \lfp(\lambda P' \to P \join_A \asem{C}(P')) \\
         \end{align*}
 
