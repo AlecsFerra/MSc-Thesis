@@ -211,11 +211,13 @@ looking at the meaning of the backward abstract Hoare triples:
     &\iff \asemback[\pow{\states}^{op}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
     &\iff wlp(C, Q) \leq_{\pow{\states}^{op}} P \\
     &\iff wlp(C, Q) \geq_{\pow{\states}} P \\
-    &\iff post(C, P) \leq_{\pow{\states}} Q \\
+    &\iff stp(C, P) \leq_{\pow{\states}} Q \\
     &\iff \asem{C}(P) \leq_{\pow{\states}} Q \\
     &\iff \atriple{P}{C}{Q}
 \end{align*}
 \end{proof}
+
+\todo{Mh not sure it is true}
 
 This means that the validity of Backward Abstract Hoare logic triples on the
 opposite powerset of states is equivalent to the same as the one for Abstract 
