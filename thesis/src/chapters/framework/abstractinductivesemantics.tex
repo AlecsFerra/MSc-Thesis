@@ -24,6 +24,23 @@ arbitrary complete lattice.
   \end{align*}
 \end{definition}
 
+
+When developing abstract interpreters to perform abstract interpretation,
+iterative commands are usually not expressed directly as fixpoints but by
+some over-approximation, as is the case for the $C^\fix$ command. This is
+necessary since the scope of the abstract interpreter is to be run, and in
+general, if the lattice on which the interpretation is run has infinite
+ascending chains, the computation can diverge. In our case, the termination
+requirement is necessary since we aren't interested in running the abstract
+inductive semantics but using it as the semantics on which the definition of
+abstract Hoare logic is dependent.
+
+
+As we did for the concrete collecting semantics, we need to prove that the
+semantics is well-defined. In general, if we drop the requirement for $A$
+to be a complete lattice or for $\bsem{b}$ to be monotone, the least fixpoint
+could be undefined.
+
 \begin{theorem}[Monotonicity]
   \label{thm:asem-mono} 
   $\forall \; C \in \lang$ $\asem{C}$ is monotone.
@@ -95,6 +112,7 @@ arbitrary complete lattice.
 
 
 \begin{lemma}[$\sem{\cdot}$ well-defined]
+  \label{thm:well-def}
   $\forall \; C \in \lang$ $\asem{C}$ is well-defined.
 \end{lemma}
 \begin{proof}
@@ -119,6 +137,11 @@ interpretation.
   This can be easily assessed by comparing the two definitions.
 \end{observation}
 
+From this observation, we can see that lemma \ref{thm:sem-welldef} is just
+a special case of lemma \ref{thm:well-def} since, as shown in theorem
+\ref{thm:sem-lattice}, $\pow{\states}$ is a complete lattice and the semantics
+of the base commands is monotone by construction.
+
 \begin{observation}
   \label{obs:abstract-fix}
   There are some domains where $\exists \; C \in \lang$ such that
@@ -128,8 +151,12 @@ interpretation.
 
 \subsection{Connection with Abstract Interpretation}
 
-It turns out that the definition of abstract inductive semantics is closely 
+As states before, the definition of abstract inductive semantics is closely
 related to the one of abstract semantics in \cite{Cousot77}.
+
+In particular, the definition of abstract inductive semantics, when the 
+semantics of the base commands is sound, is equivalent to an abstract semantics.
+
 
 \begin{theorem}[Abstract Interpretation Basis]
   \label{thm:sound-ai}
@@ -137,9 +164,6 @@ related to the one of abstract semantics in \cite{Cousot77}.
   over-approximation of $\bsem{\cdot}$, then $\asem{\cdot}$ is a sound 
   over-approximation of $\sem{\cdot}$.
 \end{theorem}
-
-In particular, the definition of abstract inductive semantics, when the 
-semantics of the base commands is sound, is equivalent to an abstract semantics.
 
 This connection also allows us to obtain abstract inductive semantics through 
 Galois insertion.
@@ -155,4 +179,5 @@ Galois insertion.
 
 The abstract inductive semantics obtained by Galois insertion between 
 $\pow{\states}$ and any domain $A$ corresponds to the best abstract inductive 
-semantics on $A$.
+interpreter on $A$.
+

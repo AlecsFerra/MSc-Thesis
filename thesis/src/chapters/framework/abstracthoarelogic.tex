@@ -2,19 +2,19 @@
 \label{chp:intro-ahorare}
 
 \subsection{Hoare logic}
-Hoare logic was the first program logic ever designed by Hoare and Floyd 
-\cite{Hoare69, Floyd93} and is based on the core concept of partial correctness 
+Hoare logic  \cite{Hoare69, Floyd93} was one of the first method designed for 
+the verification of programs, is based on the core concept of partial correctness 
 assertions. A triple is a formula $\htriple{P}{C}{Q}$ where $P$ and $Q$ are 
 assertions on the initial and final states of running program $C$, respectively. 
 These assertions are partial in the sense that $Q$ is meaningful only when the 
-execution of $C$ terminates.
+execution of $C$ on $P$ terminates.
 
 Hoare logic is organized as a proof system, where the syntax 
 $\vdash \htriple{P}{C}{Q}$ indicates that the triple 
 $\htriple{P}{C}{Q}$ is proved by some combination of rules of the proof system.
 
 The original formulation of Hoare logic was given for an imperative language 
-with imperative constructs, but it can be easily translated for our language 
+with deterministic constructs, but it can be easily translated for our language 
 $\lang$ following the work in \cite{Moller21}.
 
 \begin{definition}[Hoare triple]
@@ -196,7 +196,9 @@ with the notation $\atriple{P}{C}{Q}$ and intread we denote the triples obtained
 with the inference rules of definition \ref{def:ahtrules} with $\vdash 
 \atriple{P}{C}{Q}$.
 
-The proofsystem is sound:
+The proofsystem for Abstract Hoare logic is still sound, as the original Hoare
+logic.
+
 \begin{theorem}[Soundness]
   \label{thm:atriple-sound}
   $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
@@ -291,7 +293,7 @@ The proofsystem is sound:
         By inductive hypothesis: $\asem{C}P \leq P$
 
         \begin{align*}
-          \bsem{C^\fix}(P)
+          \asem{C^\fix}(P)
             &= \lfp(\lambda P' \to P \join_A \asem{C}(P')) \\
         \end{align*}
 
@@ -305,11 +307,9 @@ The proofsystem is sound:
             &= P
         \end{align*}
 
-        Hence $P$ is a fixpoint of $\lambda P' \to P \join_A \asem{C}(P')$.
-
-        And clearly is bigger than the least one 
-        $\lfp(\lambda P' \to P \join_A \asem{C}(P')) \leq_A P$ thus making the
-        triple valid.
+        Hence $P$ is a fixpoint of $\lambda P' \to P \join_A \asem{C}(P')$,
+        therefore it's at leas as big as the least one, $\lfp(\lambda P' \to P 
+        \join_A \asem{C}(P')) \leq_A P$ thus making the triple valid.
 
       \item $(\leq)$: Then the last step in the derivation was:
         \begin{prooftree}
@@ -337,7 +337,8 @@ And is also relatively complete, in the sense that the axioms are complete
 relative to what we can prove in the underlying assertion language, that in
 our case is described by the complete lattice.
 
-We will start by proving a slightly weaker result:
+We will start by proving a slightly weaker result, we will show that we are able 
+to prove the strongest post-condition of every program.
 
 \begin{theorem}[Relative $\asem{\cdot}$-completeness]
   \label{thm:post-completeness}
@@ -445,7 +446,9 @@ We will start by proving a slightly weaker result:
   \end{itemize}
 \end{proof}
 
-Now we can finally show the relative completeness:
+Now we can finally show the relative completeness, by applying the $(\leq)$ to
+obtain the desired post-condition.
+
 \begin{theorem}[Relative completeness]
   \label{thm:completeness}
   $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$

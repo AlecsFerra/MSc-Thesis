@@ -36,14 +36,13 @@ exactly that property. This problem was already studied in \cite{Mounir17,
 Mastroeni18} but in the context of abstract interpretation. In all of them,
 what was obtained was an overapproximation of the strongest hyper postcondition
 that in abstract interpretation is enough but in our context isn't if we want
-to keep the relative completeness. In particular,
+to keep the relative completeness. In particular in \cite{Mounir17},
 the hyper semantics of \texttt{if b then} $C_1$ \texttt{else} $C_2$ is given
 as (translated in $\lang$) $\{ \sem{b ? \fcmp C_1} T \cup 
 \sem{\neg b ? \fcmp C_2} \mid T \in \mathbb{T}\}$, thus making the definition
 non-inductive. In particular, given any program $C$, we can perform the analysis
 of \texttt{if true then} $C$ and perform the analysis of any program without 
-practically ever using the hyper semantics, and it didn't solve the 
-overapproximation problem in loops.
+practically ever using the hyper semantics
 
 The root of the problem is that in $\pow{\pow{\states}}$ with the standard 
 ordering on the powerset, the least upper bound is unable to distinguish between
@@ -58,15 +57,34 @@ different executions.
   which is $\{\{2, 3, 4, 5\}, \{6, 7\}\}$.
 \end{example}
 
-To our knowledge, there is no literature on an abstract inductive semantics that
-exactly computes the strongest hyper postcondition.
+
+When applying the rule for the non-deterministic choice, 
+$\asem[\pow{\pow{\states}}]{C_1 + C_2}(P) = \asem[\pow{\pow{\states}}]{C_1}(P) 
+\;\cup\; \asem[\pow{\pow{\states}}]{C_2}(P)$, we are performing the union of the 
+outer sets instead of the inner ones that contain the actual executions. We 
+might think that we could solve this issue by modifying the order defined on 
+$\pow{\pow{\states}}$, but each set does not carry any information on which 
+execution actually generated it. Therefore, it is impossible to construct a 
+union that does not lose precision.
+
+To our knowledge, there is no literature on an abstract inductive semantics
+that exactly computes the strongest hyper postcondition, but only some sound
+over-approximation. This is sufficient when trying to develop an abstract
+interpreter, as clearly it will also be lost when switching from the concrete
+$\pow{\pow{\states}}$ to an abstract domain that is actually
+machine-representable will be used to run the interpreter. But in our case we
+are interest to being able to obtain the strongest postcondition possible as
+having some overapproximation will make this particular instance of Abstract
+Hoare logic unable to prove some hyperproperties, namely the one on with the
+abstract inductive semantics is imprecise.
 
 \subsection{Hyper Domains}
 
-To address this, we will define a more complex family of domains whose semantics 
-satisfy the distributive property of different executions. We will use a set $K$ 
-to keep track of each execution and define the join operation in such a way that 
-it does not confuse different executions together.
+To address the issues caused by $\pow{\pow{\states}}$, we will define a more 
+complex family of domains whose semantics satisfy the distributive property of 
+different executions. We will use a set $K$ to keep track of each execution and 
+define the join operation in such a way that it does not confuse different 
+executions together.
 
 \begin{definition}[Hyper Domain]
   Given a complete lattice $B$ and a set $K$, the hyper domain $H(B)_K$ is 
@@ -78,6 +96,11 @@ it does not confuse different executions together.
   on $B$ with \textit{undef} added as a new bottom element.
 \end{definition}
 
+Since the role of $K$, as stated before, is only to index the different 
+executions, what actually it's used it's not important, the only property of
+interest is having at least as many elements as the number of executions that
+we want to keep track of.
+
 \begin{definition}[Hyper Instantiation]
   Given an instantiation of the abstract inductive semantics on a domain $B$ 
   with semantics of the base commands $\bsem{\cdot}^B$, we can instantiate the 
@@ -86,7 +109,14 @@ it does not confuse different executions together.
   $$\bsem{b}^{H(B)_K}(\chi) \defeq \lambda r \to \bsem{b}^B(\chi(r))$$
 \end{definition}
 
-Now we prove that the hyper instantiate is dristibutive:
+The idea of defining hyper instantiation it to lift the abstract inductive 
+semantics on some domain $B$ in it's "hyper" version, the definition of the base 
+commands applies the semantics of the base commands on $B$ to each execution.
+
+Now we prove that the hyper instantiate is distributive, in the sense that
+running the hyper instantiation of the semantics is the same as running the 
+original semantics on each execution.
+
 \begin{theorem}[Distributivity]
     \label{thm:hyper-add}
     $$\asem[H(B)_K]{C}(\mathcal{\chi}) = \lambda r \to \asem[B]{C}(\chi(r))$$
@@ -97,9 +127,12 @@ Now we prove that the hyper instantiate is dristibutive:
     \item $\sskip$:
       \begin{align*}
         \asem[H(B)_K]{\sskip}(\chi) 
-          &= \chi \\
-          &= \lambda r \to \chi(r) \\
+          &= \chi
+          &\text{By definition of $\asem[H(B)_K]{\cdot}$} \\
+          &= \lambda r \to \chi(r) 
+          &\text{By extensionality}\\
           &= \lambda r \to \asem[B]{\sskip}(\chi(r))
+          &\text{By definition of $\asem[B]{\cdot}$} \\
       \end{align*}
 
     \item $b$:
@@ -111,7 +144,8 @@ Now we prove that the hyper instantiate is dristibutive:
     \item $C_1 \fcmp C_2$:
       \begin{align*}
         \asem[H(B)_K]{C_1 \fcmp C_2}(\chi) 
-          &= \asem[H(B)_K]{C_2}(\asem[H(B)_K]{C_1}(\chi)) \\
+          &= \asem[H(B)_K]{C_2}(\asem[H(B)_K]{C_1}(\chi))
+          &\text{By definition of $\asem[H(B)_K]{\cdot}$} \\
           &= \asem[H(B)_K]{C_2}(\lambda r_1 \to 
             \asem[B]{C_1}(\chi(r_1))
           &\text{By inductive hypothesis} \\
@@ -120,7 +154,8 @@ Now we prove that the hyper instantiate is dristibutive:
           &\text{By inductive hypothesis} \\
           &= \lambda r_2 \to 
             \asem[B]{C_2}(\asem[B]{C_1}(\chi(r_2))) \\
-          &= \lambda r_2 \to \asem[B]{C_1 \fcmp C_2}(\chi(r_2)) \\
+          &= \lambda r_2 \to \asem[B]{C_1 \fcmp C_2}(\chi(r_2))
+          &\text{By definition of $\asem[B]{\cdot}$} \\
       \end{align*}
 
     \item $C_1 + C_2$:
@@ -128,19 +163,22 @@ Now we prove that the hyper instantiate is dristibutive:
         \asem[H(B)_K]{C_1 + C_2}(\chi)
           &= \asem[H(B)_K]{C_1}(\chi) 
             \lor \asem[H(B)_K]{C_2}(\chi) \\
-          &\text{By inductive hypothesis} \\
+          &\text{By definition of $\asem[H(B)_K]{\cdot}$} \\
           &= (\lambda r_1 \to \asem[B]{C_1}(\chi(r_1)))
             \lor (\lambda r_2 \to \asem[B]{C_1}(\chi(r_2))) \\
+          &\text{By inductive hypothesis} \\
           &= \lambda r \to \asem[B]{C_1}(\chi(r))
             \lor \asem[B]{C_2}(\chi(r)) \\
-          &= \lambda r \to \asem[B]{C_1 + C_2}(\chi(r))
+          &= \lambda r \to \asem[B]{C_1 + C_2}(\chi(r)) \\
+          &\text{By definition of $\asem[B]{\cdot}$} \\
       \end{align*}
 
     \item $C^\fix$:
       \begin{align*}
         \asem[H(B)_K]{C^\fix}(\chi)
           &= \lfp(\lambda \psi \to 
-            \chi \lor \asem[H(B)_K]{C}(\psi)) \\
+            \chi \lor \asem[H(B)_K]{C}(\psi))
+          &\text{By definition of $\asem[H(B)_K]{\cdot}$} \\
           &= \lfp(\lambda \psi \to 
             \chi \lor \lambda r \to \asem[B]{C}(\psi(r)))
           &\text{By inductive hypothesis} \\
@@ -148,7 +186,8 @@ Now we prove that the hyper instantiate is dristibutive:
             \chi(r) \lor \asem[B]{C}(\psi(r)))
           &\text{By theorem \ref{th:pointfix}} \\
           &= \lambda r \to \lfp(\lambda P 
-            \to \chi(r) \lor \asem[B]{C} P) \\
+            \to \chi(r) \lor \asem[B]{C} P)
+          &\text{By definition of $\asem[B]{\cdot}$} \\
           &= \lambda r \to \asem[B]{C^\fix}(\chi(r))
       \end{align*}
   \end{itemize}

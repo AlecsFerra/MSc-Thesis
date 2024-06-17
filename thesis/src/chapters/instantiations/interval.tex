@@ -205,3 +205,13 @@ with respect to $\asem{\cdot}$ as in Abstract Hoare Logic.
   obtain $\ctriple{\top}{C}{[0, 2]}$, which is unobtainable in Abstract Hoare
   Logic.
 \end{example}
+
+This is clearly a consequence that via the $(S)$ rule in Algebraic Hoare logic
+we are able to prove the best correct approximation of any program $C$, but the 
+property of being a best correct approximation does not "compose",
+meaning that the function composition of two best correct approximations is not
+the best correct approximation of the composition of the functions. Since in the
+abstract semantics the program composition is done in "the abstract," it's
+impossible to expect to be able to obtain any possible best correct
+approximation except in trivial abstract domains like the concrete
+$\pow{\states}$ or the one-element lattice.
