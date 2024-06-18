@@ -177,7 +177,7 @@ We can prove again that the proof system is still sound and complete.
   with base command semantics $\bsem{\cdot}^A$, we can define the reverse
   backward abstract inductive semantics as the backward inductive semantics
   instantiated on the complete lattice $A$ and base command semantics 
-  as the weakest precondition of $\bsem{\cdot}^A$.
+  $(\bsem{\cdot}^A)^{-1}$.
 \end{definition}
 
 If we interpret the abstract inductive semantics as the strongest postcondition
@@ -201,7 +201,7 @@ we take their meet.
   base commands semantics $\bsem{\cdot}^A$, we can define the dual backward 
   abstract inductive semantics as the backward abstract inductive semantics
   instantiated on the lattice $A^{op}$ where the semantics of the
-  base commands is defined as $\bsem{\cdot}^{A^{op}}(Q) = wlp(\bsem{\cdot}^A, Q)$.
+  base commands is defined as $\bsem{\cdot}^{A^{op}} = (\bsem{\cdot}^A)^{-1}$.
 \end{definition}
 
 If we interpret the abstract inductive semantics as the strongest postcondition
