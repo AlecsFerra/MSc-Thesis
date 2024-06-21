@@ -8,3 +8,57 @@ properties that are not expressible in standard Hoare logic.
 \subimport{./}{hoare}
 \subimport{./}{interval}
 \subimport{./}{hyper_hoare}
+
+\section{Partial Incorrectness}
+
+Any instantiation of the abstract inductive semantics gives us another
+instantiation for free, since the semantics is parametric on a complete lattice
+$A$, and the dual of a complete lattice is also a complete lattice. We can
+obtain the dual abstract inductive semantics for free on the complete lattice
+$A^{op}$.
+
+\begin{definition}[Dual Abstract Inductive Semantics]
+  Given an abstract inductive semantics defined on some complete lattice $A$
+  and base commands $\bsem{\cdot}^A$, we can define the dual abstract inductive
+  semantics as the abstract inductive semantics instantiated on the 
+  complete lattice $A^{op}$ with base command semantics $\bsem{\cdot}^{A^{op}}
+  = \bsem{\cdot}^A$.
+\end{definition}
+
+Since the dual abstract inductive semantics is an abstract inductive semantics,
+it also induces an Abstract Hoare Logic. In the dual lattice, since the partial
+order is inverted, the roles of joins and meets are inverted, and thus also
+$\lfp$ and $\gfp$ are inverted. Hence, the dual abstract inductive semantics,
+when seen from the dual lattice, can be expressed as: 
+\begin{align*}
+  \asem[A^{op}]{\sskip}        &= id &&= id \\
+  \asem[A^{op}]{b}             &= \bsem{b}^{A^{op}} &&= \bsem{b}^A \\
+  \asem[A^{op}]{C_1 \fcmp C_2} &= \asem[A^{op}]{C_2} \circ \asem[A^{op}]{C_1} &&= \asem[A^{op}]{C_2} \circ \asem[A^{op}]{C_1} \\
+  \asem[A^{op}]{C_1 + C_2}     &= \lambda P . \asem[A^{op}]{C_1} P \join_{A^{op}} \asem[A^{op}]{C_2} P &&= \lambda P . \asem[A^{op}]{C_1} P \meet_A \asem[A^{op}]{C_2} P \\
+  \asem[A^{op}]{C^\fix}        &= \lambda P . \lfp_{A^{op}}(\lambda P'. P \join_{A^{op}} \asem[A^{op}]{C} P') &&= \lambda P . \gfp_{A}(\lambda P'. P \meet_A \asem[A^{op}]{C} P')
+\end{align*}
+
+Following the intuition that the abstract inductive semantics is some abstract
+version of the strongest postcondition, what interpretation can we give for the
+dual abstract inductive semantics? While on the lattice $A$, for the
+non-deterministic choice, we take the join of the two branches. In the opposite
+lattice, we take their meet. Following this intuition, instead of taking all
+the reachable states (the union of the states reached by the two branches), we
+take the states that we are sure we are reaching, i.e., the intersection of the
+states reached by the two branches. The same reasoning also holds for the
+$\fix$ command.
+
+Since the order on the dual lattice is inverted, inversion holds also for the
+validity of the Abstract Hoare triples: $$\models \atriple[A^{op}]{P}{C}{Q}
+\iff \asem{C}(P) \leq_{A^{op}} Q \iff \asem[A^{op}]{C}(P) \geq_A Q$$
+
+When the dual abstract inductive semantics is obtained with the abstract
+inductive semantics on $\pow{\states}$ (the strongest postcondition), the dual
+semantics becomes the strongest liberal postcondition introduced in
+\cite{Zhang22} (in the boolean case). The triples are given the name "partial
+incorrectness," as if $\models \atriple[A^{op}]{Q}{C}{P}$, $P$ is an
+over-approximation of the states that end up in $Q$ modulo termination. The
+same concept is studied under the name of "Necessary Preconditions" in
+\cite{Cousot13}, and thanks to Abstract Hoare Logic, we obtained a sound and
+complete proof system for the logic.
+

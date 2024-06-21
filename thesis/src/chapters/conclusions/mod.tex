@@ -56,6 +56,15 @@ Exist rule is missing. Since it is necessary to prove the completeness of Hyper
 Hoare Logic, it must be embedded somewhere in the rules of Abstract Hoare
 Logic.
 
+\subsection{Unifying Forward and Backward Reasoning}
+The only difference between Abstract Hoare Logic and Backward Abstract Hoare
+Logic lies in the abstract inductive semantics, where the semantics of program
+composition ($\fcmp$) is inverted. A potential solution would be to make the
+semantics parametric on the composition $\asem{C_1 \fcmp C_2} \defeq \asem{C_1}
+\star \asem{C_2}$ and let $\star = \circ^{-1}$ for the forward semantics and
+$\star = \circ$ for the backward semantics. However, this approach is somewhat
+inelegant when defining the command composition rule for the proof system.
+
 \section{Related work}
 
 The idea of systematically constructing program logics is not new. Kleene
