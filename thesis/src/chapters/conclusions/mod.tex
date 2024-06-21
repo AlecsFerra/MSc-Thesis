@@ -43,21 +43,36 @@ they create when they are used to instantiate Reverse Hoare logic and on the
 opposite lattice.
 
 \section{Related work}
-The idea of systematically constructing program logics is not new. In chapter
-\ref{chp:join-meet-rules}, we already discussed Kleene Algebras with Tests
-\cite{Kozen97} and how the framework requires the non-deterministic choice to
-distribute over command composition. This restricts the program semantics that
-we can describe. Algebraic Hoare Logic proves that this requirement is
-unnecessary to construct a sound and complete Hoare-style logic. Another
-alternative proposed in \cite{Martin06} is built on the theory of traced
-monoidal categories, where the monoidal structure of the category is used to
-encode the semantics of the non-deterministic choice. This implicitly imposes
-the same distributivity requirements of the non-deterministic choice as Kleene
-Algebra with Tests. 
-It is also important to note that the scope of all the
-previous work is focused on relating the concrete semantics of programs to
-concrete Hoare rules. Instead, this work aims to be more general, particularly
-in how we are able to use the abstract inductive semantics to encode
-under-approximations as abstract interpreters from abstract interpretation and
-more complex properties as Hyper properties.
+
+The idea of systematically constructing program logics is not new, Kleene
+Algebra with Tests \cite{Kozen97} was one of the first of this kind of work,
+in section \ref{chp:join-meet-rules} we have discussed how in general we
+cant distribute non-deterministic choice ($\asem{(C_1 + C_2) \fcmp C_3} \neq
+\asem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$) violating one of the axioms of 
+Kleene algebras; Another similar alternative was proposed in \cite{Martin06} 
+using traced monoidal categories to encode properties of the program, for 
+example the monoidal structure is used to model the non-deterministic choice,
+but imposes the same distributivity requirements of Kleene Algebras (this is
+caused by $\oplus$ being a bifunctor), but disregarding expressivity, the
+main difference it's in the philosophy behind the approach, Abstract Hoare logic
+is a more semantics centered approach instead of being an "equational" theory
+like KAT. The more semantics centered approach was also vital in seeing 
+providing the idea that the abstract inductive semantics could be used not only
+to encode the strongest postcondition but also the strongest liberal postcondition,
+weakest precondition and weakest liberal precondition and unify all the 
+partial hoare-like logics.
+
+A more similar approach to rhe one of Abstract Hoare Logic is Outcome Logic 
+\cite{Zilberstein23} as like Abstract Hoare Logic the semantics of the language
+is parametric on the domain of execution but the assertion language is fixed
+if we ignore the basic assertions on program states, Outcome logic had as original 
+goal the of of unifiyng correctness and incorrectness reasoning with the powerset 
+instantiation not to be a minimal theory for sound and complete Hoare-like 
+logics, in fact the relative completeness proof is missing, as already discussed
+in \cite{Darnier2023} Outcome logic with the powerset instantiation is actually
+a proofsystem for 2-hyperproperties (hyperproperties regarding at most two 
+executions) thus Outcome triples can be proved in the instantiation of 
+Abstract Hoare Logic provided in section \ref{chp:hyper} even tough it would
+be interesting to find a direct encoding of Outcome Logic in terms Abstract 
+Hoare Logic.
 

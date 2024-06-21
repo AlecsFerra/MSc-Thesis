@@ -241,9 +241,7 @@ particular, we can note that with the program $C' \defeq (x = 1? \fcmp x = 0?)
 + (x = 2? \fcmp x = 0?)$, we don't have the same issue. Even if $C$ and $C'$
 are equivalent programs in the concrete domain ($\pow{\pow{\states}}$), they
 aren't in the $Int$ domain. Hence, $\asem{(C_1 + C_2) \fcmp C_3} = \asem{(C_1
-\fcmp C_3) + (C_2 \fcmp C_3)}$ is not true in general. It's important to note
-that this is also one of the axioms in Kleene Algebra with Test \cite{Kozen97},
-highlighting how this system can't be described by that.
+\fcmp C_3) + (C_2 \fcmp C_3)}$ is not true in general.
 
 In particular, we can easily show that for a subset of the precondition (the
 precondition that admit a program that can generate them), requiring the
