@@ -9,17 +9,17 @@ In Hoare logic, the following two rules are sound:
 
 \begin{definition}[Merge rules in Hoare logic] $\;$\\
   \begin{prooftree}
-    \AxiomC{$\htriple{P_1}{C}{Q_1}$}
-    \AxiomC{$\htriple{P_2}{C}{Q_2}$}
+    \AxiomC{$\vdash \htriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\vdash \htriple{P_2}{C}{Q_2}$}
     \RightLabel{$(\lor)$}
-    \BinaryInfC{$\htriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+    \BinaryInfC{$\vdash \htriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
   \end{prooftree}
   
   \begin{prooftree}$\;$\\
-    \AxiomC{$\htriple{P_1}{C}{Q_1}$}
-    \AxiomC{$\htriple{P_2}{C}{Q_2}$}
+    \AxiomC{$\vdash \htriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\vdash \htriple{P_2}{C}{Q_2}$}
     \RightLabel{$(\land)$}
-    \BinaryInfC{$\htriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
+    \BinaryInfC{$\vdash \htriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
   \end{prooftree}
 \end{definition}
 
@@ -32,17 +32,17 @@ but the example can be easily modified for the $(\land)$ rule.
 
 \begin{definition}[Merge rules in Abstract Hoare logic] $\;$\\
   \begin{prooftree}
-    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
-    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \AxiomC{$\vdash \atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\vdash \atriple{P_2}{C}{Q_2}$}
     \RightLabel{$(\lor)$}
-    \BinaryInfC{$\atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+    \BinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
   \end{prooftree}
   
   \begin{prooftree}$\;$\\
-    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
-    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \AxiomC{$\vdash \atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\vdash \atriple{P_2}{C}{Q_2}$}
     \RightLabel{$(\land)$}
-    \BinaryInfC{$\atriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
+    \BinaryInfC{$\vdash \atriple{P_1 \land P_2}{C}{Q_1 \land Q_2}$}
   \end{prooftree}
 \end{definition}
 
@@ -124,9 +124,9 @@ but the example can be easily modified for the $(\land)$ rule.
 
   Thus we can construct the following proof tree:
   \begin{prooftree}
-    \AxiomC{$\vdash \atriple{[5, 5]}{C}{[6, 6]}$}
-    \AxiomC{$\vdash \atriple{[3, 3]}{C}{[4, 4]}$}
-    \BinaryInfC{$\vdash \atriple{[3, 5]}{C}{[4, 6]}$}
+    \AxiomC{$\vdash \atriple[Int]{[5, 5]}{C}{[6, 6]}$}
+    \AxiomC{$\vdash \atriple[Int]{[3, 3]}{C}{[4, 4]}$}
+    \BinaryInfC{$\vdash \atriple[Int]{[3, 5]}{C}{[4, 6]}$}
   \end{prooftree}
 
   But clearly, it's unsound as:
@@ -153,10 +153,10 @@ elements.
 \begin{definition}[Local $\join$ rule for abstract Hoare logic] $\;$\\
   \begin{prooftree}
     \AxiomC{$\gamma(P_1 \join P_2) = \gamma(P_1) \cup \gamma(P_2)$}
-    \AxiomC{$\atriple{P_1}{C}{Q_1}$}
-    \AxiomC{$\atriple{P_2}{C}{Q_2}$}
+    \AxiomC{$\vdash \atriple{P_1}{C}{Q_1}$}
+    \AxiomC{$\vdash \atriple{P_2}{C}{Q_2}$}
     \RightLabel{$(\join-local)$}
-    \TrinaryInfC{$\atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
+    \TrinaryInfC{$\vdash \atriple{P_1 \lor P_2}{C}{Q_1 \lor Q_2}$}
   \end{prooftree}
 \end{definition}
 
@@ -217,9 +217,9 @@ elements.
   
   Thus we can construct the following proof tree:
   \begin{prooftree}
-    \AxiomC{$\vdash \atriple{[2, 2]}{C}{\bot}$}
-    \AxiomC{$\vdash \atriple{[0, 1]}{C}{\bot}$}
-    \BinaryInfC{$\vdash \atriple{0, 2}{C}{\bot}$}
+    \AxiomC{$\vdash \atriple[Int]{[2, 2]}{C}{\bot}$}
+    \AxiomC{$\vdash \atriple[Int]{[0, 1]}{C}{\bot}$}
+    \BinaryInfC{$\vdash \atriple[Int]{0, 2}{C}{\bot}$}
   \end{prooftree}
 
 

@@ -83,7 +83,7 @@ abstract inductive semantics instead of the usual abstract inductive semantics.
   lattice $A$, the abstract Hoare triple written $\atripleback{P}{C}{Q}$ is
   valid if and only if $\asemback{C}(P) \leq_A Q$.
 
-  $$\atripleback{P}{C}{Q} \iff \asemback{C}(P) \leq_A Q$$
+  $$\models \atripleback{P}{C}{Q} \iff \asemback{C}(P) \leq_A Q$$
 \end{definition}
 
 Clearly, the proof system only needs to be modified to accommodate the new
@@ -109,7 +109,7 @@ We can prove again that the proof system is still sound and complete.
 
 \begin{theorem}[Soundness]
   \label{thm:atriple-sound-back}
-  $$\vdash \atripleback{P}{C}{Q} \implies \atripleback{P}{C}{Q}$$
+  $$\vdash \atripleback{P}{C}{Q} \implies \models \atripleback{P}{C}{Q}$$
 \end{theorem}
 
 \begin{proof}
@@ -169,6 +169,22 @@ We can prove again that the proof system is still sound and complete.
   \end{itemize}
 \end{proof}
 
+\begin{theorem}[Relative completeness]
+  $$\models \atripleback{P}{C}{C} \implies \vdash \atripleback{P}{C}{Q}$$
+\end{theorem}
+\begin{proof}
+  By definition of $\models \atripleback{P}{C}{Q} \iff Q \geq_A \asemback{C}(P)$
+
+  \begin{prooftree}
+    \AxiomC{$P \leq_A P$}
+    \AxiomC{(By Theorem \ref{thm:post-completeness-back})}
+    \noLine
+    \UnaryInfC{$\vdash \atripleback{P}{C}{\asemback{C}(P)}$}
+    \AxiomC{$Q \geq_A \asemback{C}(P)$}
+    \RightLabel{$(\leq)$}
+    \TrinaryInfC{$\vdash \atripleback{P}{C}{Q}$}
+  \end{prooftree}
+\end{proof}
 
 \subsection{Backward-Forward Abstract Inductive Semantics Duality}
 
@@ -233,7 +249,7 @@ complete logic to reason about the over approximation of the necessary
 conditions to reach a state:
 
 \begin{align*}
-  \atripleback[\pow{states}]{Q}{C}{P} 
+  \models \atripleback[\pow{states}]{Q}{C}{P} 
     & \iff \asemback[\pow{\states}]{C}(Q) \leq P \\
     & \iff wp(C, Q) \subseteq P
 \end{align*}
@@ -243,7 +259,7 @@ connection between Hoare logic and the Necessary Conditions logic.
 name of NC, but no proof system was provided, in particular there is proved the 
 
 \begin{theorem}[Connection between Hoare and the Necessary Conditions Logics]
-  $$\atriple[\pow{\states}]{P}{C}{Q} \iff \atripleback[\pow{\states}]{\neg Q}{C}
+  $$\models \atriple[\pow{\states}]{P}{C}{Q} \iff \models \atripleback[\pow{\states}]{\neg Q}{C}
   {\neg P}$$
 \end{theorem}
 
@@ -258,15 +274,15 @@ and (relative) complete logic to reason about under-approximation of partial
 necessary conditions.
 
 \begin{align*}
-  \atripleback[\pow{states}^{op}]{Q}{C}{P}
+  \models \atripleback[\pow{states}^{op}]{Q}{C}{P}
     & \iff \asemback[\pow{\states}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
     & \iff \asemback[\pow{\states}]{C}(Q) \geq_{\pow{\states}} P \\
     & \iff wlp(C, Q) \supseteq P \\
 \end{align*}
 
 This logic is equivalent as Hoare logic since $wlp(C, Q) \supseteq P \iff 
-\sem{C}(P) \subseteq Q$ hence $\atriple[\pow{\states}]{P}{C}{Q} \iff 
-\atripleback[\pow{\states}^{op}]{Q}{C}{P}$ the definition of the triple
+\sem{C}(P) \subseteq Q$ hence $\models \atriple[\pow{\states}]{P}{C}{Q} \iff 
+\models \atripleback[\pow{\states}^{op}]{Q}{C}{P}$ the definition of the triple
 and his relationship with Hoare logic was already explored in \cite{Zhang22}
 but no proof system was provided.
 

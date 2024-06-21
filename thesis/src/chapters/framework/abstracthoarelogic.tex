@@ -22,7 +22,7 @@ $\lang$ following the work in \cite{Moller21}.
   Fixed the semantics of the base commands, an Hoare triple written 
   $\htriple{P}{C}{Q}$ is valid if and only if $\sem{C}(P) \subseteq Q$.
 
-  $$\htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$$
+  $$\models \htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$$
 \end{definition}
 
 \begin{definition}[Hoare logic]$\;$ \\
@@ -78,7 +78,7 @@ the definition in \ref{def:hoare}. This result was already present in the
 original work \cite{Hoare69}.
 
 \begin{theorem}[Soundness]
-  $$\vdash \htriple{P}{C}{Q} \implies \htriple{P}{C}{Q}$$
+  $$\vdash \htriple{P}{C}{Q} \implies \models \htriple{P}{C}{Q}$$
 \end{theorem}
 
 As observed by Cook in \cite{Cook78}, the reverse implication is not true in 
@@ -89,7 +89,7 @@ proof system is only caused by the incompleteness of the assertion language.
 
 \begin{theorem}[Relative completeness]
   \label{thm:hlogic-complete}
-  $$\htriple{P}{C}{Q} \implies \vdash \htriple{P}{C}{Q}$$
+  $$\models \htriple{P}{C}{Q} \implies \vdash \htriple{P}{C}{Q}$$
 \end{theorem}
 
 \subsection{Abstracting Hoare logic}
@@ -112,7 +112,7 @@ the abstract.
   $A$, the abstract Hoare triple written $\atriple{P}{C}{Q}$ is valid if
   and only if $\asem{C}(P) \leq_A Q$.
 
-  $$\atriple{P}{C}{Q} \iff \asem{C}(P) \leq_A Q$$
+  $$\models \atriple{P}{C}{Q} \iff \asem{C}(P) \leq_A Q$$
 \end{definition}
 
 The definition is equivalent as the one provided in definition \ref{def:hoare} 
@@ -201,7 +201,7 @@ logic.
 
 \begin{theorem}[Soundness]
   \label{thm:atriple-sound}
-  $$\vdash \atriple{P}{C}{Q} \implies \atriple{P}{C}{Q}$$
+  $$\vdash \atriple{P}{C}{Q} \implies \models \atriple{P}{C}{Q}$$
 \end{theorem}
 \begin{proof}
   By structural induction on the last rule applied in the derivation of
@@ -451,10 +451,10 @@ obtain the desired post-condition.
 
 \begin{theorem}[Relative completeness]
   \label{thm:completeness}
-  $$\atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
+  $$\models \atriple{P}{C}{Q} \implies \vdash \atriple{P}{C}{Q}$$
 \end{theorem}
 \begin{proof}
-  By definition of $\atriple{P}{C}{Q} \iff Q \geq_A \asem{C}(P)$
+  By definition of $\models \atriple{P}{C}{Q} \iff Q \geq_A \asem{C}(P)$
 
   \begin{prooftree}
     \AxiomC{$P \leq_A P$}

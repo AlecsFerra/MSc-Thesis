@@ -113,11 +113,12 @@ The idea of defining hyper instantiation it to lift the abstract inductive
 semantics on some domain $B$ in it's "hyper" version, the definition of the base 
 commands applies the semantics of the base commands on $B$ to each execution.
 
-Now we prove that the hyper instantiate is distributive, in the sense that
-running the hyper instantiation of the semantics is the same as running the 
+Now we prove that the abstract inductive semantics when instantiated on an 
+hyper-domain is non interfering, in the sense that
+running the hyper inductive semantics is the same as running the 
 original semantics on each execution.
 
-\begin{theorem}[Distributivity]
+\begin{theorem}[Non interference between executions]
     \label{thm:hyper-add}
     $$\asem[H(B)_K]{C}(\mathcal{\chi}) = \lambda r \to \asem[B]{C}(\chi(r))$$
 \end{theorem}
