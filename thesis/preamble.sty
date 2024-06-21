@@ -7,7 +7,6 @@ requirements and general settings]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{geometry}
 \RequirePackage{tabu}
-\RequirePackage[pdfa,hidelinks]{hyperref}
 \RequirePackage{graphicx}
 \RequirePackage{longtable}
 \RequirePackage{wrapfig}
@@ -54,6 +53,7 @@ requirements and general settings]
 
 \RequirePackage[
   hyperref,                           % use hyperref in the pdf
+  maxbibnames=9,                      % Show at least 9 authors
   style=alphabetic,                   % [Na98] style for references
   backref=true,                       % to introduce backreferences in
                                       % the bibliography
@@ -79,6 +79,12 @@ requirements and general settings]
 %%%%%%%%%% CONFIG %%%%%%%%%%
 
 \definecolor{unipdred}{RGB}{155,0,20}
+
+\RequirePackage[
+  pdfa,
+  colorlinks,
+  allcolors=unipdred,
+]{hyperref}
 
 \geometry{
 	top=25mm,
