@@ -25,29 +25,43 @@ the versatility and effectiveness of the Abstract Hoare logic framework.
 The following are only preliminary results that we weren't able to explore
 because of time constraints.
 
-\subsection{Under-approximating logics}
-Hoare-style logics have not only been used to perform over-approximate
-reasoning. Incorrectness logic \cite{OHearn19} uses the same framework as Hoare
-logic but focuses on under-approximation. An incorrectness triple is defined as
-$\htriple{P}{C}{Q} \iff \sem{C}(P) \supseteq Q$. The definition of easy
-represents the same in Abstract Hoare logic. Validity differs from Hoare logic
-in the direction of set inclusion, so we could easily provide the definition
-for Abstract Incorrectness Logic triples $\atriple{P}{C}{Q} \iff \asem{C}(P)
-\geq_A Q$ and perform the same translation that we did for the rules of Hoare
-Logic for the rules of Incorrectness logic.
+\subsection{Total correctness/Incorrectness logics}
+We have seen how all the partial correctness/incorrectness triples are
+instances of (backward) Abstract Hoare Logic and use a very similar proof
+system. To complete the picture presented in \cite{Zhang22}, we are missing the
+total correctness and incorrectness logics, ??? and ???. Since they are related
+in the same way as the partial correctness/incorrectness logics are related,
+the same abstraction used to transform Hoare Logic into Abstract Hoare Logic
+could be used to transform Incorrectness Logic \cite{Moller21} into Abstract
+Incorrectness Logic. By abstracting the proof system, we can obtain a sound and
+relatively complete proof system for Abstract Incorrectness Logic. Then, by
+reusing the same technique that we did for Abstract Hoare Logic—by inverting
+the semantics and the lattice—we can obtain all the four program logics that
+are missing and complete the whole picture.
 
 \subsection{Hyper domains}
-We used hyper domains to construct program logics that that are able to reason
-about hyperproperties, but we didn't explore what kind of calculi proofsystem 
-they create when they are used to instantiate Reverse Hoare logic and on the 
-opposite lattice.
+We used hyper domains to encode the strongest hyper postcondition and obtained
+a Hoare-like logic for hyperproperties. We have shown how we can use the
+abstract inductive semantics to model the strongest liberal postcondition,
+weakest precondition, and weakest liberal precondition. We could perform the
+same trick with the abstract inductive semantics instantiated with a hyper
+domain of $\pow{\states}$ and see if it leads to some interesting logics or if
+they are all equivalent (since hyperproperties can negate themselves).
+
+Another pain point of the hyper Hoare logic obtained via Abstract Hoare Logic
+is that the assertion language is relatively low-level, making it cumbersome to
+use for proving actual hyperproperties. The proof system in \cite{Darnier2023}
+is actually quite similar to the one obtained with the hyper domains, but the
+Exist rule is missing. Since it is necessary to prove the completeness of Hyper
+Hoare Logic, it must be embedded somewhere in the rules of Abstract Hoare
+Logic.
 
 \section{Related work}
 
 The idea of systematically constructing program logics is not new. Kleene
 Algebra with Tests (KAT) \cite{Kozen97} was one of the first works of this
 kind. In section \ref{chp:join-meet-rules}, we discussed how, in general, we
-cannot distribute non-deterministic choice ($\asem{(C_1 + C_2) \fcmp C_3} \neq
+cannot distribute the non-deterministic choice ($\asem{(C_1 + C_2) \fcmp C_3} \neq
 \asem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$), thus violating one of the axioms of
 Kleene algebras. Another similar alternative was proposed in \cite{Martin06},
 using traced monoidal categories to encode properties of the program. For
