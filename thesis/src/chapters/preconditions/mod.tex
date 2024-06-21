@@ -186,9 +186,13 @@ We can prove again that the proof system is still sound and complete.
   \end{prooftree}
 \end{proof}
 
-\subsection{Backward-Forward Abstract Inductive Semantics Duality}
+\section{Instantiations}
 
-\begin{definition}[Reverse semantics]
+\subsection{Partial Incorrectness, Again}
+An abstract inductive semantics induces automatically a backward abstract
+inductive semantics where the semantics of the base commands is inverted:
+
+\begin{definition}[Reverse Abstract Inductive Semantics]
   Given an abstract inductive semantics defined on some complete lattice $A$ 
   with base command semantics $\bsem{\cdot}^A$, we can define the reverse
   backward abstract inductive semantics as the backward inductive semantics
@@ -196,93 +200,55 @@ We can prove again that the proof system is still sound and complete.
   $(\bsem{\cdot}^A)^{-1}$.
 \end{definition}
 
-If we interpret the abstract inductive semantics as the strongest postcondition
-on the domain $A$, then the backward abstract inductive semantics on the domain 
-$A$ is the weakest precondition on the domain $A$.
-
-\begin{observation}
-  \label{obs:weakest-precondition}
-  Following observation \ref{obs:post}, the reverse backward 
-  abstract inductive semantics on the domain $\pow{\states}$ is the weakest 
-  precondition.
-\end{observation}
-
-But we can do something more if in addition to reversing the semantics of the 
-base commands we invert the lattice structure, when executing a non 
-deterministic choice instead of taking the join of the two different execution
-we take their meet.
-
-\begin{definition}[Dual semantics]
-  Given an abstract inductive semantics defined on some lattice $A$ with
-  base commands semantics $\bsem{\cdot}^A$, we can define the dual backward 
-  abstract inductive semantics as the backward abstract inductive semantics
-  instantiated on the lattice $A^{op}$ where the semantics of the
-  base commands is defined as $\bsem{\cdot}^{A^{op}} = (\bsem{\cdot}^A)^{-1}$.
-\end{definition}
-
-If we interpret the abstract inductive semantics as the strongest postcondition
-on the domain $A$, then the backward abstract inductive semantics on the domain 
-$A$ is the weakest liberal precondition on the domain $A$, this is true since on 
-the opposite lattice the role of meets and joins is inverted ($\join_A^{op} = 
-\meet_A$ and $\lfp_{A^{op}} = \gfp_A$).
-
-\begin{observation}
-  \label{obs:weakest-liberal-precondition}
-  Following observation \ref{obs:post}, the dual backward 
-  abstract inductive semantics on the domain $\pow{\states}^{op}$ is the weakest 
-  liberal precondition.
-\end{observation}
-
-For a complete introduction on the differences between the weakest precondition
-and the weakest liberal precondition and expecially their definition as
-predicate transformes see Chapter 2 of \cite{Kaminski19}.
-
-\section{Instantiations}
-
-\subsection{Necessary conditions}
-
-Using the instantation of the backward abstract inductive semantics of 
-observation \ref{obs:weakest-precondition} the reverse abstract inductive semantics
-defined on $\pow{\states}$ correspond to the weakest-precondition, when 
-instantiating Backward Abstract Hoare logic we obtain a sound and (relative) 
-complete logic to reason about the over approximation of the necessary 
-conditions to reach a state:
-
+Hence, the reverse abstract inductive semantics can be expressed as:
 \begin{align*}
-  \models \atripleback[\pow{states}]{Q}{C}{P} 
-    & \iff \asemback[\pow{\states}]{C}(Q) \leq P \\
-    & \iff wp(C, Q) \subseteq P
+  \asemback{\sskip}        &= id \\
+  \asemback{b}             &= (\bsem{b}^A)^{-1} \\
+  \asemback{C_1 \fcmp C_2} &= \asemback{C_1} \circ \asemback{C_2} \\
+  \asemback{C_1 + C_2}     &= \lambda P . \asemback{C_1} P \join_A \asemback{C_2} P \\
+  \asemback{C^\fix}        &= \lambda P . \lfp(\lambda P'. P \join_A \asemback{C} P')
 \end{align*}
 
-This logic was already studied in \cite{Zhang22} and \cite{Ascari24} under the 
-connection between Hoare logic and the Necessary Conditions logic.
-name of NC, but no proof system was provided, in particular there is proved the 
+Following the intuition that the abstract inductive semantics is some abstract
+version of the strongest postcondition, what interpretation can we give for the
+reverse abstract inductive semantics? The construction corresponds to the
+abstract version of the weakest precondition. In fact, when the dual reverse
+inductive semantics is obtained from the abstract inductive semantics on
+$\pow{\states}$ (the strongest postcondition), the reverse semantics becomes
+the weakest precondition.
 
-\begin{theorem}[Connection between Hoare and the Necessary Conditions Logics]
-  $$\models \atriple[\pow{\states}]{P}{C}{Q} \iff \models \atripleback[\pow{\states}]{\neg Q}{C}
-  {\neg P}$$
-\end{theorem}
+Hence, from the validity of the triples: $$\models
+\atripleback[\pow{\states}]{Q}{C}{P} \iff \asemback[\pow{\states}]{C}(Q)
+\subseteq P \iff wp(C, Q) \subseteq P$$
 
-\subsection{Hoare logic, again}
+This program logic is introduced in \cite{Ascari24} under the name of NC, and
+the program logic is actually equivalent to the one in section
+\ref{chp:partial-incorrectness}.
 
-Following what we did for Necessary conditions we can do the same but with the
-dual abstract inductive semantics. From observation 
-\ref{obs:weakest-liberal-precondition} we know that the dual abstract inductive 
-semantics defined on $\pow{\states}^{op}$ correspond to the weakest liberal 
-precondition, when instantiating Backward Abstract Hoare logic we obtain a sound
-and (relative) complete logic to reason about under-approximation of partial 
-necessary conditions.
-
+\subsection{Hoare Logic, Again}
+Following what we did in section \ref{chp:partial-incorrectness}, we can first
+obtain the reverse semantics but then also obtain the dual of the reverse
+semantics. It can be expressed as: 
 \begin{align*}
-  \models \atripleback[\pow{states}^{op}]{Q}{C}{P}
-    & \iff \asemback[\pow{\states}]{C}(Q) \leq_{\pow{\states}^{op}} P \\
-    & \iff \asemback[\pow{\states}]{C}(Q) \geq_{\pow{\states}} P \\
-    & \iff wlp(C, Q) \supseteq P \\
+  \asemback[A^{op}]{\sskip}        &= id \\
+  \asemback[A^{op}]{b}             &= (\bsem{b}^A)^{-1} \\
+  \asemback[A^{op}]{C_1 \fcmp C_2} &= \asemback{C_1} \circ \asemback{C_2} \\
+  \asemback[A^{op}]{C_1 + C_2}     &= \lambda P . \asemback[A^{op}]{C_1} P \meet_A \asemback[A^{op}]{C_2} P \\
+  \asemback[A^{op}]{C^\fix}        &= \lambda P . \gfp_A(\lambda P'. P \meet_A \asemback[A^{op}]{C} P')
 \end{align*}
 
-This logic is equivalent as Hoare logic since $wlp(C, Q) \supseteq P \iff 
-\sem{C}(P) \subseteq Q$ hence $\models \atriple[\pow{\states}]{P}{C}{Q} \iff 
-\models \atripleback[\pow{\states}^{op}]{Q}{C}{P}$ the definition of the triple
-and his relationship with Hoare logic was already explored in \cite{Zhang22}
-but no proof system was provided.
+Following the intuition that the abstract inductive semantics is some abstract
+version of the strongest postcondition, what interpretation can we give for the
+dual reverse abstract inductive semantics? The construction corresponds to the
+reverse inductive semantics is obtained from the abstract inductive semantics
+abstract version of the weakest liberal precondition. In fact, when the dual
+on $\pow{\states}$ (the strongest postcondition), the reverse semantics becomes
+the weakest liberal precondition.
+
+Hence, from the validity of the triples:
+$$\models \atripleback[\pow{\states}^{op}]{Q}{C}{P} \iff
+\asemback[\pow{\states}]{C}(Q) \supseteq P \iff wlp(C, Q) \supseteq P$$
+
+But also $wlp(C, Q) \supseteq P \iff \sem{C}(P) \subseteq Q$, hence it is
+equivalent to Hoare logic.
 
