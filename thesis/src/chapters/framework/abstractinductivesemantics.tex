@@ -142,13 +142,6 @@ a special case of lemma \ref{thm:well-def} since, as shown in theorem
 \ref{thm:sem-lattice}, $\pow{\states}$ is a complete lattice and the semantics
 of the base commands is monotone by construction.
 
-\begin{observation}
-  \label{obs:abstract-fix}
-  There are some domains where $\exists \; C \in \lang$ such that
-  $\bigvee_{n \in \nat} (\asem{C})^n(P) \neq \lfp(\lambda P'. P \join_A
-  \asem{C}(P'))$.
-\end{observation}
-
 \subsection{Connection with Abstract Interpretation}
 
 As states before, the definition of abstract inductive semantics is closely
@@ -181,3 +174,9 @@ The abstract inductive semantics obtained by Galois insertion between
 $\pow{\states}$ and any domain $A$ corresponds to the best abstract inductive 
 interpreter on $A$.
 
+\begin{observation}
+  \label{obs:abstract-fix}
+  There are some domains where $\exists \; C \in \lang$ such that
+  $\bigvee_{n \in \nat} (\asem{C})^n(P) \neq \lfp(\lambda P'. P \join_A
+  \asem{C}(P'))$.
+\end{observation}

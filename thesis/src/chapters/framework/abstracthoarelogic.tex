@@ -25,6 +25,40 @@ $\lang$ following the work in \cite{Moller21}.
   $$\models \htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$$
 \end{definition}
 
+We will use the syntax $\models \htriple{P}{C}{Q}$ to refer to valid triples,
+$\not \models \htriple{P}{C}{Q}$ to refer to invalid triples, and
+$\htriple{P}{C}{Q}$ when we are not asserting the validity or invalidity of a
+triple.
+
+\begin{example}[Some Hoare triples examples]
+  \label{exmp:hlogic}
+$\models \htriple{x \in [1, 2]}{x := x + 1}{x \in [2, 3]}$, for example, is a
+valid triple since from any state in which either $x = 1$ or $x = 2$,
+incrementing by one the value of $x$ leads to states in which $x$ is either $2$
+or $3$. Specifically, starting from $x = 1$ leads us to $x = 2$ and starting
+from $x = 2$ leads us to $x = 3$.
+
+Since the conclusion of Hoare triples must contain all the final states, the
+triple $\models \htriple{P}{C}{\top}$ is always valid since $\top$ contains all
+possible states.
+
+An example of an invalid triple is $\not \models \htriple{x \in [1, 2]}{x := x
++ 1}{x \in [1, 2]}$ since the state $x = 2$ satisfies the precondition and
+running the program on it results in the state $x = 3$, which does not satisfy
+$x \in [1, 2]$.
+
+Since Hoare logic is concerned only with termination, when the program is
+non-terminating, we can prove any property. For example, $\models \htriple{x
+\in [0, 10]}{(x \leq 20? \fcmp x := x - 1)^\fix \fcmp x \geq 20?}{Q}$ is always
+a valid triple since the program is non-terminating for any $x \in [0, 10]$. 
+The set of reachable states is empty, thus the postcondition is vacuously true.
+
+This is the reason why Hoare logic is said to be a partial correctness logic,
+as it is partial in the sense that it can prove the adherence of a program to
+some specification only when it is terminating. The termination of the program
+must be assessed in some other way.
+\end{example}
+
 \begin{definition}[Hoare logic]$\;$ \\
   \label{def:hoaretules}
   \begin{prooftree}
@@ -118,6 +152,20 @@ the abstract.
 The definition is equivalent as the one provided in definition \ref{def:hoare} 
 but here the abstract inductive semantics is used to procide the strongest 
 postcondition of programs.
+
+In Abstract Hoare logic some of the examples show in example \ref{exmp:hlogic} still 
+hold, in particular:
+\begin{theorem}
+  $$\models \atriple{P}{C}{\top}$$
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \models \atriple{P}{C}{\top}
+      & \iff \asem{C}(P) \leq \top & \text{By definition of $\atriple{\cdot}{\cdot}{\cdot}$} \\
+  \end{align*}
+
+  And since $\top$ is the top element of $A$ $\top \geq \asem{C}(P)$
+\end{proof}
 
 \subsubsection{Proof system}
 As per Hoare logic we will peovide a sound an relatively complete (in the sense
