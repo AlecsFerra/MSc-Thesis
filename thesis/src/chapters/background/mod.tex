@@ -1,46 +1,88 @@
-\chapter{Introduction and Background}
+\chapter*{Introduction}
 
-The verification of program correctness is a critical task in computer science, 
-ensuring that software behaves as expected under all possible conditions. 
-Hoare logic, introduced by Hoare in the late 1960s, has been a foundational tool 
-in this area. It provides a formal system for reasoning about the correctness of 
-programs by using assertions about the program state before and after execution.
 
-However, traditional Hoare logic is limited to reasoning about properties that
-are expressible as elements of $\pow{\states}$ which restricts its applicability 
-in modern contexts where properties of interest often involve relationships 
-between multiple executions or assertions must be computed automatically by some 
-program.
+The verification of program correctness is a critical task in computer science.
+Ensuring that software behaves as expected under all possible conditions is
+fundamental in a society that increasingly relies on computer programs.
+Programmers often reason about the behavior of their programs at an intuitive
+level. While this is definitely better than not reasoning at all, intuition
+alone becomes insufficient as the size of programs grows.
 
-To address these limitations, this thesis presents an extension of Hoare logic 
-into an abstract framework that can handle a wider variety of program properties, 
-including those involving multiple executions. By incorporating principles from 
-order theory and abstract interpretation, we develop an abstract Hoare logic 
-framework. This framework allows us to reason about program properties in a more 
-general setting, providing a sound and relatively complete method for program 
-verification.
+Writing tests for programs is definitely a useful task, but at best, it can
+show the presence of bugs, not prove their absence. We cannot feasibly write a
+test for every possible input of the program. To offer a guarantee of the
+absence of undesired behavior, we need sound logical models rooted in logic.
+The field of formal methods in computer science aims to develop the logical
+tools necessary to prove properties of software systems.
 
-We also introduce and explore the concept of hyperproperties within this 
-framework. Hyperproperties, which describe relationships between different 
-executions of a program, are crucial for expressing and verifying complex 
-security and correctness properties. Our framework can be specialized to logic 
-for hyperproperties, and in doing so, we also develop an inductive definition 
-for the strongest hyper postcondition of a program, which, to the best of our 
-knowledge, has not been previously achieved.
+Hoare logic, first popularized by Hoare in the late 60s, provides a set of
+logical rules to reason about the correctness of computer programs. Hoare logic
+formalizes, with axioms and inference rules, the relationship between the
+initial and final states after running a program.
 
-Furthermore, this thesis introduces and develops the concept of reverse
-abstract Hoare logic, whore approach is to complement traditional forward
-reasoning by examining the necessary conditions for program correctness from
-the end to the start of program execution. This backward reasoning framework
-uses the same ideas (and proofs) from abstract Hoare logic to develop a general
-framework.
+Hoare logic, beyond being one of the first, is arguably also one of the most
+influential ideas in the field of software verification. It created the whole
+field of program logics—systems of logical rules aimed at proving properties of
+programs. Over the years, modifications of Hoare logic have been developed,
+sometimes to support new language features such as dynamic memory allocation
+and pointers, or to prove different properties such as equivalence between
+programs or properties of multiple executions. Every time Hoare logic is
+modified, it is necessary to prove again that the proof system indeed proves
+properties about the program (soundness) and that the proof system is powerful
+enough to prove the properties of interest (completeness).
 
-The thesis is structured as follows: We begin with a review of order theory and 
-abstract interpretation, which form the theoretical foundation for our work. We 
-then introduce the minimal version of the abstract Hoare logic framework and 
-demonstrate its instantiation for various abstract domains, we provide 
-some useful extensions to the proof system that make its usage easier and 
-finally we introduce reverse abstract Hoare logic.
+Most modifications of Hoare logic usually do not alter the fundamental proof
+principles of the system. Instead, they often extend the assertion language to
+express new properties and add new commands to support new features in
+different programming languages.
+
+We introduce Abstract Hoare Logic, which aims to be a framework general enough
+to serve as an extensible platform for constructing new Hoare-like logics
+without the burden of proving soundness and completeness anew. We demonstrate,
+by example, how some properties that are not expressible in standard Hoare
+logic can be simply instantiated within Abstract Hoare Logic, while keeping the
+proof system as simple as possible.
+
+The theory of Abstract Hoare Logic is deeply connected to the theory of
+abstract interpretation. The semantics of the language is defined as an
+inductive abstract interpreter, and the validity of the Abstract Hoare triples
+depends on it. By not using the strongest postcondition directly, we are able
+to reason about properties that are not expressible in the powerset of the
+states, such as hyperproperties.
+
+
+This thesis is subdivided as follows:
+\begin{itemize}
+  \item In Chapter 1, we introduce the basic mathematical background of order
+    theory and abstract interpretation.
+
+  \item In Chapter 2, we introduce standard Hoare logic and the general
+    framework of Abstract Hoare Logic: the extensible $\lang$ language, its
+    syntax and semantics, the generalization of the strongest postcondition,
+    and finally, the actual Abstract Hoare Logic and its proof system, proving
+    the general results of soundness and relative completeness.
+
+  \item In Chapter 3, we show some interesting instantiations of Abstract Hoare
+    Logic: we demonstrate that it is possible to obtain program logic where the
+    implication is decidable, thus making the goal of checking a derivation
+    computable; we show how to obtain a proof system for hyperproperties (and
+    introduce the concept of the strongest hyper postcondition); and we show
+    that it is possible to obtain a proof system for partial incorrectness.
+
+  \item In Chapter 4, we show how to enrich the barebones proof system of
+    Abstract Hoare Logic by adding more restrictions on the assertion language
+    or the semantics.
+
+  \item In Chapter 5, we show how to reuse the idea of Abstract Hoare Logic to
+    generalize proof systems for backward reasoning.
+
+  \item In Chapter 6, we provide a brief recap of the most important points of
+    the thesis. We discuss possible extensions to the framework of Abstract
+    Hoare Logic and, finally, we examine the relationship of Abstract Hoare
+    Logic with other similar work.
+\end{itemize}
+
+\chapter{Background}
 
 \subimport{./}{order_theory}
 \subimport{./}{abstract_interpretation}
