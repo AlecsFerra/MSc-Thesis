@@ -1,0 +1,960 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{anyt/global//global/global}
+    \entry{Ascari24}{misc}{}
+      \name{author}{4}{}{%
+        {{hash=b7ee7ef39806a687ead47581c0797156}{%
+           family={Ascari},
+           familyi={A\bibinitperiod},
+           given={Flavio},
+           giveni={F\bibinitperiod}}}%
+        {{hash=3faf5ba29ac45350e03aeb04fda62e50}{%
+           family={Bruni},
+           familyi={B\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f94b859d5530f44a1f8af638af1517b6}{%
+           family={Gori},
+           familyi={G\bibinitperiod},
+           given={Roberta},
+           giveni={R\bibinitperiod}}}%
+        {{hash=b14303f4e3cf85428115c6ba5f862e24}{%
+           family={Logozzo},
+           familyi={L\bibinitperiod},
+           given={Francesco},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{701b4605981b900835abfc90372bc4c5}
+      \strng{fullhash}{59070c1abb9c63df9fe4caf7203edc93}
+      \strng{bibnamehash}{59070c1abb9c63df9fe4caf7203edc93}
+      \strng{authorbibnamehash}{59070c1abb9c63df9fe4caf7203edc93}
+      \strng{authornamehash}{701b4605981b900835abfc90372bc4c5}
+      \strng{authorfullhash}{59070c1abb9c63df9fe4caf7203edc93}
+      \field{labelalpha}{Asc+24}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprinttype}{arXiv}
+      \field{title}{Sufficient Incorrectness Logic: SIL and Separation SIL}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2310.18156
+      \endverb
+    \endentry
+    \entry{Mounir17}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=3e666814c62dcae11f3d41ad42ffff11}{%
+           family={Assaf},
+           familyi={A\bibinitperiod},
+           given={Mounir},
+           giveni={M\bibinitperiod}}}%
+        {{hash=109b27babf9c7244cdfca14b37f90575}{%
+           family={Naumann},
+           familyi={N\bibinitperiod},
+           given={David\bibnamedelima A.},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=d40140b9e92d81036f8b95651db78a8b}{%
+           family={Signoles},
+           familyi={S\bibinitperiod},
+           given={Julien},
+           giveni={J\bibinitperiod}}}%
+        {{hash=cc13d1ef5cd795cb83366933efcc8300}{%
+           family={Totel},
+           familyi={T\bibinitperiod},
+           given={Éric},
+           giveni={É\bibinitperiod}}}%
+        {{hash=48fdb4b7fe615f32e51b39590ada7381}{%
+           family={Tronel},
+           familyi={T\bibinitperiod},
+           given={Frédéric},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Paris, France}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{ec15954de3d50a55fb025ec3e273b9cf}
+      \strng{fullhash}{d1845c20228a30d0e118da532c3cd86d}
+      \strng{bibnamehash}{d1845c20228a30d0e118da532c3cd86d}
+      \strng{authorbibnamehash}{d1845c20228a30d0e118da532c3cd86d}
+      \strng{authornamehash}{ec15954de3d50a55fb025ec3e273b9cf}
+      \strng{authorfullhash}{d1845c20228a30d0e118da532c3cd86d}
+      \field{labelalpha}{Ass+17}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We show how static analysis for secure information flow can be expressed and proved correct entirely within the framework of abstract interpretation. The key idea is to define a Galois connection that directly approximates the hyperproperty of interest. To enable use of such Galois connections, we introduce a fixpoint characterisation of hypercollecting semantics, i.e. a "set of sets" transformer. This makes it possible to systematically derive static analyses for hyperproperties entirely within the calculational framework of abstract interpretation. We evaluate this technique by deriving example static analyses. For qualitative information flow, we derive a dependence analysis similar to the logic of Amtoft and Banerjee (SAS '04) and the type system of Hunt and Sands (POPL '06). For quantitative information flow, we derive a novel cardinality analysis that bounds the leakage conveyed by a program instead of simply deciding whether it exists. This encompasses problems that are hypersafety but not k-safety. We put the framework to use and introduce variations that achieve precision rivalling the most recent and precise static analyses for information flow.}
+      \field{booktitle}{Proceedings of the 44th ACM SIGPLAN Symposium on Principles of Programming Languages}
+      \field{isbn}{9781450346603}
+      \field{series}{POPL '17}
+      \field{title}{Hypercollecting semantics and its application to static analysis of information flow}
+      \field{year}{2017}
+      \field{pages}{874\bibrangedash 887}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1145/3009837.3009889
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3009837.3009889
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3009837.3009889
+      \endverb
+      \keyw{abstract interpretation,hyperproperties,information flow,static analysis}
+    \endentry
+    \entry{Brookes16}{article}{}
+      \name{author}{2}{}{%
+        {{hash=bb2ee12af8cd52e45a38c829ca43b52e}{%
+           family={Brookes},
+           familyi={B\bibinitperiod},
+           given={Stephen},
+           giveni={S\bibinitperiod}}}%
+        {{hash=a4d9d06f404fc6167367e00ca67ac625}{%
+           family={O'Hearn},
+           familyi={O\bibinitperiod},
+           given={Peter\bibnamedelima W.},
+           giveni={P\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{8c12c37628d60a29b3dd988a736b3d25}
+      \strng{fullhash}{8c12c37628d60a29b3dd988a736b3d25}
+      \strng{bibnamehash}{8c12c37628d60a29b3dd988a736b3d25}
+      \strng{authorbibnamehash}{8c12c37628d60a29b3dd988a736b3d25}
+      \strng{authornamehash}{8c12c37628d60a29b3dd988a736b3d25}
+      \strng{authorfullhash}{8c12c37628d60a29b3dd988a736b3d25}
+      \field{labelalpha}{BO16}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Concurrent Separation Logic (CSL) was originally advanced in papers of the authors published in Theoretical Computer Science for John Reynolds's 70th Birthday Festschrift (2007). Preliminary versions appeared as invited papers in the CONCUR'04 conference proceedings. Foundational work leading to these papers began in 2002. Since then there have been significant developments stemming from CSL, both in theoretical and practical research. In this retrospective paper we describe the main ideas that underpin CSL, placing these ideas into historical context by summarizing the prevailing tendencies in concurrency verification and programming language semantics when the logic was being invented in 2002-2003. We end with a snapshot of the state-of-the-art as of 2016. Along the way we describe some of the main developments in the intervening period, and we attempt to classify the work that has been done, along broad lines. While we do not intend an exhaustive survey, we do hope to provide some general perspective on what has been achieved in the field, what remains to be done, and directions for future work.}
+      \field{journaltitle}{ACM SIGLOG News}
+      \field{month}{8}
+      \field{number}{3}
+      \field{title}{Concurrent separation logic}
+      \field{volume}{3}
+      \field{year}{2016}
+      \field{pages}{47\bibrangedash 65}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1145/2984450.2984457
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/2984450.2984457
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/2984450.2984457
+      \endverb
+    \endentry
+    \entry{Cousot77}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=8e278ac48d46529580f34189ce35f505}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Patrick},
+           giveni={P\bibinitperiod}}}%
+        {{hash=5b51b0ccb1532c740cef8c8045f0911f}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Radhia},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Los Angeles, California}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{8aded87411c28c264da8bc9283b227f5}
+      \strng{fullhash}{8aded87411c28c264da8bc9283b227f5}
+      \strng{bibnamehash}{8aded87411c28c264da8bc9283b227f5}
+      \strng{authorbibnamehash}{8aded87411c28c264da8bc9283b227f5}
+      \strng{authornamehash}{8aded87411c28c264da8bc9283b227f5}
+      \strng{authorfullhash}{8aded87411c28c264da8bc9283b227f5}
+      \field{labelalpha}{CC77}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A program denotes computations in some universe of objects. Abstract interpretation of programs consists in using that denotation to describe computations in another universe of abstract objects, so that the results of abstract execution give some information on the actual computations. An intuitive example (which we borrow from Sintzoff [72]) is the rule of signs. The text -1515 * 17 may be understood to denote computations on the abstract universe {(+), (-), (±)} where the semantics of arithmetic operators is defined by the rule of signs. The abstract execution -1515 * 17 → -(+) * (+) → (-) * (+) → (-), proves that -1515 * 17 is a negative number. Abstract interpretation is concerned by a particular underlying structure of the usual universe of computations (the sign, in our example). It gives a summary of some facets of the actual executions of a program. In general this summary is simple to obtain but inaccurate (e.g. -1515 + 17 → -(+) + (+) → (-) + (+) → (±)). Despite its fundamentally incomplete results abstract interpretation allows the programmer or the compiler to answer questions which do not need full knowledge of program executions or which tolerate an imprecise answer, (e.g. partial correctness proofs of programs ignoring the termination problems, type checking, program optimizations which are not carried in the absence of certainty about their feasibility, …).}
+      \field{booktitle}{Proceedings of the 4th ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages}
+      \field{isbn}{9781450373500}
+      \field{series}{POPL '77}
+      \field{title}{Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints}
+      \field{year}{1977}
+      \field{pages}{238\bibrangedash 252}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1145/512950.512973
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/512950.512973
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/512950.512973
+      \endverb
+    \endentry
+    \entry{Cook78}{article}{}
+      \name{author}{1}{}{%
+        {{hash=609a39905dc0e988c3b294dceecdb1e4}{%
+           family={Cook},
+           familyi={C\bibinitperiod},
+           given={Stephen\bibnamedelima A.},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{609a39905dc0e988c3b294dceecdb1e4}
+      \strng{fullhash}{609a39905dc0e988c3b294dceecdb1e4}
+      \strng{bibnamehash}{609a39905dc0e988c3b294dceecdb1e4}
+      \strng{authorbibnamehash}{609a39905dc0e988c3b294dceecdb1e4}
+      \strng{authornamehash}{609a39905dc0e988c3b294dceecdb1e4}
+      \strng{authorfullhash}{609a39905dc0e988c3b294dceecdb1e4}
+      \field{labelalpha}{Coo78}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A simple ALGOL-like language is defined which includes conditional, while, and procedure call statements as well as blocks. A formal interpretive semantics and a Hoare style axiom system are given for the language. The axiom system is proved to be sound, and in a certain sense complete, relative to the interpretive semantics. The main new results are the completeness theorem, and a careful treatment of the procedure call rules for procedures with global variables in their declarations.}
+      \field{journaltitle}{SIAM Journal on Computing}
+      \field{number}{1}
+      \field{title}{Soundness and Completeness of an Axiom System for Program Verification}
+      \field{volume}{7}
+      \field{year}{1978}
+      \field{pages}{70\bibrangedash 90}
+      \range{pages}{21}
+      \verb{doi}
+      \verb 10.1137/0207005
+      \endverb
+      \verb{eprint}
+      \verb https://doi.org/10.1137/0207005
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1137/0207005
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1137/0207005
+      \endverb
+    \endentry
+    \entry{Cousot12}{article}{}
+      \name{author}{4}{}{%
+        {{hash=8e278ac48d46529580f34189ce35f505}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Patrick},
+           giveni={P\bibinitperiod}}}%
+        {{hash=5b51b0ccb1532c740cef8c8045f0911f}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Radhia},
+           giveni={R\bibinitperiod}}}%
+        {{hash=b14303f4e3cf85428115c6ba5f862e24}{%
+           family={Logozzo},
+           familyi={L\bibinitperiod},
+           given={Francesco},
+           giveni={F\bibinitperiod}}}%
+        {{hash=792b4759cafd310ea2c7f597e3c4bd34}{%
+           family={Barnett},
+           familyi={B\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{e9fc636c927ed768a1514162e7183333}
+      \strng{fullhash}{4c04ca2671aa9bf7bdd2d699f9736d39}
+      \strng{bibnamehash}{4c04ca2671aa9bf7bdd2d699f9736d39}
+      \strng{authorbibnamehash}{4c04ca2671aa9bf7bdd2d699f9736d39}
+      \strng{authornamehash}{e9fc636c927ed768a1514162e7183333}
+      \strng{authorfullhash}{4c04ca2671aa9bf7bdd2d699f9736d39}
+      \field{extraname}{1}
+      \field{labelalpha}{Cou+12}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-1-4503-1561-6}
+      \field{journaltitle}{ACM SIGPLAN Notices}
+      \field{month}{10}
+      \field{title}{An Abstract Interpretation Framework for Refactoring with Application to Extract Methods with Contracts}
+      \field{volume}{47}
+      \field{year}{2012}
+      \verb{doi}
+      \verb 10.1145/2384616.2384633
+      \endverb
+    \endentry
+    \entry{Cousot13}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=8e278ac48d46529580f34189ce35f505}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Patrick},
+           giveni={P\bibinitperiod}}}%
+        {{hash=5b51b0ccb1532c740cef8c8045f0911f}{%
+           family={Cousot},
+           familyi={C\bibinitperiod},
+           given={Radhia},
+           giveni={R\bibinitperiod}}}%
+        {{hash=dcba735adc043e55f5e4362f297962e1}{%
+           family={Fähndrich},
+           familyi={F\bibinitperiod},
+           given={Manuel},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b14303f4e3cf85428115c6ba5f862e24}{%
+           family={Logozzo},
+           familyi={L\bibinitperiod},
+           given={Francesco},
+           giveni={F\bibinitperiod}}}%
+      }
+      \name{editor}{3}{}{%
+        {{hash=6d8cb6af4a5b9439461ca60b0f177f91}{%
+           family={Giacobazzi},
+           familyi={G\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod}}}%
+        {{hash=8be52df6c77716854b91eb1bab75ff9e}{%
+           family={Berdine},
+           familyi={B\bibinitperiod},
+           given={Josh},
+           giveni={J\bibinitperiod}}}%
+        {{hash=620922aeb443546e9b46613670abe5bf}{%
+           family={Mastroeni},
+           familyi={M\bibinitperiod},
+           given={Isabella},
+           giveni={I\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Berlin, Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer Berlin Heidelberg}%
+      }
+      \strng{namehash}{e9fc636c927ed768a1514162e7183333}
+      \strng{fullhash}{9ec8b87781579d2f934f4ee801e67a19}
+      \strng{bibnamehash}{9ec8b87781579d2f934f4ee801e67a19}
+      \strng{authorbibnamehash}{9ec8b87781579d2f934f4ee801e67a19}
+      \strng{authornamehash}{e9fc636c927ed768a1514162e7183333}
+      \strng{authorfullhash}{9ec8b87781579d2f934f4ee801e67a19}
+      \strng{editorbibnamehash}{6fbc2929f1ff9525ef4e0eb88ca86d6e}
+      \strng{editornamehash}{6fbc2929f1ff9525ef4e0eb88ca86d6e}
+      \strng{editorfullhash}{6fbc2929f1ff9525ef4e0eb88ca86d6e}
+      \field{extraname}{2}
+      \field{labelalpha}{Cou+13}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We consider the problem of automatic precondition inference. We argue that the common notion of sufficient precondition inference (i.e., under which precondition is the program correct?) imposes too large a burden on callers, and hence it is unfit for automatic program analysis. Therefore, we define the problem of necessary precondition inference (i.e., under which precondition, if violated, will the program always be incorrect?). We designed and implemented several new abstract interpretation-based analyses to infer atomic, disjunctive, universally and existentially quantified necessary preconditions.}
+      \field{booktitle}{Verification, Model Checking, and Abstract Interpretation}
+      \field{isbn}{978-3-642-35873-9}
+      \field{title}{Automatic Inference of Necessary Preconditions}
+      \field{year}{2013}
+      \field{pages}{128\bibrangedash 148}
+      \range{pages}{21}
+    \endentry
+    \entry{Clarkson08}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=5501c8fbf03a0115156f508048e922ca}{%
+           family={Clarkson},
+           familyi={C\bibinitperiod},
+           given={Michael\bibnamedelima R.},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=bd4d942d672b1b6dfd97fa9db7d08ddb}{%
+           family={Schneider},
+           familyi={S\bibinitperiod},
+           given={Fred\bibnamedelima B.},
+           giveni={F\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{1412301d9740d7ed163087ef30c5a7d8}
+      \strng{fullhash}{1412301d9740d7ed163087ef30c5a7d8}
+      \strng{bibnamehash}{1412301d9740d7ed163087ef30c5a7d8}
+      \strng{authorbibnamehash}{1412301d9740d7ed163087ef30c5a7d8}
+      \strng{authornamehash}{1412301d9740d7ed163087ef30c5a7d8}
+      \strng{authorfullhash}{1412301d9740d7ed163087ef30c5a7d8}
+      \field{labelalpha}{CS08}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2008 21st IEEE Computer Security Foundations Symposium}
+      \field{title}{Hyperproperties}
+      \field{year}{2008}
+      \field{pages}{51\bibrangedash 65}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1109/CSF.2008.7
+      \endverb
+      \keyw{Safety;Information security;Topology;Delay effects;Computer security;Computer science;Writing;Security policies;safety;liveness}
+    \endentry
+    \entry{Dijkstra74}{unpublished}{}
+      \name{author}{1}{}{%
+        {{hash=2066778d476d4368455cb8e3ba6d03b4}{%
+           family={Dijkstra},
+           familyi={D\bibinitperiod},
+           given={Edsger\bibnamedelima W.},
+           giveni={E\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{2066778d476d4368455cb8e3ba6d03b4}
+      \strng{fullhash}{2066778d476d4368455cb8e3ba6d03b4}
+      \strng{bibnamehash}{2066778d476d4368455cb8e3ba6d03b4}
+      \strng{authorbibnamehash}{2066778d476d4368455cb8e3ba6d03b4}
+      \strng{authornamehash}{2066778d476d4368455cb8e3ba6d03b4}
+      \strng{authorfullhash}{2066778d476d4368455cb8e3ba6d03b4}
+      \field{labelalpha}{Dij74}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{6}
+      \field{note}{circulated privately}
+      \field{title}{Guarded commands, non-determinacy and a calculus for the derivation of programs}
+      \field{year}{1974}
+      \verb{urlraw}
+      \verb http://www.cs.utexas.edu/users/EWD/ewd04xx/EWD418.PDF
+      \endverb
+      \verb{url}
+      \verb http://www.cs.utexas.edu/users/EWD/ewd04xx/EWD418.PDF
+      \endverb
+    \endentry
+    \entry{Darnier2023}{unknown}{}
+      \name{author}{2}{}{%
+        {{hash=8b8123aac6b5e95690b2389c3d44158e}{%
+           family={Dardinier},
+           familyi={D\bibinitperiod},
+           given={Thibault},
+           giveni={T\bibinitperiod}}}%
+        {{hash=57f66066d804db9a6a0f631aa4beba38}{%
+           family={Müller},
+           familyi={M\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{805a99f1b4b9b5ab88382bd70964070b}
+      \strng{fullhash}{805a99f1b4b9b5ab88382bd70964070b}
+      \strng{bibnamehash}{805a99f1b4b9b5ab88382bd70964070b}
+      \strng{authorbibnamehash}{805a99f1b4b9b5ab88382bd70964070b}
+      \strng{authornamehash}{805a99f1b4b9b5ab88382bd70964070b}
+      \strng{authorfullhash}{805a99f1b4b9b5ab88382bd70964070b}
+      \field{labelalpha}{DM23}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{01}
+      \field{title}{Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties (extended version)}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.48550/arXiv.2301.10037
+      \endverb
+    \endentry
+    \entry{Fischer79}{article}{}
+      \name{author}{2}{}{%
+        {{hash=9785b717133b2f558f2cbf756c97d2c4}{%
+           family={Fischer},
+           familyi={F\bibinitperiod},
+           given={Michael\bibnamedelima J.},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=674a228ba575cce95dfc413e9a048e65}{%
+           family={Ladner},
+           familyi={L\bibinitperiod},
+           given={Richard\bibnamedelima E.},
+           giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{78dd3811287dfac689ed6b87d6f649d4}
+      \strng{fullhash}{78dd3811287dfac689ed6b87d6f649d4}
+      \strng{bibnamehash}{78dd3811287dfac689ed6b87d6f649d4}
+      \strng{authorbibnamehash}{78dd3811287dfac689ed6b87d6f649d4}
+      \strng{authornamehash}{78dd3811287dfac689ed6b87d6f649d4}
+      \strng{authorfullhash}{78dd3811287dfac689ed6b87d6f649d4}
+      \field{labelalpha}{FL79}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We introduce a fundamental propositional logical system based on modal logic for describing correctness, termination and equivalence of programs. We define a formal syntax and semantics for the propositional dynamic logic of regular programs and give several consequences of the definition. Principal conclusions are that deciding satisfiability of length n formulas requires time dn/logn for some d > 1, and that satisfiability can be decided in nondeterministic time cn for some c. We provide applications of the decision procedure to regular expressions, Ianov schemes, and classical systems of modal logic.}
+      \field{issn}{0022-0000}
+      \field{journaltitle}{Journal of Computer and System Sciences}
+      \field{number}{2}
+      \field{title}{Propositional dynamic logic of regular programs}
+      \field{volume}{18}
+      \field{year}{1979}
+      \field{pages}{194\bibrangedash 211}
+      \range{pages}{18}
+      \verb{doi}
+      \verb https://doi.org/10.1016/0022-0000(79)90046-1
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/0022000079900461
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/0022000079900461
+      \endverb
+    \endentry
+    \entry{Floyd93}{inbook}{}
+      \name{author}{1}{}{%
+        {{hash=6a7319445e476f9e3f352261abd48a4a}{%
+           family={Floyd},
+           familyi={F\bibinitperiod},
+           given={Robert\bibnamedelima W.},
+           giveni={R\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \name{editor}{3}{}{%
+        {{hash=964802242891a0e02694fef7cc3378d6}{%
+           family={Colburn},
+           familyi={C\bibinitperiod},
+           given={Timothy\bibnamedelima R.},
+           giveni={T\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=3d07656e93a5611eb25864851cc956fa}{%
+           family={Fetzer},
+           familyi={F\bibinitperiod},
+           given={James\bibnamedelima H.},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=fb71544910dc710628bdf64111bff5d5}{%
+           family={Rankin},
+           familyi={R\bibinitperiod},
+           given={Terry\bibnamedelima L.},
+           giveni={T\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Dordrecht}%
+      }
+      \list{publisher}{1}{%
+        {Springer Netherlands}%
+      }
+      \strng{namehash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{fullhash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{bibnamehash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{authorbibnamehash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{authornamehash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{authorfullhash}{6a7319445e476f9e3f352261abd48a4a}
+      \strng{editorbibnamehash}{2e725af5b3f32d318812b03af5a3023d}
+      \strng{editornamehash}{2e725af5b3f32d318812b03af5a3023d}
+      \strng{editorfullhash}{2e725af5b3f32d318812b03af5a3023d}
+      \field{labelalpha}{Flo93}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper attempts to provide an adequate basis for formal definitions of the meanings of programs in appropriately defined programming languages, in such a way that a rigorous standard is established for proofs about computer programs, including proofs of correctness, equivalence, and termination. The basis of our approach is the notion of an interpretation of a program: that is, an association of a proposition with each connection in the flow of control through a program, where the proposition is asserted to hold whenever that connection is taken. To prevent an interpretation from being chosen arbitrarily, a condition is imposed on each command of the program. This condition guarantees that whenever a command is reached by way of a connection whose associated proposition is then true, it will be left (if at all) by a connection whose associated proposition will be true at that time. Then by induction on the number of commands executed, one sees that if a program is entered by a connection whose associated proposition is then true, it will be left (if at all) by a connection whose associated proposition will be true at that time. By this means, we may prove certain properties of programs, particularly properties of the form: `If the initial values of the program variables satisfy the relation Rl, the final values on completion will satisfy the relation R2'.}
+      \field{booktitle}{Program Verification: Fundamental Issues in Computer Science}
+      \field{isbn}{978-94-011-1793-7}
+      \field{title}{Assigning Meanings to Programs}
+      \field{year}{1993}
+      \field{pages}{65\bibrangedash 81}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1007/978-94-011-1793-7_4
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-94-011-1793-7_4
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-94-011-1793-7_4
+      \endverb
+    \endentry
+    \entry{Hoare69}{article}{}
+      \name{author}{1}{}{%
+        {{hash=d6facc8397f631d3ef01dd70be993640}{%
+           family={Hoare},
+           familyi={H\bibinitperiod},
+           given={C.\bibnamedelimi A.\bibnamedelimi R.},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{d6facc8397f631d3ef01dd70be993640}
+      \strng{fullhash}{d6facc8397f631d3ef01dd70be993640}
+      \strng{bibnamehash}{d6facc8397f631d3ef01dd70be993640}
+      \strng{authorbibnamehash}{d6facc8397f631d3ef01dd70be993640}
+      \strng{authornamehash}{d6facc8397f631d3ef01dd70be993640}
+      \strng{authorfullhash}{d6facc8397f631d3ef01dd70be993640}
+      \field{labelalpha}{Hoa69}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In this paper an attempt is made to explore the logical foundations of computer programming by use of techniques which were first applied in the study of geometry and have later been extended to other branches of mathematics. This involves the elucidation of sets of axioms and rules of inference which can be used in proofs of the properties of computer programs. Examples are given of such axioms and rules, and a formal proof of a simple theorem is displayed. Finally, it is argued that important advantage, both theoretical and practical, may follow from a pursuance of these topics.}
+      \field{issn}{0001-0782}
+      \field{journaltitle}{Commun. ACM}
+      \field{month}{10}
+      \field{number}{10}
+      \field{title}{An axiomatic basis for computer programming}
+      \field{volume}{12}
+      \field{year}{1969}
+      \field{pages}{576\bibrangedash 580}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1145/363235.363259
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/363235.363259
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/363235.363259
+      \endverb
+      \keyw{axiomatic method,formal language definition,machine-independent programming,program documentation,programming language design,theory of programming' proofs of programs}
+    \endentry
+    \entry{Kozen97}{article}{}
+      \name{author}{1}{}{%
+        {{hash=d2074648976a36dff1e51ca8e744276b}{%
+           family={Kozen},
+           familyi={K\bibinitperiod},
+           given={Dexter},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{d2074648976a36dff1e51ca8e744276b}
+      \strng{fullhash}{d2074648976a36dff1e51ca8e744276b}
+      \strng{bibnamehash}{d2074648976a36dff1e51ca8e744276b}
+      \strng{authorbibnamehash}{d2074648976a36dff1e51ca8e744276b}
+      \strng{authornamehash}{d2074648976a36dff1e51ca8e744276b}
+      \strng{authorfullhash}{d2074648976a36dff1e51ca8e744276b}
+      \field{labelalpha}{Koz97}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We introduce Kleene algebra with tests, an equational system for manipulating programs. We give a purely equational proof, using Kleene algebra with tests and commutativity conditions, of the following classical result: every while program can be simulated by a while program can be simulated by a while program with at most one while loop. The proof illustrates the use of Kleene algebra with tests and commutativity conditions in program equivalence proofs.}
+      \field{issn}{0164-0925}
+      \field{journaltitle}{ACM Trans. Program. Lang. Syst.}
+      \field{month}{5}
+      \field{number}{3}
+      \field{title}{Kleene algebra with tests}
+      \field{volume}{19}
+      \field{year}{1997}
+      \field{pages}{427\bibrangedash 443}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1145/256167.256195
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/256167.256195
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/256167.256195
+      \endverb
+      \keyw{Kleene algebra,dynamic logic,specification}
+    \endentry
+    \entry{Martin06}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=cb15161686cf3b561997a59dcbf68ea8}{%
+           family={Martin},
+           familyi={M\bibinitperiod},
+           given={Ursula},
+           giveni={U\bibinitperiod}}}%
+        {{hash=414fc975d7a37e23382ae24423c2419f}{%
+           family={Mathiesen},
+           familyi={M\bibinitperiod},
+           given={Erik},
+           giveni={E\bibinitperiod}}}%
+        {{hash=d5d799da542e0c8cf62d5351e684fe53}{%
+           family={Oliva},
+           familyi={O\bibinitperiod},
+           given={Paulo},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \strng{fullhash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \strng{bibnamehash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \strng{authorbibnamehash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \strng{authornamehash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \strng{authorfullhash}{5bfb7a9e0fc695bd8b837ec2b652d60e}
+      \field{labelalpha}{MMO06}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-540-45458-8}
+      \field{month}{01}
+      \field{title}{Hoare Logic in the Abstract}
+      \field{volume}{4207}
+      \field{year}{2006}
+      \field{pages}{501\bibrangedash 515}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1007/11874683_33
+      \endverb
+    \endentry
+    \entry{Moller21}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=fd90c158b0b2acd9bf6cdea9ca41d062}{%
+           family={Möller},
+           familyi={M\bibinitperiod},
+           given={Bernhard},
+           giveni={B\bibinitperiod}}}%
+        {{hash=47081da562cc1c0028bbc8eb4f38bdd8}{%
+           family={O'Hearn},
+           familyi={O\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=6502538c51ce07aebd2d0baf74172968}{%
+           family={Hoare},
+           familyi={H\bibinitperiod},
+           given={Tony},
+           giveni={T\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=6dcc1ff1dee2597ea206d2d8fed057cc}{%
+           family={Fahrenberg},
+           familyi={F\bibinitperiod},
+           given={Uli},
+           giveni={U\bibinitperiod}}}%
+        {{hash=953f3d8fcbac86595b9aa2f9d0c5cb8c}{%
+           family={Gehrke},
+           familyi={G\bibinitperiod},
+           given={Mai},
+           giveni={M\bibinitperiod}}}%
+        {{hash=8a1b647ce70db6b28d7cde879a8e867b}{%
+           family={Santocanale},
+           familyi={S\bibinitperiod},
+           given={Luigi},
+           giveni={L\bibinitperiod}}}%
+        {{hash=4f6fb664853bc3e88b0133c00294e4d3}{%
+           family={Winter},
+           familyi={W\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{fullhash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{bibnamehash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{authorbibnamehash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{authornamehash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{authorfullhash}{6ffde6bd7fc4f9db5b28d22fa0a91fa4}
+      \strng{editorbibnamehash}{ea6721c36560d44e7631007ae88ba1d7}
+      \strng{editornamehash}{f4199d9e84e5cbf7c0457fcec5ac3efa}
+      \strng{editorfullhash}{ea6721c36560d44e7631007ae88ba1d7}
+      \field{labelalpha}{MOH21}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Variants of Kleene algebra have been used to provide foundations of reasoning about programs, for instance by representing Hoare Logic (HL) in algebra. That work has generally emphasised program correctness, i.e., proving the absence of bugs. Recently, Incorrectness Logic (IL) has been advanced as a formalism for the dual problem: proving the presence of bugs. IL is intended to underpin the use of logic in program testing and static bug finding. Here, we use a Kleene algebra with diamond operators and countable joins of tests, which embeds IL, and which also is complete for reasoning about the image of the embedding. Next to embedding IL, the algebra is able to embed HL, and allows making connections between IL and HL specifications. In this sense, it unifies correctness and incorrectness reasoning in one formalism.}
+      \field{booktitle}{Relational and Algebraic Methods in Computer Science}
+      \field{isbn}{978-3-030-88701-8}
+      \field{title}{On Algebra of Program Correctness and Incorrectness}
+      \field{year}{2021}
+      \field{pages}{325\bibrangedash 343}
+      \range{pages}{19}
+    \endentry
+    \entry{Mastroeni18}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=620922aeb443546e9b46613670abe5bf}{%
+           family={Mastroeni},
+           familyi={M\bibinitperiod},
+           given={Isabella},
+           giveni={I\bibinitperiod}}}%
+        {{hash=cf539208a51aa87632c190112f5ddb5e}{%
+           family={Pasqua},
+           familyi={P\bibinitperiod},
+           given={Michele},
+           giveni={M\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=3edf53e74f24ed3b77a41f6098d6eb7b}{%
+           family={Podelski},
+           familyi={P\bibinitperiod},
+           given={Andreas},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{fullhash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{bibnamehash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{authorbibnamehash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{authornamehash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{authorfullhash}{d1a42ce27901e96e2a66ab57d99507c8}
+      \strng{editorbibnamehash}{3edf53e74f24ed3b77a41f6098d6eb7b}
+      \strng{editornamehash}{3edf53e74f24ed3b77a41f6098d6eb7b}
+      \strng{editorfullhash}{3edf53e74f24ed3b77a41f6098d6eb7b}
+      \field{labelalpha}{MP18}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Hyperproperties are quickly becoming very popular in the context of systems security, due to their expressive power. They differ from classic trace properties since they are represented by sets of sets of executions instead of sets of executions. This allows us, for instance, to capture information flow security specifications, which cannot be expressed as trace properties, namely as predicates over single executions. In this work, we reason about how it is possible to move standard abstract interpretation-based static analysis methods, designed for trace properties, towards the verification of hyperproperties. In particular, we focus on the verification of bounded subset-closed hyperproperties which are easier to verify than generic hyperproperties. It turns out that a lot of interesting specifications (e.g., Non-Interference) lie in this category.}
+      \field{booktitle}{Static Analysis}
+      \field{isbn}{978-3-319-99725-4}
+      \field{title}{Verifying Bounded Subset-Closed Hyperproperties}
+      \field{year}{2018}
+      \field{pages}{263\bibrangedash 283}
+      \range{pages}{21}
+    \endentry
+    \entry{Scott70}{report}{}
+      \name{author}{1}{}{%
+        {{hash=d2a3260f2b3598bddd87dc469836d0d1}{%
+           family={Scott},
+           familyi={S\bibinitperiod},
+           given={Dana},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {OUCL}%
+      }
+      \strng{namehash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \strng{fullhash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \strng{bibnamehash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \strng{authorbibnamehash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \strng{authornamehash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \strng{authorfullhash}{d2a3260f2b3598bddd87dc469836d0d1}
+      \field{labelalpha}{Sco70}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{11}
+      \field{number}{PRG02}
+      \field{title}{OUTLINE OF A MATHEMATICAL THEORY OF COMPUTATION}
+      \field{type}{techreport}
+      \field{year}{1970}
+      \field{pages}{30}
+      \range{pages}{1}
+    \endentry
+    \entry{Zilberstein23}{article}{}
+      \name{author}{3}{}{%
+        {{hash=691cc977c64d4601abd8ff0ee39f6b64}{%
+           family={Zilberstein},
+           familyi={Z\bibinitperiod},
+           given={Noam},
+           giveni={N\bibinitperiod}}}%
+        {{hash=3c61a075f82133ed00b1cf07a5b5c194}{%
+           family={Dreyer},
+           familyi={D\bibinitperiod},
+           given={Derek},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8b75accb7828bac3d5aa4bb89fbd6ff0}{%
+           family={Silva},
+           familyi={S\bibinitperiod},
+           given={Alexandra},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \strng{fullhash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \strng{bibnamehash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \strng{authorbibnamehash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \strng{authornamehash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \strng{authorfullhash}{4a23fa8e81d12e3c92c1d9f36f7111f1}
+      \field{labelalpha}{ZDS23}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Program logics for bug-finding (such as the recently introduced Incorrectness Logic) have framed correctness and incorrectness as dual concepts requiring different logical foundations. In this paper, we argue that a single unified theory can be used for both correctness and incorrectness reasoning. We present Outcome Logic (OL), a novel generalization of Hoare Logic that is both monadic (to capture computational effects) and monoidal (to reason about outcomes and reachability). OL expresses true positive bugs, while retaining correctness reasoning abilities as well. To formalize the applicability of OL to both correctness and incorrectness, we prove that any false OL specification can be disproven in OL itself. We also use our framework to reason about new types of incorrectness in nondeterministic and probabilistic programs. Given these advances, we advocate for OL as a new foundational theory of correctness and incorrectness.}
+      \field{journaltitle}{Proc. ACM Program. Lang.}
+      \field{month}{4}
+      \field{number}{OOPSLA1}
+      \field{title}{Outcome Logic: A Unifying Foundation for Correctness and Incorrectness Reasoning}
+      \field{volume}{7}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.1145/3586045
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3586045
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3586045
+      \endverb
+      \keyw{Program Logics,Incorrectness Reasoning,Hoare Logic}
+    \endentry
+    \entry{Zhang22}{article}{}
+      \name{author}{2}{}{%
+        {{hash=ab322b98c00b041ce7e5941c8e901c46}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Linpeng},
+           giveni={L\bibinitperiod}}}%
+        {{hash=a82c04370c73f1ddff9a3487e8d8044d}{%
+           family={Kaminski},
+           familyi={K\bibinitperiod},
+           given={Benjamin\bibnamedelima Lucien},
+           giveni={B\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{86a1157731870fa067ff4bb1abc0be2e}
+      \strng{fullhash}{86a1157731870fa067ff4bb1abc0be2e}
+      \strng{bibnamehash}{86a1157731870fa067ff4bb1abc0be2e}
+      \strng{authorbibnamehash}{86a1157731870fa067ff4bb1abc0be2e}
+      \strng{authornamehash}{86a1157731870fa067ff4bb1abc0be2e}
+      \strng{authorfullhash}{86a1157731870fa067ff4bb1abc0be2e}
+      \field{labelalpha}{ZK22}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We present a novel strongest-postcondition-style calculus for quantitative reasoning about non-deterministic programs with loops. Whereas existing quantitative weakest pre allows reasoning about the value of a quantity after a program terminates on a given initial state, quantitative strongest post allows reasoning about the value that a quantity had before the program was executed and reached a given final state. We show how strongest post enables reasoning about the flow of quantitative information through programs. Similarly to weakest liberal preconditions, we also develop a quantitative strongest liberal post. As a byproduct, we obtain the entirely unexplored notion of strongest liberal postconditions and show how these foreshadow a potential new program logic - partial incorrectness logic - which would be a more liberal version of O'Hearn's recent incorrectness logic.}
+      \field{journaltitle}{Proc. ACM Program. Lang.}
+      \field{month}{4}
+      \field{number}{OOPSLA1}
+      \field{title}{Quantitative strongest post: a calculus for reasoning about the flow of quantitative information}
+      \field{volume}{6}
+      \field{year}{2022}
+      \verb{doi}
+      \verb 10.1145/3527331
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3527331
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3527331
+      \endverb
+      \keyw{Weakest Precondition,Strongest Postcondition,Quantitative Verification,Incorrectness Logic}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
