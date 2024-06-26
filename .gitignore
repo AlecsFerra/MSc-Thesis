@@ -1,4 +1,5 @@
 *.aux
+./aux/
 *.lof
 *.log
 *.lot
@@ -8,6 +9,7 @@
 *.fmt
 *.fot
 *.cb
+*.blg
 *.cb2
 .*.lb
 *.fdb_latexmk
