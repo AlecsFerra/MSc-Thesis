@@ -3,24 +3,24 @@
 
 \subsection{Hoare logic}
 Hoare logic  \cite{Hoare69, Floyd93} was one of the first method designed for 
-the verification of programs, is based on the core concept of partial correctness 
-assertions. A triple is a formula $\htriple{P}{C}{Q}$ where $P$ and $Q$ are 
-assertions on the initial and final states of running program $C$, respectively. 
+the verification of programs, It's core concept is that of partial correctness 
+assertions. A Hoare triple is a formula $\htriple{P}{C}{Q}$ where $P$ and $Q$ are 
+assertions on the initial and final states of a program $C$, respectively. 
 These assertions are partial in the sense that $Q$ is meaningful only when the 
 execution of $C$ on $P$ terminates.
 
-Hoare logic is organized as a proof system, where the syntax 
+Hoare logic is designed as a proof system, where the syntax 
 $\vdash \htriple{P}{C}{Q}$ indicates that the triple 
-$\htriple{P}{C}{Q}$ is proved by some combination of rules of the proof system.
+$\htriple{P}{C}{Q}$ is proved by applying the rules of the proof system.
 
 The original formulation of Hoare logic was given for an imperative language 
-with deterministic constructs, but it can be easily translated for our language 
+with deterministic constructs, but it can be easily defined for our language 
 $\lang$ following the work in \cite{Moller21}.
 
 \begin{definition}[Hoare triple]
   \label{def:hoare}
-  Fixed the semantics of the base commands, an Hoare triple written 
-  $\htriple{P}{C}{Q}$ is valid if and only if $\sem{C}(P) \subseteq Q$.
+  Fixed the semantics of the basic commands, an Hoare triple denoted by 
+  $\htriple{P}{C}{Q}$, is valid if and only if $\sem{C}(P) \subseteq Q$.
 
   $$\models \htriple{P}{C}{Q} \iff \sem{C}(P) \subseteq Q$$
 \end{definition}
@@ -30,37 +30,38 @@ $\not \models \htriple{P}{C}{Q}$ to refer to invalid triples, and
 $\htriple{P}{C}{Q}$ when we are not asserting the validity or invalidity of a
 triple.
 
-\begin{example}[Some Hoare triples examples]
+\begin{example}[Hoare triples]
   \label{exmp:hlogic}
-$\models \htriple{x \in [1, 2]}{x := x + 1}{x \in [2, 3]}$, for example, is a
+We have that $\htriple{x \in [1, 2]}{x := x + 1}{x \in [2, 3]}$, is a
 valid triple since from any state in which either $x = 1$ or $x = 2$,
 incrementing by one the value of $x$ leads to states in which $x$ is either $2$
 or $3$. Specifically, starting from $x = 1$ leads us to $x = 2$ and starting
 from $x = 2$ leads us to $x = 3$.
 
 Since the conclusion of Hoare triples must contain all the final states, the
-triple $\models \htriple{P}{C}{\top}$ is always valid since $\top$ contains all
+triple $\htriple{P}{C}{\top}$ is always valid since $\top$ contains all the
 possible states.
 
-An example of an invalid triple is $\not \models \htriple{x \in [1, 2]}{x := x
+An example of an invalid triple is $\htriple{x \in [1, 2]}{x := x
 + 1}{x \in [1, 2]}$ since the state $x = 2$ satisfies the precondition and
-running the program on it results in the state $x = 3$, which does not satisfy
+executing the program on it results in the state $x = 3$, which does not satisfy
 $x \in [1, 2]$.
 
 Since Hoare logic is concerned only with termination, when the program is
-non-terminating, we can prove any property. For example, $\models \htriple{x
+non-terminating, we can prove any property. For example, $\htriple{x
 \in [0, 10]}{(x \leq 20? \fcmp x := x - 1)^\fix \fcmp x \geq 20?}{Q}$ is always
 a valid triple since the program is non-terminating for any $x \in [0, 10]$. 
 The set of reachable states is empty, thus the postcondition is vacuously true.
 
-This is the reason why Hoare logic is said to be a partial correctness logic,
-as it is partial in the sense that it can prove the adherence of a program to
+This is the reason why Hoare logic is called a partial correctness logic,
+where partial means that it can prove the adherence of a program to
 some specification only when it is terminating. The termination of the program
-must be assessed in some other way.
+must be proved by resorting to some alternative method.
 \end{example}
 
 \begin{definition}[Hoare logic]$\;$ \\
   \label{def:hoaretules}
+  The rules of Hoare logic are defined as follows:
   \begin{prooftree}
     \AxiomC{$ $}
     \RightLabel{$(\sskip)$}
@@ -106,19 +107,18 @@ must be assessed in some other way.
   \end{prooftree}
 \end{definition}
 
-The proof system described in Definition \ref{def:hoaretules} is logically 
-sound, meaning that all the triples provable by it are valid with respect to 
-the definition in \ref{def:hoare}. This result was already present in the 
-original work \cite{Hoare69}.
+The proof system described in Definition \ref{def:hoaretules} is logically
+sound, meaning that all it's provable triples are valid with respect to
+definition \ref{def:hoare}.
 
 \begin{theorem}[Soundness]
   $$\vdash \htriple{P}{C}{Q} \implies \models \htriple{P}{C}{Q}$$
 \end{theorem}
 
-As observed by Cook in \cite{Cook78}, the reverse implication is not true in 
+As observed by Cook \cite{Cook78}, the reverse implication is not true, in 
 general, as a consequence of Gödel's incompleteness theorem. For this reason, 
-Cook developed the concept of relative completeness, in which all instances of 
-$\subseteq$ are provided by an oracle, proving that the incompleteness of the 
+Cook developed the concept of relative completeness, in which all the instances 
+of $\subseteq$ are provided by an oracle, proving that the incompleteness of the 
 proof system is only caused by the incompleteness of the assertion language.
 
 \begin{theorem}[Relative completeness]
@@ -127,18 +127,18 @@ proof system is only caused by the incompleteness of the assertion language.
 \end{theorem}
 
 \subsection{Abstracting Hoare logic}
-The idea of developing a Hoare-like logic to reason about properties of 
-programs expressible within the theory of lattices using concepts from abstract 
-interpretation is not new. In fact, \cite{Cousot12} already proposed a framework 
-to perform this kind of reasoning. However, the validity of such triples is 
-dependent on the standard definition of Hoare triples, and the proof system 
-provided is incomplete if we ignore the rule to embed standard Hoare triples 
-in the abstract ones.
+The idea of designing a Hoare-like logic to reason about properties of programs
+expressible within the theory of lattices using concepts from abstract
+interpretation is not new. In fact, \cite{Cousot12} already proposed a
+framework to perform this kind of reasoning. However, the validity of the
+triples in \cite{Cousot12} dependends on the standard definition of Hoare
+triples, and the proof system is incomplete if we ignore the rule to embed
+standard Hoare triples in the abstract ones.
 
 Our approach will be different. In particular, the meaning of abstract Hoare 
 triples will be dependent on the abstract inductive semantics, and we will 
-provide a sound and (relatively) complete proof system that fully operates in 
-the abstract.
+provide a sound and (relatively) complete without resorting to embedd Hoare 
+logic in it's proof system as \cite{Cousot12}.
 
 \begin{definition}[Abstract Hoare triple]
   \label{def:aht}
@@ -149,15 +149,15 @@ the abstract.
   $$\models \atriple{P}{C}{Q} \iff \asem{C}(P) \leq_A Q$$
 \end{definition}
 
-The definition is equivalent as the one provided in definition \ref{def:hoare} 
-but here the abstract inductive semantics is used to procide the strongest 
+The definition is equivalent to the definition \ref{def:hoare} 
+but here the abstract inductive semantics is used to provide the strongest 
 postcondition of programs.
 
-In Abstract Hoare logic some of the examples show in example \ref{exmp:hlogic} still 
-hold, in particular:
-\begin{theorem}
+In Abstract Hoare logic some of the examples shown in example \ref{exmp:hlogic} 
+still hold, in particular we have that:
+\begin{example}
   $$\models \atriple{P}{C}{\top}$$
-\end{theorem}
+\end{example}
 \begin{proof}
   \begin{align*}
     \models \atriple{P}{C}{\top}
@@ -167,10 +167,10 @@ hold, in particular:
   And since $\top$ is the top element of $A$ $\top \geq \asem{C}(P)$
 \end{proof}
 
-\subsubsection{Proof system}
-As per Hoare logic we will peovide a sound an relatively complete (in the sense
-of \cite{Cook78}) proof system to derive valid abstract Hoare triples in a 
-compositional manner.
+\subsubsection{2.3.3 Proof system}
+As per Hoare logic we will provide a sound and relatively complete (in the sense
+of \cite{Cook78}) proof system to derive abstract Hoare triples in a 
+compositional fashion.
 
 \begin{definition}[Abstract Hoare rules]$\;$\\
   \label{def:ahtrules}
@@ -180,8 +180,6 @@ compositional manner.
     \RightLabel{$(\sskip)$}
     \UnaryInfC{$\vdash \atriple{P}{\sskip}{P}$}
   \end{prooftree}
-  The identity command does not change the state, so if $P$ holds before,
-  it will hold after the execution.
 
   % Rule for a basic command
   \begin{prooftree}
@@ -189,8 +187,6 @@ compositional manner.
     \RightLabel{$(b)$}
     \UnaryInfC{$\vdash \atriple{P}{b}{\bsem{b}^A(P)}$}
   \end{prooftree}
-  For a basic command $b$, if $P$ holds before the execution, then 
-  $\bsem{b}^A(P)$ holds after the execution.
 
   % Rule for sequential composition
   \begin{prooftree}
@@ -199,9 +195,6 @@ compositional manner.
     \RightLabel{$(\mathbb{\fcmp})$}
     \BinaryInfC{$\vdash \atriple{P}{C_1 \fcmp C_2}{R}$}
   \end{prooftree}
-  If executing $C_1$ from state $P$ leads to state $Q$, and executing $C_2$
-  from state $Q$ leads to state $R$, then executing $C_1$ followed by $C_2$
-  from state $P$ leads to state $R$.
 
   % Rule for nondeterministic choice
   \begin{prooftree}
@@ -210,9 +203,6 @@ compositional manner.
     \RightLabel{$(+)$}
     \BinaryInfC{$\vdash \atriple{P}{C_1 + C_2}{Q}$}
   \end{prooftree}
-  If executing either $C_1$ or $C_2$ from state $P$ leads to state $Q$, 
-  then executing the nondeterministic choice $C_1 + C_2$ from state $P$
-  also leads to state $Q$.
 
   % Rule for iteration (Kleene star)
   \begin{prooftree}
@@ -220,9 +210,6 @@ compositional manner.
     \RightLabel{$(\fix)$}
     \UnaryInfC{$\vdash \atriple{P}{C^\fix}{P}$}
   \end{prooftree}
-  If executing command $C$ from state $P$ leads back to state $P$, then 
-  executing $C$ repeatedly (zero or more times) from state $P$ also leads
-  back to state $P$.
 
   % Rule for strengthening the precondition and weakening the postcondition
   \begin{prooftree}
@@ -232,20 +219,41 @@ compositional manner.
     \RightLabel{$(\leq)$}
     \TrinaryInfC{$\vdash \atriple{P}{C}{Q}$}
   \end{prooftree}
-  If $P$ is stronger than $P'$ and $Q'$ is stronger than $Q$, then we can
-  derive $\atriple{P}{C}{Q}$ from $\atriple{P'}{C}{Q'}$.
 \end{definition}
 
-The proofsystem in nonother than the proofsystem of definition \ref{def:hoaretules}
+The rules can be summarized as:
+\begin{itemize}
+  \item The identity command does not change the state, so if $P$ holds before,
+    it will hold after the execution.
+
+  \item For a basic command $b$, if $P$ holds before the execution, then 
+    $\bsem{b}^A(P)$ holds after the execution.
+
+  \item If executing $C_1$ from state $P$ leads to state $Q$, and executing
+    $C_2$ from state $Q$ leads to state $R$, then executing $C_1$ followed by
+    $C_2$ from state $P$ leads to state $R$.
+
+  \item If executing either $C_1$ or $C_2$ from state $P$ leads to state $Q$,
+    then executing the nondeterministic choice $C_1 + C_2$ from state $P$ also
+    leads to state $Q$.
+
+  \item If executing command $C$ from state $P$ leads back to state $P$, then
+    executing $C$ repeatedly (zero or more times) from state $P$ also leads
+    back to state $P$.
+
+  \item If $P$ is stronger than $P'$ and $Q'$ is stronger than $Q$, then we can
+    derive $\atriple{P}{C}{Q}$ from $\atriple{P'}{C}{Q'}$.
+\end{itemize}
+
+The proofsystem is nonother than definition \ref{def:hoaretules},
 where the assertion are replaced by elements of the complete lattice $A$.
 
-Note that we denonte abstract hoare triples as defined in defintion \ref{def:aht}
-with the notation $\atriple{P}{C}{Q}$ and intread we denote the triples obtained
-with the inference rules of definition \ref{def:ahtrules} with $\vdash 
+Note that we denote Abstract Hoare Triples as defined in defintion \ref{def:aht}
+with the notation $\atriple{P}{C}{Q}$ while we denote the triples obtained
+with the inference rules of definition \ref{def:ahtrules} by $\vdash 
 \atriple{P}{C}{Q}$.
 
-The proofsystem for Abstract Hoare logic is still sound, as the original Hoare
-logic.
+The proofsystem for Abstract Hoare logic is sound, as the original Hoare logic.
 
 \begin{theorem}[Soundness]
   \label{thm:atriple-sound}
@@ -268,7 +276,8 @@ logic.
       The triple is valid since:
       \begin{align*}
         \asem{\sskip}(P)
-          &= P &\text{By definition of $\asem{\cdot}$}
+          &= P 
+          &\text{[By definition of $\asem{\cdot}$]}
       \end{align*}
 
       \item $(b)$:
@@ -284,7 +293,7 @@ logic.
         \begin{align*}
           \asem{b}(P)
             &= \bsem{b}^A(P)
-            & \text{By definition of $\asem{\cdot}$}
+            & \text{[By definition of $\asem{\cdot}$]}
         \end{align*}
 
       \item $(\fcmp)$: Then the last step in the derivation was:
@@ -304,9 +313,9 @@ logic.
         \begin{align*}
           \asem{C_1 \fcmp C_2}(P)
             &= \asem{C_2}(\asem{C_1}(P))
-            &\text{By definition of $\asem{\cdot}$} \\
+            &\text{[By definition of $\asem{\cdot}$]} \\
             &\leq_A \asem{C_2}(Q)
-            &\text{By monotonicity of $\asem{\cdot}$} \\
+            &\text{[By monotonicity of $\asem{\cdot}$]} \\
             &\leq_A R
         \end{align*}
 
@@ -325,7 +334,7 @@ logic.
         \begin{align*}
           \asem{C_1 + C_2}(P)
             &= \asem{C_1}(P) \join_A \asem{C_2}(P)
-            &\text{By definition of $\asem{\cdot}$} \\
+            &\text{[By definition of $\asem{\cdot}$]} \\
             &\leq_A Q \join_A Q \\
             &= Q
         \end{align*}
@@ -351,7 +360,7 @@ logic.
         \begin{align*}
           (\lambda P' \to P \join_A \asem{C}(P'))(P)
             &= P \join_A \asem{C}(P)
-            & \text{since $\asem{C}(P) \leq P$} \\
+            & \text{[since $\asem{C}(P) \leq P$]} \\
             &= P
         \end{align*}
 
@@ -374,19 +383,20 @@ logic.
         \begin{align*}
           \asem{C}(P)
             & \asem{C}(P')
-            & \text{By monotonicity of $\asem{\cdot}$}\\
-            & \leq_A Q' & \text{By inductive hypothesis} \\
+            & \text{[By monotonicity of $\asem{\cdot}$]}\\
+            & \leq_A Q' 
+            & \text{[By inductive hypothesis]} \\
             & \leq_A Q
         \end{align*}
   \end{itemize}
 \end{proof}
 
-And is also relatively complete, in the sense that the axioms are complete 
-relative to what we can prove in the underlying assertion language, that in
-our case is described by the complete lattice.
+The proof system turns out to be relatively complete aswell, in the sense that
+the axioms are complete relative to what we can prove in the underlying
+assertion language, that in our case is described by the complete lattice.
 
-We will start by proving a slightly weaker result, we will show that we are able 
-to prove the strongest post-condition of every program.
+We will first prove a slightly weaker result, where we will show that we can
+prove the strongest post-condition of every program.
 
 \begin{theorem}[Relative $\asem{\cdot}$-completeness]
   \label{thm:post-completeness}
@@ -494,8 +504,8 @@ to prove the strongest post-condition of every program.
   \end{itemize}
 \end{proof}
 
-Now we can finally show the relative completeness, by applying the $(\leq)$ to
-obtain the desired post-condition.
+We can now show the relative completeness, by applying the rule $(\leq)$ to
+achieve the desired post-condition.
 
 \begin{theorem}[Relative completeness]
   \label{thm:completeness}

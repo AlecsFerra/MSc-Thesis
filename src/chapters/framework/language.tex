@@ -3,28 +3,27 @@
 \subsection{Syntax}
 
 The $\lang$ language is inspired by Dijkstra's guarded command languages
-\cite{Dijkstra74} but with the goal of beeing as general as possible by beeing
-parametric on a set of \textit{base commands}. The $\lang$ language is general
-enough to describe any imperative non deterministic programming language.
+\cite{Dijkstra74} with the goal of being as general as possible by being
+parametric on a set of \textit{basic commands}. The $\lang$ language is general
+enough to describe any imperative non-deterministic programming language.
 
 \begin{definition}[$\lang$ language syntax]
-  Given a set $Base$ of base commands, the set on valid $\lang$ programs is 
+  Given a set $BCmd$ of basic commands, the set on valid $\lang$ programs is 
   defined by the following inductive definition:
 
   \begin{align*}
-    \lang \; & \cceq \sskip        & \text{Skip}\\
-             & \smid b             & \text{Base command}\\
-             & \smid C_1 \fcmp C_2 & \text{Program composition}\\
-             & \smid C_1 + C_2     & \text{Non deterministic choice}\\
-             & \smid C^\fix        & \text{Iteration}\\
+    b \in BCmd \\
+    \lang \ni C, C_1, C_2 \; & \cceq \sskip        & \text{Skip}\\
+                             & \smid b             & \text{Basic command}\\
+                             & \smid C_1 \fcmp C_2 & \text{Program composition}\\
+                             & \smid C_1 + C_2     & \text{Non deterministic choice}\\
+                             & \smid C^\fix        & \text{Iteration}\\
   \end{align*}
 
-  Where $C, C_1, C_2 \in \lang$ and $b \in Base$.
-
   \begin{example} \label{exmp:base-commands-syntax}
-    Usually the set of base commands contains a command $e ?$ to discard 
-    execution that don't satisfy the predicate $e$ and $x \ass y$ to assing the 
-    value $y$ to the variable $x$.
+    Usually the set of basic commands contains a command to perform tests $e ?$
+    discarding executions that do not satisfy the predicate $e$, and $x \ass v$
+    to assign the value $v$ to the variable $x$.
   \end{example}
 \end{definition}
 
@@ -32,17 +31,18 @@ enough to describe any imperative non deterministic programming language.
 \subsection{Semantics}
 
 Fixed a set $\states$ of states (usually a collection of associations between
-variables names and values) and a family of partial functions $\bsem{\cdot} 
-: \states \topartial \states$ we can define the denotational semantics of programs 
-in $\lang$, the \textit{collecting semantics} is a function $\sem{\cdot} : \lang 
-\to \pow{\states} \to \pow{\states}$ that associates a program $C$ and set of 
-initial states to the set of states reached after executing the program $C$ 
-from the initial states.
+variables names and values) and a family of partial functions $\bsem{\cdot} :
+BCmd \to \states \topartial \states$ we can define the denotational semantics
+of programs in $\lang$. The \textit{collecting semantics} is defined as a function
+$\sem{\cdot} : \lang \to \pow{\states} \to \pow{\states}$ that associates a
+program $C$ and a set of initial states to the set of states reached after
+executing the program $C$ from the initial states, this is also know as the
+predicate transformer semantics \cite{Dijkstra74}.
 
-\begin{definition}[$\lang$ denotational semantics]
+\begin{definition}[Denotational semantics]
   \label{def:deno}
-  Given a set $\states$ of states and a family of partial functions 
-  $\bsem{b} : \states \topartial \states$ $\forall b \in Base$ the denotational 
+  Given a set $\states$ of states and a family of partial functions
+  $\bsem{\cdot} : BCmd \to \states \topartial \states$ the denotational
   semantics is defined as follows:
 
   \begin{align*}
@@ -56,37 +56,25 @@ from the initial states.
   \end{align*}
 
   \begin{example}
-    We can define the semantics of the base commands introduced in 
+    We can define the semantics of the basic commands introduced in 
     \ref{exmp:base-commands-syntax} as:
     $$\bsem{e ?}(\sigma) \defeq \begin{cases}
       \; \sigma & \sigma \models e \\
       \; \uparrow & otherwise
     \end{cases}$$
-    $$\bsem{x \ass y}(\sigma) \defeq \sigma[x/eval(y, \sigma)]$$
-    Where $eval$ is some evaluate function for the expressions on the left-hand
-    side of assignments.
-  \end{example}
 
-  \begin{theorem}[Complete lattice]
-    \label{thm:sem-lattice}
-    $(\pow{\states}, \subseteq)$ is a complete lattice.
-  \end{theorem}
-  \begin{proof}
-    To prove that $(\pow{\states}, \subseteq)$ is a complete lattice we exhibit:
-    $\forall P \subseteq \pow{states}$
-    \begin{itemize}
-      \item $\inf P = \bigcap P$, it's clearly a lowerbound, and it's the 
-        greatest since any other set $Z \supsetneq \bigcap P$ contains some
-        not in any of the elements in $P$.
-      \item $\sup P = \bigcup P$, it's clearly an upper bound, and it's the
-        smallest one since any other set $Z \subsetneq \bigcup P$ is missing
-        some element that is in one of the elements of $P$.
-    \end{itemize}
-  \end{proof}
+    Where $\sigma \models e$ means that the state $\sigma$ satisfies the 
+    predicate $e$ and $\uparrow$ is denoting that the function is diverging.
+
+    $$\bsem{x \ass e}(\sigma) \defeq \sigma[x/eval(e, \sigma)]$$
+    Where $eval$ is some evaluate function for the expressions on the left-hand
+    side of assignments and then is substitute in place of $x$ in the 
+    state $\sigma$.
+  \end{example}
 
   \begin{theorem}[Monotonicity]
     \label{thm:sem-mono}
-    $\forall \; C \in \lang$ $\sem{C}$ is monotone.
+    $\forall \; C \in \lang$ $\sem{C}$ is well-defined and monotone.
   \end{theorem}
   \begin{proof}
     We want to prove that $\forall P, Q \in \pow{\states}$ and $C \in \lang$
@@ -96,19 +84,22 @@ from the initial states.
       \item $\sskip$:
         \begin{align*}
           \sem{\sskip}(P) 
-            &= P & \text{By definition of $\sem{\sskip}$}\\
+            &= P
+            & \text{[By definition of $\sem{\sskip}$]}\\
             &\subseteq Q \\
-            &= \sem{\sskip}(Q) & \text{By definition of $\sem{\sskip}$}\\
+            &= \sem{\sskip}(Q) 
+            & \text{[By definition of $\sem{\sskip}$]}\\
         \end{align*}
 
       \item $b$:
         \begin{align*}
           \sem{b}(P) 
             &= \{ \bsem{b}(x)\downarrow \; \mid x \in P \} 
-            & \text{By definition of $\sem{b}$}\\
+            & \text{[By definition of $\sem{b}$]}\\
             &\subseteq \{ \bsem{b}(x)\downarrow \; \mid x \in Q \} 
-            & \text{Since $P \subseteq Q$}\\
-            &= \sem{b}(Q) & \text{By definition of $\sem{b}$}\\
+            & \text{[Since $P \subseteq Q$]}\\
+            &= \sem{b}(Q) 
+            & \text{[By definition of $\sem{b}$]}\\
         \end{align*}
 
       \item $C_1 \fcmp C_2$:
@@ -119,67 +110,72 @@ from the initial states.
         \begin{align*}
           \sem{C_1 \fcmp C_2}(P) 
             &= \sem{C_2}(\sem{C_1}(P))
-            &\text{By definition of $\sem{C_1 \fcmp C_2}$}\\
+            &\text{[By definition of $\sem{C_1 \fcmp C_2}$]}\\
             &\subseteq \sem{C_2}(\sem{C_1}(Q))
-            &\text{By inductive hypothesis on $\sem{C_2}$} \\
+            &\text{[By inductive hypothesis on $\sem{C_2}$]} \\
         \end{align*}
     
       \item $C_1 + C_2$:
         \begin{align*}
           \sem{C_1 + C_2}(P) 
             &= \sem{C_1}(P) \cup \sem{C_2}(P)
-            &\text{By definition of $\sem{C_1 + C_2}$}\\
+            &\text{[By definition of $\sem{C_1 + C_2}$]}\\
             &\subseteq \sem{C_1}(Q) \cup \sem{C_2}(P)
-            &\text{By inductive hypothesis on $\sem{C_1}$} \\
+            &\text{[By inductive hypothesis on $\sem{C_1}$]} \\
             &\subseteq \sem{C_1}(Q) \cup \sem{C_2}(Q)
-            &\text{By inductive hypothesis on $\sem{C_2}$} \\
+            &\text{[By inductive hypothesis on $\sem{C_2}$]} \\
             &= \sem{C_1 + C_2}(Q) 
-            &\text{By definition of $\sem{C_1 + C_2}$}\\
+            &\text{[By definition of $\sem{C_1 + C_2}$]}\\
         \end{align*}
       
       \item $C^\fix$:
 
         \begin{align*}
           \sem{C^\fix}(P) 
-            &= lfp(\lambda P'. P \cup \sem{C}(P'))
-            &\text{By definition of $\sem{C^\fix}$}\\
-            &\subseteq lfp(\lambda P'. Q \cup \sem{C}(P'))
-            &\text{By theorem \ref{thm:lfp-mono}}\\
+            &= \lfp(\lambda P'. P \cup \sem{C}(P'))
+            &\text{[By definition of $\sem{C^\fix}$]}\\
+            &\subseteq \lfp(\lambda P'. Q \cup \sem{C}(P'))
+            &\text{[By theorem \ref{thm:lfp-mono}]}\\
             &= \sem{C^\fix}(Q) 
-            &\text{By definition of $\sem{C^\fix}$}\\
+            &\text{[By definition of $\sem{C^\fix}$]}\\
         \end{align*}
-
+        
+        Clearly all the $\lfp$ are well-defined since by inductive hypothesis
+        $\sem{C}$ is monotone and $\pow{\states}$ is a complete from 
+        \ref{thm:knaster} the least-fixpoint exists.
     \end{itemize}
 
   \end{proof}
 
-  \begin{lemma}[$\sem{\cdot}$ well-defined]
-    \label{thm:sem-welldef}
-    $\forall \; C \in \lang$ $\sem{C}$ is well-defined.
-  \end{lemma}
-  \begin{proof}
-    From theorems \ref{thm:sem-lattice}, \ref{thm:sem-mono} and 
-    \ref{thm:knaster} all the least fixpoints in the definition of 
-    $\sem{C^\fix}$ exists; for all the other commands the semantics is 
-    trivially well-defined.
-  \end{proof}
-
   \begin{observation}
-    As observed in \cite{Fischer79} when the set of base commands contains a 
+    As observed in \cite{Fischer79} when the set of basic commands contains a 
     command to discard executions we can define the usual deterministic control 
     flow commands as syntactic sugar.
 
-    $$if \; b \; then \; C_1 \; else \; C_2 \defeq (b ? \fcmp C_1) 
+    $$\bm{if} \; b \; \bm{then} \; C_1 \; \bm{else} \; C_2 \defeq (b ? \fcmp C_1) 
     + (\neg b ? \fcmp C_2)$$
-    $$while \; b \; do \; C \defeq (b? \fcmp C)^\fix \fcmp \neg b ?$$
+    $$\bm{while} \; b \; \bm{do} \; C \defeq (b? \fcmp C)^\fix \fcmp \neg b ?$$
   \end{observation}
 
   \begin{observation}
-    Some other languages usually provide an iteration command usually denoted
-    $C^\star$ whose semantics is $\sem{C^\star}(P) \defeq \bigcup_{n \in \nat}
-    \sem{C}^n(P)$, this is equivalent to $C^\fix$, the reasoning on why a
-    fixpoint formulation was chosen will become clear in 
-    \ref{obs:abstract-fix}.
+    Regular languages of Kleene algebras \cite{Kozen97} usually provide an
+    iteration command usually denoted $C^\star$ whose semantics is
+    $\sem{C^\star}(P) \defeq \bigcup_{n \in \nat} \sem{C}^n(P)$. This is
+    equivalent to $C^\fix$, the reasoning on why a fixpoint formulation was
+    chosen will become clear in \ref{obs:abstract-fix}.
   \end{observation}
+
+  \begin{example}
+    Let $C \defeq (x \leq 10? \fcmp x := x + 1)^\fix + (x := 55)$ and 
+    $P = \{ x = 1 \}$ then we can compute $\sem{C}(P)$ as:
+    \begin{align*}
+      \sem{C}(P)
+        &= \sem{(x \leq 10? \fcmp x := x +1)^\fix}(P) \cup \sem{x := 55}(P) \\
+        &= \lfp(\lambda P' . P \cup \sem{x \leq 10? \fcmp x := x + 1}(P'))
+          \cup \{x = 55\} \\
+        &= \{ x \in \{1, ..., 10\} \} \cup \{x = 55\} \\
+        &= \{ x \in \{1, ..., 10, 55\} \}
+    \end{align*}
+  \end{example}
 
 \end{definition}

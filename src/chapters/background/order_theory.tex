@@ -1,7 +1,8 @@
 \section{Order theory}\label{sec:backround:order_theory}
 
 When defining the semantics of programming languages, the theory of 
-\textit{partially ordered sets} and \textit{lattices} is fundamental. These 
+\textit{partially ordered sets} and \textit{lattices} is fundamental
+\cite{Gratzer11, Birkhoff40}. These 
 concepts are at the core of denotational semantics \cite{Scott70} and 
 \textit{Abstract Interpretation} \cite{Cousot77}, where the semantics of 
 programming languages and abstract interpreters are defined as monotone 
@@ -74,26 +75,37 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
 \begin{definition}[Least and Greatest fixpoints]
   Given a function $f : X \to X$,
   \begin{itemize}
-    \item We denote the \textit{least fixpoint} as $\lfp(f) = \min \fix(f)$.
-    \item We denote the \textit{greatest fixpoint} as $\gfp(f) = \max \fix(f)$.
+    \item We denote the \textit{least fixpoint} as $\lfp(f)$ and is defined as
+      $lfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \leq a$.
+    \item We denote the \textit{greatest fixpoint} as $\gfp(f)$ and is defined as
+      $gfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \geq a$.
   \end{itemize}
 \end{definition}
 
 \subsection{Lattices}
 
 \begin{definition}[Meet-semilattice]
-  A poset $(X, \leq)$ is a meet-semilattice if $\forall x, y \in X, \exists z 
-  \in X$ such that $z = \inf \{x, y\}$, called the \textit{meet}.
-
-  Usually, the meet of two elements $x, y \in X$ is written as $x \meet y$.
+  A meet-semilattice is a partially ordered set \((L, \leq)\) such that for
+  every pair of elements \(a, b \in L\), there exists an element \(c \in L\)
+  satisfying the following conditions: 
+  \begin{enumerate}
+    \item \(c \leq a\) and \(c \leq b\) 
+    \item \(\forall d \in L\), if \(d \leq a\) and \(d \leq b\), then \(d \leq c\) 
+\end{enumerate}
+  The element \(c\) is called the \emph{meet} of \emph{greatest lower bound} of
+  \(a\) and \(b\), and is denoted by \(a \wedge b\).
 \end{definition}
 
 \begin{definition}[Join-semilattice]
-  A poset $(X, \leq)$ is a join-semilattice if $\forall x, y \in X, \exists z 
-  \in X$ such that $z = \sup \{x, y\}$, called the \textit{join} or 
-  \textit{least upper bound}.
-
-  Usually, the join of two elements $x, y \in X$ is written as $x \join y$.
+  A join-semilattice is a partially ordered set \((L, \leq)\) such that for
+  every pair of elements \(a, b \in L\), there exists an element \(c \in L\)
+  satisfying the following conditions: 
+  \begin{enumerate}
+    \item \(c \geq a\) and \(c \geq b\) 
+    \item \(\forall d \in L\), if \(d \geq a\) and \(d \geq b\), then \(d \geq c\) 
+\end{enumerate}
+  The element \(c\) is called the \emph{join} or \emph{least upper bound} of
+  \(a\) and \(b\), and is denoted by \(a \join b\).
 \end{definition}
 
 \begin{observation}
@@ -101,39 +113,52 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
 \end{observation}
 
 \begin{definition}[Lattice]
-  A poset $(X, \leq)$ is a lattice if it is both a join-semilattice and a 
+  A poset $(L, \leq)$ is a lattice if it is both a join-semilattice and a 
   meet-semilattice.
 \end{definition}
 
 \begin{definition}[Complete lattice]
-  A lattice $(X, \leq)$ is said to be complete if $\forall \; Y \subseteq X$:
-  \begin{itemize}
-    \item $\exists \; z \in X$ such that $z = \sup \; Y$
-    \item $\exists \; z \in X$ such that $z = \inf \; Y$
-  \end{itemize}
+  A partially ordered set \((L, \leq)\) is called a \emph{complete lattice} if
+  for every subset \(S \subseteq L\), there exist elements \(\sup S\) and
+  \(\inf S\) in \(L\) such that: 
+  \begin{enumerate}
+    \item \(\sup S\) (the supremum or least upper bound of \(S\)) is an
+      element of \(L\) satisfying: 
+      \begin{itemize}
+        \item For all \(s \in S\), \(s \leq \sup S\).
+        \item For any \(u \in L\), if \(s \leq u\) for all \(s \in S\), then
+          \(\sup S \leq u\). \end{itemize}
+    \item \(\inf S\) (the infimum or greatest lower bound of \(S\)) is an
+      element of \(L\) satisfying: 
+      \begin{itemize}
+        \item For all \(s \in S\), \(\inf S \leq s\).
+        \item For any \(l \in L\), if \(l \leq s\) for all \(s \in S\), then
+          \(l \leq \inf S\). 
+      \end{itemize}
+  \end{enumerate}
 
-  We denote the \textit{least element} or \textit{bottom} as $\bot = \inf \; X$ 
-  and the \textit{greatest element} or \textit{top} as $\top = \sup \; X$.
+  We denote the \textit{least element} or \textit{bottom} as $\bot = \inf \; L$ 
+  and the \textit{greatest element} or \textit{top} as $\top = \sup \; L$.
 \end{definition}
 
 \begin{observation}
-  A complete lattice cant be empty.
+  A complete lattice cannot be empty.
 \end{observation}
 
-\begin{definition}[Point-wise lift]
-  Given a complete lattice $L$ and a set $A$ we call \textit{point-wise} lift
-  of $L$ the set of all functions $A \to L$ ordered point-wise $f \leq g \iff
-  \forall a \in A \; f(a) \leq f(g)$.
+\begin{definition}[Point-wise lifting]
+  Given a complete lattice $L$ and a set $A$ we call \textit{point-wise} lifting
+  of $L$ the set of all functions $A \to L$ ordered as follows: $f \sqsubseteq 
+  g \iff \forall a \in A \; f(a) \leq f(g)$.
 \end{definition}
 
-\begin{theorem}[Point-wise fixpoint]
+\begin{observation}[Point-wise fixpoint]
   \label{th:pointfix}
-  The leaft-fixpoint and greatest fixpoint on some point-wise lifted lattice on 
+  The least-fixpoint and greatest fixpoint on some point-wise lifted lattice on 
   a monotone function defined point-wise is the point-wise lift of the function.
 
   $$\lfp(\lambda p' a . f(p'(a))) = \lambda a . \lfp(\lambda p' . f(a))$$
   $$\gfp(\lambda p' a . f(p'(a))) = \lambda a . \gfp(\lambda p' . f(a))$$
-\end{theorem}
+\end{observation}
 
 \begin{theorem}[Knaster-Tarski theorem]
   \label{thm:knaster}
@@ -141,8 +166,8 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
   function. Then $(\text{fix}(f), \leq)$ is also a complete lattice.
 \end{theorem}
 
-Two direct consequences that both the greatest and the least fixpoint of
-$f$ exists and are respectively $\top$ and $\bot$ of $\fix(f)$.
+We have two direct consequences: both the greatest and the least fixpoint of
+$f$ exists as they are respectively top and bottom of $\fix(f)$.
 
 \begin{theorem}[Post-fixpoint inequality]
   \label{thm:post-lfp}
@@ -156,19 +181,19 @@ $f$ exists and are respectively $\top$ and $\bot$ of $\fix(f)$.
 
 \begin{theorem}[$\lfp$ monotonicity]
   \label{thm:lfp-mono}
-  Let $L$ be a complete lattice then if $P \leq Q$ and $f$ is monotone
-  $$lfp(\lambda X. P \join f(X)) \leq lfp(\lambda X. Q \join f(X))$$
+  Let $L$ be a complete lattice, if $P \leq Q$ and $f$ is monotone then
+  $$\lfp(\lambda X. P \join f(X)) \leq \lfp(\lambda X. Q \join f(X))$$
 \end{theorem}
 \begin{proof}
   \begin{align*}
     P \join f(\lfp(\lambda X . Q \join f(X)))
       &\leq Q \join f(\lfp(\lambda X . Q \join f(X)))
-      &\text{Since $P \leq Q$} \\
+      &\text{[Since $P \leq Q$]} \\
       &= \lfp(\lambda X . Q \join f(X))
-      &\text{By definition of fixpoint} \\
+      &\text{[By definition of fixpoint]} \\
   \end{align*}
   Thus by theorem \ref{thm:post-lfp} pick $f = \lambda X . P \join f(X)$ and
-  $x = lfp(\lambda X. Q \join f(X))$ it follows that
-  $lfp(\lambda X. P \join f(X)) \leq lfp(\lambda X. Q \join f(X))$.
+  $x = \lfp(\lambda X. Q \join f(X))$ it follows that
+  $\lfp(\lambda X. P \join f(X)) \leq \lfp(\lambda X. Q \join f(X))$.
 \end{proof}
 

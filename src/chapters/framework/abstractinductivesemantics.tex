@@ -2,16 +2,16 @@
 
 From the theory of abstract interpretation we know that the definition of the
 denotational semantics can be modified to work on any complete lattice as long
-that we can provide sensible function for the base commands. The rationale
-behind is the same as in the denotational semantics but instead representing
-collections of states with $\pow{\states}$ now they are represented by an
+as we provide suitable function for the basic commands. The rationale
+behind is the same as in the denotational semantics but instead of representing
+collections of states with $\pow{\states}$ now they are represented in an
 arbitrary complete lattice.
 
 \begin{definition}[Abstract inductive semantics]
 
   \label{def:abstract-inductive-semantics}
-  Given a complete lattice $A$ and a family of monotone functions $\bsem{b}^A : A
-  \to A$ $\forall b \in Base$ the abstract inductive semantics is defined as 
+  Given a complete lattice $A$ and a family of monotone functions $\bsem{\cdot}^A : 
+  BCmd \to A \to A$ the abstract inductive semantics is defined inductively as 
   follows:
 
   \begin{align*}
@@ -25,14 +25,14 @@ arbitrary complete lattice.
 \end{definition}
 
 
-When developing abstract interpreters to perform abstract interpretation,
+When designing abstract interpreters to perform abstract interpretation,
 iterative commands are usually not expressed directly as fixpoints but by
 some over-approximation, as is the case for the $C^\fix$ command. This is
-necessary since the scope of the abstract interpreter is to be run, and in
-general, if the lattice on which the interpretation is run has infinite
-ascending chains, the computation can diverge. In our case, the termination
-requirement is necessary since we aren't interested in running the abstract
-inductive semantics but using it as the semantics on which the definition of
+necessary since the goal of the abstract interpreter is to be executed and, in
+general, if the lattice on which the interpretation executed run has infinite
+ascending chains, it's computation can diverge. In our case, the termination
+requirement isn't necessary since we are not interested in computing the abstract
+inductive semantics but using it as a reference on which the definition of
 abstract Hoare logic is dependent.
 
 
@@ -43,7 +43,7 @@ could be undefined.
 
 \begin{theorem}[Monotonicity]
   \label{thm:asem-mono} 
-  $\forall \; C \in \lang$ $\asem{C}$ is monotone.
+  $\forall \; C \in \lang$ $\asem{C}$ is well-defined and monotone.
 \end{theorem}
 \begin{proof}
   We want to prove that $\forall P, Q \in A$ and $C \in \lang$
@@ -52,20 +52,23 @@ could be undefined.
   \begin{itemize}
     \item $\sskip$:
       \begin{align*}
-        \sem{\sskip}(P) 
-          &= P & \text{By definition of $\asem{\sskip}$}\\
+        \asem{\sskip}(P) 
+          &= P 
+          & \text{[By definition of $\asem{\sskip}$]}\\
           &\leq Q \\
-          &= \sem{\sskip}(Q) & \text{By definition of $\asem{\sskip}$}\\
+          &= \asem{\sskip}(Q) 
+          & \text{[By definition of $\asem{\sskip}$]}\\
       \end{align*}
 
     \item $b$:
       \begin{align*}
-        \sem{b}(P) 
+        \asem{b}(P) 
           &= \bsem{b}^A(P)
-          & \text{By definition of $\asem{b}$}\\
+          & \text{[By definition of $\asem{b}$]}\\
           &\leq \bsem{b}^A(Q)
-          & \text{By definition}\\
-          &= \sem{b}(Q) & \text{By definition of $\asem{b}$}\\
+          & \text{[By definition]}\\
+          &= \asem{b}(Q) 
+          & \text{[By definition of $\asem{b}$]}\\
       \end{align*}
 
     \item $C_1 \fcmp C_2$:
@@ -76,98 +79,157 @@ could be undefined.
       \begin{align*}
         \asem{C_1 \fcmp C_2}(P) 
           &= \asem{C_2}(\asem{C_1}(P))
-          &\text{By definition of $\asem{C_1 \fcmp C_2}$}\\
+          &\text{[By definition of $\asem{C_1 \fcmp C_2}$]}\\
           &\leq_A \asem{C_2}(\asem{C_1}(Q))
-          &\text{By inductive hypothesis on $\asem{C_2}$} \\
+          &\text{[By inductive hypothesis on $\asem{C_2}$]} \\
       \end{align*}
   
     \item $C_1 + C_2$:
       \begin{align*}
         \asem{C_1 + C_2}(P) 
           &= \asem{C_1}(P) \join_A \asem{C_2}(P)
-          &\text{By definition of $\asem{C_1 + C_2}$}\\
+          &\text{[By definition of $\asem{C_1 + C_2}$]}\\
           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(P)
-          &\text{By inductive hypothesis on $\asem{C_1}$} \\
+          &\text{[By inductive hypothesis on $\asem{C_1}$]} \\
           &\leq_A \asem{C_1}(Q) \join_A \asem{C_2}(Q)
-          &\text{By inductive hypothesis on $\asem{C_2}$} \\
+          &\text{[By inductive hypothesis on $\asem{C_2}$]} \\
           &= \asem{C_1 + C_2}(Q) 
-          &\text{By definition of $\asem{C_1 + C_2}$}\\
+          &\text{[By definition of $\asem{C_1 + C_2}$]}\\
       \end{align*}
     
     \item $C^\fix$:
 
       \begin{align*}
         \asem{C^\fix}(P) 
-          &= lfp(\lambda P'. P \join_A \asem{C}(P'))
-          &\text{By definition of $\asem{C^\fix}$}\\
-          &\leq_A lfp(\lambda P'. Q \join_A \asem{C}(P'))
-          &\text{By theorem \ref{thm:lfp-mono}}\\
+          &= \lfp(\lambda P'. P \join_A \asem{C}(P'))
+          &\text{[By definition of $\asem{C^\fix}$]}\\
+          &\leq_A \lfp(\lambda P'. Q \join_A \asem{C}(P'))
+          &\text{[By theorem \ref{thm:lfp-mono}]}\\
           &= \asem{C^\fix}(Q) 
-          &\text{By definition of $\asem{C^\fix}$}\\
+          &\text{[By definition of $\asem{C^\fix}$]}\\
       \end{align*}
-
   \end{itemize}
 
+
+  Clearly all the $\lfp$ are well-defined since by inductive hypothesis
+  $\sem{C}$ is monotone and $A$ is a complete from 
+  \ref{thm:knaster} the least-fixpoint exists.
 \end{proof}
 
-
-\begin{lemma}[$\sem{\cdot}$ well-defined]
-  \label{thm:well-def}
-  $\forall \; C \in \lang$ $\asem{C}$ is well-defined.
-\end{lemma}
-\begin{proof}
-  From theorems \ref{thm:asem-mono} and 
-  \ref{thm:knaster} all the least fixpoints in the definition of 
-  $\asem{C^\fix}$ exists; for all the other commands the semantics is 
-  trivially well-defined.
-\end{proof}
-
-From now on we will refer to the complete lattice used to define the abstract
-inductive semantics as \textit{domain} borrowing the convention from abstract
+From now on we will refer to the complete lattice $A$ used to define the abstract
+inductive semantics as \textit{domain} borrowing the terminology from abstract
 interpretation.
 
 \begin{observation}
   \label{obs:post}
-  When picking as a domain the lattice $\pow{\states}$ and as base commands
+  When picking as a domain the lattice $\pow{\states}$ and as basic commands
   $\bsem{b}^{\pow{\states}}(P) = \{ \bsem{b}(\sigma)\downarrow \; \mid \sigma 
-  \in P \}$ will result in obtaining the denotational semantics from the 
-  abstract inductive semantics. $\forall \; C \in \lang$ $\forall P \in 
+  \in P \}$ we will obtain the denotational semantics from the 
+  abstract inductive semantics, that is: $\forall \; C \in \lang$ $\forall P \in 
   \pow{\states}$ 
   $$\asem[\pow{\states}]{C}(P) = \sem{C}(P)$$
-  This can be easily assessed by comparing the two definitions.
+  This can be easily checked by comparing the two definitions.
 \end{observation}
 
-From this observation, we can see that lemma \ref{thm:sem-welldef} is just
-a special case of lemma \ref{thm:well-def} since, as shown in theorem
-\ref{thm:sem-lattice}, $\pow{\states}$ is a complete lattice and the semantics
-of the base commands is monotone by construction.
+From this observation, we can see that theorem \ref{thm:sem-mono} is just an
+instance of theorem \ref{thm:asem-mono} since $\pow{\states}$ is a
+complete lattice and the semantics of the basic commands is monotone by
+construction.
 
 \subsection{Connection with Abstract Interpretation}
 
-As states before, the definition of abstract inductive semantics is closely
-related to the one of abstract semantics in \cite{Cousot77}.
+As stated above, the definition of abstract inductive semantics is closely
+related to the one of abstract semantics \cite{Cousot77}. In particular, the 
+definition of abstract inductive semantics, when the semantics of the basic
+commands is sound, is equivalent to an abstract semantics.
 
-In particular, the definition of abstract inductive semantics, when the 
-semantics of the base commands is sound, is equivalent to an abstract semantics.
-
-
-\begin{theorem}[Abstract Interpretation Basis]
+\begin{theorem}[Abstract interpretation instance]
   \label{thm:sound-ai}
   If $A$ is an abstract domain and $\bsem{\cdot}^A$ is a sound 
   over-approximation of $\bsem{\cdot}$, then $\asem{\cdot}$ is a sound 
   over-approximation of $\sem{\cdot}$.
 \end{theorem}
+\begin{proof}
+  We prove $\alpha(\sem{C}(P)) \leq \asem{C}(\alpha(P))$ by structural
+  induction on $C$:
+
+  \begin{itemize}
+    \item $\sskip$:
+      \begin{align*}
+        \alpha(\sem{\sskip}(P))
+          &= \alpha(P)
+          & \text{[By definition of $\sem{\sskip}$]}\\
+          &= \asem{\sskip}(\alpha(P)) 
+          & \text{[By definition of $\asem{\sskip}$]}\\
+      \end{align*}
+
+    \item $b$:
+      \begin{align*}
+        \alpha(\sem{b}(P))
+          &= \bsem{b}(P)
+          & \text{[By definition of $\sem{b}$]}\\
+          &\leq \bsem{b}^A(\alpha(P))
+          & \text{[By definition]}\\
+          &= \asem{b}(\alpha(P)) 
+          & \text{[By definition of $\asem{b}$]}\\
+      \end{align*}
+
+    \item $C_1 \fcmp C_2$:
+
+      \begin{align*}
+        \alpha(\sem{C_1 \fcmp C_2}(P))
+          &= \alpha(\sem{C_2}(\sem{C_1}(P)))
+          &\text{[By definition of $\sem{C_1 \fcmp C_2}$]}\\
+          &\leq \asem{C_2}(\alpha(\sem{C_1}(P)))
+          &\text{[By inductive hypothesis on $C_2$]}\\
+          &\leq \asem{C_2}(\asem{C_1}(\alpha(P)))
+          &\text{[By inductive hypothesis on $C_1$} \\
+          && \text{and $\asem{C_2}$ monotone]}\\
+          &= \asem{C_1 \fcmp C_2}(\alpha(P))
+          &\text{[By definition of $\asem{C_1 \fcmp C_2}$]}\\
+      \end{align*}
+  
+    \item $C_1 + C_2$:
+      \begin{align*}
+        \alpha(\sem{C_1 + C_2}(P))
+          &= \alpha(\sem{C_1}(P) \cup \sem{C_2}(P))
+          &\text{[By definition of $\sem{C_1 + C_2}$]}\\
+          &\leq \alpha(\sem{C_1}(P)) \join \alpha(\asem{C_2}(P)) \\
+          &\leq \asem{C_1}(\alpha(P)) \join \asem{C_2}(\alpha(P))
+          &\text{[By inductive hypothesis on $C_1$} \\
+          && \text{and $C_2$]} \\
+          &= \asem{C_1 + C_2}(\alpha(P))
+          &\text{[By definition of $\asem{C_1 + C_2}$]}\\
+      \end{align*}
+    
+    \item $C^\fix$:
+
+      \begin{align*}
+        \alpha(\sem{C^\fix}(P) )
+          &= \alpha(\lfp(\lambda P'. P \cup \sem{C}(P')))
+          &\text{[By definition of $\sem{C^\fix}$]}\\
+          &= \alpha(\bigcup_{n \in \mathbb{N}}{\sem{C}^n(P)}) \\
+          &\leq \bigvee_{n \in \mathbb{N}}{\alpha(\sem{C}^n(P))}) \\
+          &\leq \bigvee_{n \in \mathbb{N}}{(\asem{C})^n(\alpha(P))}
+          &\text{[By inductive hypothesis on $C$]}\\
+          &\leq \lfp(\lambda P'. \alpha(P) \join \asem{C}(P')) \\
+          &= \asem{C^\fix}(\alpha(P)) 
+          &\text{[By definition of $\asem{C^\fix}$]}\\
+      \end{align*}
+  \end{itemize}
+\end{proof}
 
 This connection also allows us to obtain abstract inductive semantics through 
-Galois insertion.
+Galois insertions.
 
 \begin{definition}[Abstract Inductive Semantics by Galois Insertion]
   \label{def:aisgi}
-  Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq 
-  \rangle$ be a Galois insertion, and let $\asem[C]{C}$ be some abstract 
-  inductive semantics defined on $C$. Then, the abstract inductive semantics 
-  defined on $A$ with $\bsem{b}^A \defeq \alpha \circ \bsem{c}^C \circ \gamma$ is the 
-  abstract inductive semantics obtained by the Galois insertion between $C$ and $A$.
+  Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq
+  \rangle$ be a Galois insertion, and let $\asem[C]{C}$ be some abstract
+  inductive semantics defined on $C$. Then, the abstract inductive semantics
+  defined on $A$ with $\bsem{b}^A \defeq \alpha \circ \bsem{c}^C \circ \gamma$
+  is the abstract inductive semantics obtained by the Galois insertion between
+  $C$ and $A$.
 \end{definition}
 
 The abstract inductive semantics obtained by Galois insertion between 
@@ -180,3 +242,19 @@ interpreter on $A$.
   $\bigvee_{n \in \nat} (\asem{C})^n(P) \neq \lfp(\lambda P'. P \join_A
   \asem{C}(P'))$.
 \end{observation}
+\begin{example}
+  Let $C \defeq (x > 1? \fcmp ((even(x) ? \fcmp X := x + 3) +
+  (\neg even(x)? \fcmp x := x - 2))^\fix$ when performing the computation on
+  the interval domain, if we compute $C$ using the infinitary join:
+  \begin{align*}
+    \asem{C}([5, 5])
+      &= \bigvee_{n \in \mathbb{N}} (\asem{x > 1? \fcmp ((even(x) ? \fcmp x :=
+        x + 3) + (\neg even(x)? \fcmp x := x - 2))})^n([5, 5]) \\
+      &= [5, 5] \join [3, 3] \join [1, 1] \join \bot \join \bot ... \\
+      &= [1, 5]
+  \end{align*}
+
+  The difference is caused by the fact that when we are computing the infinite 
+  join, all the joins happen after executing the semantics of the loop body.
+  
+\end{example}

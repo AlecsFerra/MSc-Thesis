@@ -1,13 +1,14 @@
 \section{Abstract Interpretation}
 
-Abstract interpretation \cite{Cousot77} is the leading technique used for static 
-program analysis. The specification of a program can be expressed as a pair of 
-initial and final sets of states, $Init, Final \in \pow{\states}$, and the task 
-of verifying a program $C$ involves checking if $\sem{C}(Init) \subseteq Final$.
+Abstract interpretation \cite{Cousot77, Cousot21} is the de-facto standard
+approach for designing static program analysis. The specification of a program
+can be expressed as a pair of initial and final sets of states, $Init, Final
+\in \pow{\states}$, and the task of verifying a program $C$ boils down to
+checking if $\sem{C}(Init) \subseteq Final$.
 
-Clearly, this task cannot be performed programmatically in general. The solution 
-proposed by the framework of abstract interpretation is to construct an 
-approximation, usually denoted by $\sem{\cdot}^\#$, that is computable.
+Clearly, this task cannot be performed in general. The solution proposed by the
+framework of abstract interpretation is to construct an approximation of
+$\sem{\cdot}$, usually denoted by $\sem{\cdot}^\#$, that is computable.
 
 \subsection{Abstract Domains}
 
@@ -30,7 +31,7 @@ amount of memory.
   lattice can be summarized by the following Hasse diagram:
 
   \begin{center}
-  \begin{tikzpicture}[scale=0.7]
+  \begin{tikzpicture}[scale=0.9]
     \node [] (0) at (0, 0) {$\bot$};
     \node [] (1) at (0, 1) {$[0, 0]$};
     \draw (0) to (1);
@@ -178,10 +179,7 @@ amount of memory.
 \begin{example}[Complete sign domain]
   \label{exmp:sign}
   Let $Sign = \{ \bot , <0, >0, =0, \leq 0, \neq 0, \geq 0, \mathbb{Z}\}$ be 
-  ordered by inclusion, each element $op\; 0$ represent the set $\{ x \mid x 
-  \; op \; 0 \}$, $\mathbb{Z}$ represents the set $\mathbb{Z}$ and $\bot$
-  represents $\emptyset$. 
-  The structure of the lattice can be summarized by the following Hasse diagram:
+  ordered by following the hasse diagram below.
 
   \begin{center}
   \begin{tikzpicture}
@@ -238,3 +236,41 @@ by the definition of soundness:
 
 Hence, the goal of abstract interpretation is to construct a sound 
 over-approximation of the program semantics that is computable (efficiently).
+
+\begin{example}
+  We can use the sign domain to construct a sound approximation of the
+  multiplication operation: 
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+      \hline
+      $\times^\#$ & $\bot$ & $< 0$ & $> 0$ & $= 0$ & $\le 0$ & $\ne 0$ & $\ge 0$ 
+                  & $\mathbb{Z}$ \\
+      \hline
+      $\bot$ & $\bot$ & $\bot$ & $\bot$ & $\bot$ & $\bot$ & $\bot$ & $\bot$ 
+             & $\bot$ \\
+      \hline
+      $< 0$ & $\bot$ & $> 0$ & $< 0$ & $= 0$ & $< 0$ & $\ne 0$ & $\le 0$ 
+            & $\mathbb{Z}$ \\
+      \hline
+      $> 0$ & $\bot$ & $< 0$ & $> 0$ & $= 0$ & $\le 0$ & $\ne 0$ & $\ge 0$ 
+            & $\mathbb{Z}$ \\
+      \hline
+      $= 0$ & $\bot$ & $= 0$ & $= 0$ & $= 0$ & $= 0$ & $= 0$ & $= 0$ & $= 0$ \\
+      \hline
+      $\le 0$ & $\bot$ & $< 0$ & $\le 0$ & $= 0$ & $\le 0$ & $\ne 0$ & $\le 0$ 
+              & $\mathbb{Z}$ \\
+      \hline
+      $\ne 0$ & $\bot$ & $\ne 0$ & $\ne 0$ & $= 0$ & $\ne 0$ & $\ne 0$ 
+              & $\ne 0$ & $\mathbb{Z}$ \\
+      \hline
+      $\ge 0$ & $\bot$ & $\le 0$ & $\ge 0$ & $= 0$ & $\le 0$ & $\ne 0$ 
+              & $\ge 0$ & $\mathbb{Z}$ \\
+      \hline
+      $\mathbb{Z}$ & $\bot$ & $\mathbb{Z}$ & $\mathbb{Z}$ & $= 0$ 
+                   & $\mathbb{Z}$ & $\mathbb{Z}$ & $\mathbb{Z}$ & $\mathbb{Z}$ \\
+      \hline
+    \end{tabular}
+    \caption{Multiplication table for $Sign$ domain}
+  \end{table}
+\end{example}
