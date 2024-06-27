@@ -88,3 +88,6 @@
 \newtheorem*{question*}{Question}
 \newtheorem*{solution*}{Solution}
 
+\makeatletter
+   \xpatchcmd{\@thm}{\fontseries\mddefault\upshape}{}{}{} % same font as thm-header
+\makeatother
