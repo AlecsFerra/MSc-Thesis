@@ -16,8 +16,8 @@ To define the backward version of Abstract Hoare logic, we first need a
 backward version of the abstract inductive semantics:
 
 \begin{definition}[Backward abstract inductive semantics]
-  Given a complete lattice $A$ and a family of monotone functions $\bsem{b}^A :
-  A \to A$ for all $b \in Base$, the abstract inductive semantics is defined as
+  Given a complete lattice $A$ and a family of monotone functions $\bsem{\cdot}^A :
+  BCmd \to A \to A$, the abstract inductive semantics is defined as
   follows:
 
   \begin{align*}
@@ -38,7 +38,7 @@ We can prove that the backward abstract inductive semantics is still monotone.
 
 \begin{theorem}[Monotonicity]
   \label{thm:asem-mono-back} 
-  For all $C \in \lang$, $\asemback{C}$ is monotone.
+  For all $C \in \lang$, $\asemback{C}$ is well-defined and monotone.
 \end{theorem}
 
 \begin{proof}
@@ -55,20 +55,11 @@ We can prove that the backward abstract inductive semantics is still monotone.
       \begin{align*}
         \asemback{C_1 \fcmp C_2}(P) 
           &= \asemback{C_1}(\asemback{C_2}(P))
-          &\text{By definition of $\asemback{C_1 \fcmp C_2}$}\\
+          &\text{[By definition of $\asemback{C_1 \fcmp C_2}$]}\\
           &\leq_A \asemback{C_1}(\asemback{C_2}(Q))
-          &\text{By inductive hypothesis on $\asemback{C_1}$} \\
+          &\text{[By inductive hypothesis on $\asemback{C_1}$]} \\
       \end{align*}
   \end{itemize}
-\end{proof}
-
-\begin{lemma}[$\asemback{\cdot}$ well-defined]
-  For all $C \in \lang$, $\asemback{C}$ is well-defined.
-\end{lemma}
-\begin{proof}
-  From theorems \ref{thm:asem-mono-back} and \ref{thm:knaster}, all the least
-  fixpoints in the definition of $\asemback{C^\fix}$ exist. For all the other
-  commands, the semantics is trivially well-defined.
 \end{proof}
 
 \subsection{Backward Abstract Hoare Logic}
@@ -100,10 +91,11 @@ semantics for program composition, and all the other rules remain the same.
     \RightLabel{$(\mathbb{\fcmp})$}
     \BinaryInfC{$\vdash \atripleback{P}{C_1 \fcmp C_2}{R}$}
   \end{prooftree}
-  If executing $C_2$ from state $P$ leads to state $Q$, and executing $C_1$
-  from state $Q$ leads to state $R$, then executing $C_2$ followed by $C_1$ from
-  state $P$ leads to state $R$. 
 \end{definition}
+
+The rule can be read as: If executing $C_2$ from state $P$ leads to state $Q$,
+and executing $C_1$ from state $Q$ leads to state $R$, then executing $C_2$
+followed by $C_1$ from state $P$ leads to state $R$. 
 
 We can prove again that the proof system is still sound and complete.
 
@@ -134,9 +126,9 @@ We can prove again that the proof system is still sound and complete.
         \begin{align*}
           \asemback{C_1 \fcmp C_2}(P)
             &= \asemback{C_1}(\asemback{C_2}(P))
-            &\text{By definition of $\asemback{\cdot}$} \\
+            &\text{[By definition of $\asemback{\cdot}$]} \\
             &\leq_A \asemback{C_1}(Q)
-            &\text{By monotonicity of $\asemback{\cdot}$} \\
+            &\text{[By monotonicity of $\asemback{\cdot}$]} \\
             &\leq_A R
         \end{align*}
   \end{itemize}
@@ -189,14 +181,15 @@ We can prove again that the proof system is still sound and complete.
 \section{Instantiations}
 
 \subsection{Partial Incorrectness, Again}
+
 An abstract inductive semantics induces automatically a backward abstract
-inductive semantics where the semantics of the base commands is inverted:
+inductive semantics where the semantics of the basic commands is inverted:
 
 \begin{definition}[Reverse Abstract Inductive Semantics]
-  Given an abstract inductive semantics defined on some complete lattice $A$ 
-  with base command semantics $\bsem{\cdot}^A$, we can define the reverse
+  Given an abstract inductive semantics defined on some complete lattice $A$
+  with basic command semantics $\bsem{\cdot}^A$, we can define the reverse
   backward abstract inductive semantics as the backward inductive semantics
-  instantiated on the complete lattice $A$ and base command semantics 
+  instantiated on the complete lattice $A$ and basic command semantics
   $(\bsem{\cdot}^A)^{-1}$.
 \end{definition}
 
@@ -226,6 +219,7 @@ the program logic is actually equivalent to the one in section
 \ref{chp:partial-incorrectness}.
 
 \subsection{Hoare Logic, Again}
+
 Following what we did in section \ref{chp:partial-incorrectness}, we can first
 obtain the reverse semantics but then also obtain the dual of the reverse
 semantics. It can be expressed as: 

@@ -1,9 +1,9 @@
 \chapter{Instantiating Abstract Hoare Logic}
 
-In this chapter, we will show how to instantiate abstract Hoare logic to create 
-new proof systems. We will also demonstrate that the framework of abstract Hoare 
-logic is so general that, in some instantiations, it is able to reason about 
-properties that are not expressible in standard Hoare logic.
+In this chapter, we will demonstrate how to instantiate abstract Hoare logic to
+create new proof systems. We will also illustrate that the framework of
+abstract Hoare logic is sufficiently general to reason about properties that
+cannot be expressed in standard Hoare logic.
 
 \subimport{./}{hoare}
 \subimport{./}{interval}
@@ -12,25 +12,25 @@ properties that are not expressible in standard Hoare logic.
 \section{Partial Incorrectness}
 \label{chp:partial-incorrectness}
 
-Any instantiation of the abstract inductive semantics gives us another
-instantiation for free, since the semantics is parametric on a complete lattice
-$A$, and the dual of a complete lattice is also a complete lattice. We can
-obtain the dual abstract inductive semantics for free on the complete lattice
-$A^{op}$.
+Any instantiation of the abstract inductive semantics provides us with another
+instantiation for free, as the semantics is parameterized by a complete lattice
+\( A \), and the dual of a complete lattice \( A \) is also complete. Therefore,
+we can derive the dual abstract inductive semantics on the complete lattice
+\( A^{op} \).
 
 \begin{definition}[Dual Abstract Inductive Semantics]
-  Given an abstract inductive semantics defined on some complete lattice $A$
-  and base commands $\bsem{\cdot}^A$, we can define the dual abstract inductive
-  semantics as the abstract inductive semantics instantiated on the 
-  complete lattice $A^{op}$ with base command semantics $\bsem{\cdot}^{A^{op}}
-  = \bsem{\cdot}^A$.
+  Given an abstract inductive semantics defined on a complete lattice \( A \)
+  with basic commands \( \bsem{\cdot}^A \), the dual abstract inductive
+  semantics is defined on the complete lattice \( A^{op} \) with basic command
+  semantics \( \bsem{\cdot}^{A^{op}} = \bsem{\cdot}^A \).
 \end{definition}
 
-Since the dual abstract inductive semantics is an abstract inductive semantics,
-it also induces an Abstract Hoare Logic. In the dual lattice, since the partial
-order is inverted, the roles of joins and meets are inverted, and thus also
-$\lfp$ and $\gfp$ are inverted. Hence, the dual abstract inductive semantics,
-when seen from the dual lattice, can be expressed as: 
+Since the dual abstract inductive semantics is itself an abstract inductive
+semantics, it naturally induces an Abstract Hoare Logic. In the dual lattice,
+where the partial order is inverted, operations such as joins and meets are
+reversed, leading to an inversion of \( \lfp \) and \( \gfp \). Hence, the dual
+abstract inductive semantics, viewed from the dual lattice, can be formulated
+as follows:
 \begin{align*}
   \asem[A^{op}]{\sskip}        &= id &&= id \\
   \asem[A^{op}]{b}             &= \bsem{b}^{A^{op}} &&= \bsem{b}^A \\
@@ -39,27 +39,23 @@ when seen from the dual lattice, can be expressed as:
   \asem[A^{op}]{C^\fix}        &= \lambda P . \lfp_{A^{op}}(\lambda P'. P \join_{A^{op}} \asem[A^{op}]{C} P') &&= \lambda P . \gfp_{A}(\lambda P'. P \meet_A \asem[A^{op}]{C} P')
 \end{align*}
 
-Following the intuition that the abstract inductive semantics is some abstract
-version of the strongest postcondition, what interpretation can we give for the
-dual abstract inductive semantics? While on the lattice $A$, for the
-non-deterministic choice, we take the join of the two branches. In the opposite
-lattice, we take their meet. Following this intuition, instead of taking all
-the reachable states (the union of the states reached by the two branches), we
-take the states that we are sure we are reaching, i.e., the intersection of the
-states reached by the two branches. The same reasoning also holds for the
-$\fix$ command.
+Interpreting the dual abstract inductive semantics, we understand that in the
+dual lattice \( A^{op} \), non-deterministic choices are handled by taking the
+meet of two branches, reflecting certainty rather than possibility. Instead of
+considering all reachable states (union of states reached by each branch), it
+considers the intersection of states guaranteed to be reached by both branches.
+This inversion similarly applies to the \( \fix \) command.
 
-Since the order on the dual lattice is inverted, inversion holds also for the
-validity of the Abstract Hoare triples: $$\models \atriple[A^{op}]{P}{C}{Q}
-\iff \asem{C}(P) \leq_{A^{op}} Q \iff \asem[A^{op}]{C}(P) \geq_A Q$$
+Given the inverted order in the dual lattice, the validity of Abstract Hoare
+triples is reversed:
+$$\models \atriple[A^{op}]{P}{C}{Q} \iff \asem{C}(P) \leq_{A^{op}} Q \iff \asem[A^{op}]{C}(P) \geq_A Q$$
 
-When the dual abstract inductive semantics is obtained from the abstract
-inductive semantics on $\pow{\states}$ (the strongest postcondition), the dual
-semantics becomes the strongest liberal postcondition introduced in
-\cite{Zhang22} (in the boolean case). The triples are given the name "partial
-incorrectness," as if $\models \atriple[A^{op}]{Q}{C}{P}$, $P$ is an
-over-approximation of the states that end up in $Q$ modulo termination. The
-same concept is studied under the name of "Necessary Preconditions" in
-\cite{Cousot13}, and thanks to Abstract Hoare Logic, we obtained a sound and
-complete proof system for the logic.
-
+When deriving the dual abstract inductive semantics from the abstract
+inductive semantics on \( \pow{\states} \) (strongest postcondition), the dual
+semantics corresponds to the strongest liberal postcondition as introduced in
+\cite{Zhang22} (in the boolean case). These triples are termed "partial
+incorrectness," implying that if \( \models \atriple[A^{op}]{Q}{C}{P} \), then
+\( P \) over-approximates the states reaching \( Q \), accounting for
+termination. This concept aligns with "Necessary Preconditions" explored in
+\cite{Cousot13}, and Abstract Hoare Logic provides a sound and complete
+proof system for this logic.

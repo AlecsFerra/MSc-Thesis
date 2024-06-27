@@ -1,11 +1,12 @@
 \section{Merge rules}
 \label{chp:join-meet-rules}
 
-When developing software verification tools, the ability to perform multiple 
-local reasoning and then merge the results is particularly useful. One example 
-of this is the conjunction rule in concurrent separation logic \cite{Brookes16}.
+When developing software verification tools, the capability to perform multiple 
+local reasonings and subsequently merge their results proves particularly beneficial. 
+An example of this is evident in the conjunction rule within concurrent separation 
+logic \cite{Brookes16}.
 
-In Hoare logic, the following two rules are sound:
+In Hoare logic, the soundness of the following two rules is established:
 
 \begin{definition}[Merge rules in Hoare logic] $\;$\\
   \begin{prooftree}
@@ -23,12 +24,12 @@ In Hoare logic, the following two rules are sound:
   \end{prooftree}
 \end{definition}
 
-Even though they aren't needed for the completeness of the proof system, performing
-two different analyses and then merging the results of them can be actually useful.
-Already in \cite{Cousot12}, it was noted that the abstract version of the merge
-rules are, in general, unsound in Algebraic Hoare Logic. The same is also true
-for Abstract Hoare logic. We will show a counterexample for the $(\lor)$ rule,
-but the example can be easily modified for the $(\land)$ rule.
+Although not essential for the completeness of the proof system, the practice of 
+conducting two distinct analyses and subsequently merging their results can be 
+highly advantageous. As noted in \cite{Cousot12}, the abstract versions of merge 
+rules are generally unsound in Algebraic Hoare Logic, a fact that holds true for 
+Abstract Hoare logic as well. We will present a counterexample for the $(\lor)$ rule, 
+which can be readily adapted to illustrate issues with the $(\land)$ rule.
 
 \begin{definition}[Merge rules in Abstract Hoare logic] $\;$\\
   \begin{prooftree}
@@ -48,7 +49,7 @@ but the example can be easily modified for the $(\land)$ rule.
 
 \begin{example}[Counterexample for the $(\lor)$ rule]
   Let $\atriple[Int]{\cdot}{\cdot}{\cdot}$ be the Abstract Hoare logic 
-  instantiation of example \ref{exmp:int-logic}, Interval Logic, and
+  instantiation of example \ref{exmp:int-logic}, Abstract Interval Logic, and
   let $C \defeq (x = 4? \fcmp x := 50) + (x \neq 4? \fcmp x := x + 1)$. Then we
   can perform the following two derivations:
   \begin{prooftree}
@@ -142,13 +143,12 @@ but the example can be easily modified for the $(\land)$ rule.
   And $[4, 50] \not \leq [4, 6]$.
 \end{example}
 
-Naively, we could think that the issue is only "local" as $\gamma([3]) \cup 
-\gamma([5]) = \{3, 5\} \neq \{3, 4, 5\} = \gamma([3] \lor [5])$. Since the least
-upper bound is adding new states in the precondition, requiring that
-$\gamma(P_1 \lor P_2) = \gamma(P_1) \cup \gamma(P_2)$ might seem enough, but 
-actually, it is not true. We can construct arbitrary programs that are able to 
-exploit the fact that $\lor$ is generally a convex operation that can add new 
-elements.
+Naively, one might think the issue is merely "local," as $\gamma([3]) \cup 
+\gamma([5]) = \{3, 5\} \neq \{3, 4, 5\} = \gamma([3] \lor [5])$. It might seem 
+sufficient to require that $\gamma(P_1 \lor P_2) = \gamma(P_1) \cup \gamma(P_2)$, 
+since the least upper bound adds new states in the precondition. However, this 
+assumption is incorrect. Arbitrary programs can be constructed that exploit the 
+fact that $\lor$ is generally a convex operation capable of introducing new elements.
 
 \begin{definition}[Local $\join$ rule for abstract Hoare logic] $\;$\\
   \begin{prooftree}
@@ -235,17 +235,17 @@ elements.
   And clearly $[1, 1] \not \leq \bot$
 \end{example}
 
-This example highlights the actual root cause of the issue: the imprecision
-introduced by $\join$, and it has nothing to do with the preconditions. In
-particular, we can note that with the program $C' \defeq (x = 1? \fcmp x = 0?)
-+ (x = 2? \fcmp x = 0?)$, we don't have the same issue. Even if $C$ and $C'$
-are equivalent programs in the concrete domain ($\pow{\pow{\states}}$), they
-aren't in the $Int$ domain. Hence, $\asem{(C_1 + C_2) \fcmp C_3} = \asem{(C_1
-\fcmp C_3) + (C_2 \fcmp C_3)}$ is not true in general.
+This example shows the actual root cause of the issue: the imprecision
+introduced by $\join$, which is unrelated to the preconditions. Specifically,
+consider the program $C' \defeq (x = 1? \fcmp x = 0?) + (x = 2? \fcmp x = 0?)$,
+where we do not encounter the same issue. Despite $C$ and $C'$ being equivalent
+programs in the concrete domain ($\pow{\pow{\states}}$), they differ in the
+$Int$ domain. Therefore, the equality $\asem{(C_1 + C_2) \fcmp C_3} =
+\asem{(C_1 \fcmp C_3) + (C_2 \fcmp C_3)}$ does not generally hold.
 
-In particular, we can easily show that for a subset of the precondition (the
-precondition that admit a program that can generate them), requiring the
-distributivity rule to hold is equivalent to requiring the semantics to be
+In particular, we can easily demonstrate that for a subset of the preconditions
+(those admitting a program capable of having them as a postcondition), requiring 
+the distributivity rule to hold is equivalent to demanding the semantics to be
 additive.
 
 \begin{theorem}[Equivalence between additivity and distributivity] $\;$\\
@@ -277,9 +277,9 @@ additive.
   \end{itemize}
 \end{proof}
 
-Hence, we can gain intuition that the $\join$ rule is not working because, in
-general, the abstract inductive semantics is not additive, and the root of non
-additivity is the non additivity of the base commands.
+Therefore, we can intuit that the $\join$ rule fails because, in general, the
+of the basic commands.
+abstract inductive semantics lacks additivity, stemming from the non-additivity
 
 \begin{theorem}[Additivity of the abstract inductive semantics] $\;$\\
   \label{thm:additivity}
@@ -293,49 +293,49 @@ additivity is the non additivity of the base commands.
       \begin{align*}
         \asem{\sskip}(P_1 \join P2)
           &= P_1 \join P_2 
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
           &= \asem{\sskip}(P_1) \join \asem{\sskip}(P_2)
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
       \end{align*}
     \item $b$:
       \begin{align*}
         \asem{b}(P_1 \join P2)
           &= \bsem{b}^A(P_1 \join P_2)
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
           &= \bsem{b}^A(P_1) \join \bsem{b}^A(P_2) \\
           &= \asem{b}(P_1) \join \asem{b}(P_2)
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
       \end{align*}
     \item $C_1 \fcmp C_2$:
       \begin{align*}
         \asem{C_1 \fcmp C_2}(P_1 \join P2)
           &= \asem{C_2}(\asem{C_1}(P_1 \join P_2)) \\
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
           &= \asem{C_2}(\asem{C_1}(P_1) \join \asem{C_1}(P_2)) \\
-          &\text{By inductive hypothesis} \\
+          &\text{[By inductive hypothesis]} \\
           &= \asem{C_2}(\asem{C_1}(P_1)) \join \asem{C_2}(\asem{C_1}(P_2)) \\
-          &\text{By inductive hypothesis} \\
+          &\text{[By inductive hypothesis]} \\
           &= \asem{C_1 \fcmp C_2}(P_1) \join \asem{C_1 \fcmp C_2}(P_2) \\
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
       \end{align*}
     \item $C_1 + C_2$:
       \begin{align*}
         \asem{C_1 \fcmp C_2}(P_1 \join P2)
           &= \asem{C_1}(P_1 \join P_2) \join \asem{C_2}(P_1 \join P_2) \\
-          &\text{By definition of $\asem{\cdot}$} \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
           &= \asem{C_1}(P_1) \join \asem{C_1}(P_2) \join \asem{C_2}(P_1)
             \join \asem{C_2}(P_2) \\
-          &\text{By inductive hypothesis} \\
+          &\text{[By inductive hypothesis]} \\
           &= \asem{C_1}(P_1) \join \asem{C_2}(P_1) \join \asem{C_1}(P_2)
             \join \asem{C_2}(P_2) \\
-          &= \asem{C_1 + C_2}(P_1) \join \asem{C_1 + C_2}(P_2) \\
-          &\text{By definition of $\asem{\cdot}$} \\
+          &= \asem{[C_1 + C_2]}(P_1) \join \asem{C_1 + C_2}(P_2) \\
+          &\text{[By definition of $\asem{\cdot}$]} \\
       \end{align*}
     \item $C^\fix$:
       \begin{align*}
         \asem{C^\fix}(P_1 \join P2)
           &= \lfp(\lambda P' \to P_1 \join P_2 \join \asem{C}(P'))
-          &\text{By definition of $\asem{\cdot}$}
+          &\text{[By definition of $\asem{\cdot}$]}
       \end{align*}
       Let $F_i \defeq \bsem{C^\fix}(P_i) = \lfp(\lambda P' \to P_i \join 
       \asem{C}(P'))$
@@ -345,12 +345,12 @@ additivity is the non additivity of the base commands.
         (\lambda P' \to P_1 \join P_2 \join \asem{C}(P'))(F_1 \join F_2)
           &= P_1 \join P_2 \join \asem{C}(F_1 \join F_2) \\
           &= P_1 \join P_2 \join \asem{C}(F_1) \join \asem{C}(F_2)  \\
-          &\text{By inductive hypothesis}\\
+          &\text{[By inductive hypothesis]}\\
           &= P_1 \join \asem{C}(F_1) \join P_2 \join \asem{C}(F_2) \\
           &= F_1 \join F_2 \\
-          &\text{By definition of $F_i$}\\
+          &\text{[By definition of $F_i$]}\\
           &= \asem{C^\fix}(P_1) \join \asem{C^\fix}(P_2) \\
-          &\text{By definition of $F_i$}\\
+          &\text{[By definition of $F_i$]}\\
       \end{align*}
 
       Now we show that it's also the least one, let $P$ be any fixpoint, 
@@ -365,7 +365,7 @@ additivity is the non additivity of the base commands.
 \end{proof}
 
 We can give a sufficient condition for the addivitivity of the abstract 
-inductive semantics:
+inductive semantics obtained trough a galois insertion:
 \begin{theorem}
   \label{thm:gamma-add}
   Let $\langle C, \sqsubseteq \rangle \galoiS{\alpha}{\gamma} \langle A, \leq 
@@ -385,8 +385,8 @@ inductive semantics:
   Then by theorem \ref{thm:additivity} $\asem{\cdot}$ is additive.
 \end{proof}
 
-Last we can show that the abstract inductive semantics beeing additive is 
-enough to make the $(\join)$ rule sound.
+Lastly, we can demonstrate that the additivity of the abstract inductive
+semantics is sufficient to ensure the soundness of the $(\join)$ rule.
 
 \begin{theorem}[Soundness of the $(\join)$ rule]
   \label{thm:sound-join}
@@ -398,19 +398,19 @@ enough to make the $(\join)$ rule sound.
   \begin{align*}
     \asem{C}(P_1 \join P_2)
       &= \asem{C}(P_1) \join \asem{C}(P_2)
-      &\text{By additivity of $\asem{\cdot}$} \\
+      &\text{[By additivity of $\asem{\cdot}$]} \\
       &\leq Q_1 \join Q_2
   \end{align*}
 \end{proof}
 
-The two theorems \ref{thm:sound-join} and \ref{thm:gamma-add} correspond to the
-result for Algebraic Hoare logic in which the rule $(\overline{\join})$ is sound
-if $\gamma$ is additive.
+Theorems \ref{thm:sound-join} and \ref{thm:gamma-add} correspond to the result
+in Algebraic Hoare logic where the $(\overline{\join})$ rule is sound under the
+condition that $\gamma$ is additive.
 
-The same reasoning can be applied for the soundness of the rule $(\meet)$ but
-by requiring the semantics to be co-additive.
+Similar reasoning applies to ensure the soundness of the $(\meet)$ rule by
+requiring the semantics to be co-additive.
 
-Abstract domain that are both additive and co-additive are extremley rare 
-(expecially for the additivity as co-additivity is far more common) but they
-exists, for exampe the complete sign domain of example \ref{exmp:sign} is one of
-them, making both the merge rules sound.
+Abstract domains that are both additive and co-additive are extremely rare,
+especially for additivity alone, although they do exist. For instance, the
+complete sign domain illustrated in Example \ref{exmp:sign} is one such domain,
+ensuring the soundness of both merge rules.
