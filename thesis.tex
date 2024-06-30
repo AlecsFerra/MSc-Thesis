@@ -296,11 +296,7 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
   partial order on $X$.
 \end{definition}
 
-\begin{definition}[Monotone function]
-  Given two ordered sets $(X, \leq)$ and $(Y, \sqsubseteq)$, a function 
-  $f : X \to Y$ is said to be monotone if $x \leq y \implies f(x) \sqsubseteq 
-  f(y)$.
-\end{definition}
+We will use partially ordered sets to encode collections of program states.
 
 \begin{definition}[Galois connection]
   Let $(C, \sqsubseteq)$ and $(A, \leq)$ be two partially ordered sets, a 
@@ -315,6 +311,11 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
   \end{itemize}
 \end{definition}
 
+In the context of program analysis, it is common to refer to $C$ as the concrete
+domain and to $A$ as the abstract domain, as the idea behind the use of Galois
+connections is to relate $C$ to a simpler and approximate representation of
+itself.
+
 \begin{definition}[Galois Insertion]
   Let $\langle C, \sqsubseteq \rangle \galois{\alpha}{\gamma} \langle A, \leq 
   \rangle$, be a Galois connection, a Galois insertion written 
@@ -326,23 +327,11 @@ From now on we will use the notation $x R y$ to indicate $(x, y) \in R$.
   \end{itemize}
 \end{definition}
 
-\begin{definition}[Fixpoint]
-  Given a function $f : X \to X$, a fixpoint of $f$ is an element $x \in X$ 
-  such that $x = f(x)$.
-
-  We denote the set of all fixpoints of a function as $\fix(f) = 
-  \{ x \mid x \in X \mand x = f(x) \}$.
-\end{definition}
-
-\begin{definition}[Least and Greatest fixpoints]
-  Given a function $f : X \to X$,
-  \begin{itemize}
-    \item We denote the \textit{least fixpoint} as $\lfp(f)$ and is defined as
-      $lfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \leq a$.
-    \item We denote the \textit{greatest fixpoint} as $\gfp(f)$ and is defined as
-      $gfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \geq a$.
-  \end{itemize}
-\end{definition}
+Galois insertions are a refinement of Galois connections. By requiring $\alpha
+\circ \gamma = id$, we are ensuring that all the abstract elements $a \in A$
+have distinct concrete representations. It is always possible to obtain a
+Galois insertion from a Galois connection by simply removing all the elements
+$a$ such that $\alpha(\gamma(a)) \neq a$ from $A$.
 
 \subsection{Lattices}
 
@@ -414,6 +403,41 @@ from $A$ to $L$, denoted $L^A$, is usually called the \textit{point-wise
 lifting} of $L$.
 $(L^A, \sqsubseteq)$ is a complete lattice where $f \sqsubseteq g \iff \forall
 a \in A \; f(a) \leq g(a)$.
+\end{definition}
+
+\subsection{Fixpoints}
+
+\begin{definition}[Fixpoint]
+  Given a function $f : X \to X$, a fixpoint of $f$ is an element $x \in X$ 
+  such that $x = f(x)$.
+
+  We denote the set of all fixpoints of a function as $\fix(f) = 
+  \{ x \mid x \in X \mand x = f(x) \}$.
+\end{definition}
+
+Fixpoints of function will be used to describe the semantics of 
+programs therefore we are interested in which conditions they exists.
+
+\begin{definition}[Monotone function]
+  Given two ordered sets $(X, \leq)$ and $(Y, \sqsubseteq)$, a function 
+  $f : X \to Y$ is said to be monotone if $x \leq y \implies f(x) \sqsubseteq 
+  f(y)$.
+\end{definition}
+
+The representation of program semantics as functions falls naturally in the
+category of monotone functions, as different executions of the program are not
+supposed to influence each other. If the semantics is not monotone, that would
+mean that the program is able to distinguish between the set of executions $x$
+and $y$ and perform different actions.
+
+\begin{definition}[Least and Greatest fixpoints]
+  Given a function $f : X \to X$,
+  \begin{itemize}
+    \item We denote the \textit{least fixpoint} as $\lfp(f)$ and is defined as
+      $lfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \leq a$.
+    \item We denote the \textit{greatest fixpoint} as $\gfp(f)$ and is defined as
+      $gfp(f) = a^* \in \fix(f)$ and $\forall a \in \fix(f) \; a^* \geq a$.
+  \end{itemize}
 \end{definition}
 
 \begin{observation}[Point-wise fixpoint]
@@ -1203,7 +1227,9 @@ interpreter on $A$.
 \end{align*}
 
   The difference is caused by the fact that when we are computing the infinite 
-  join, all the joins happen after executing the semantics of the loop body.
+  join, all the joins happen after executing the semantics of the loop body, 
+  instead, when using the least-fixpoint formulation the join is performed 
+  before executing the the semantics of the body.
   
 \end{example}
 \section{Abstract Hoare Logic}
@@ -2209,7 +2235,8 @@ on each execution.
     \item $C_1 + C_2$:
       \begin{align*}
         \asem[H(B)_K]{C_1 + C_2}(\chi)
-          &= \asem[H(B)_K]{C_1}(\chi) \lor \asem[H(B)_K]{C_2}(\chi) \\
+          &= \asem[H(B)_K]{C_1}(\chi) \lor \asem[H(B)_K]{C_2}(\chi)
+          &\text{[By definition of $\asem[H(B)_K]{\cdot}$]} \\
           &= (\lambda r_1 . \asem[B]{C_1}(\chi(r_1))) \lor (\lambda r_2 . \asem[B]{C_1}(\chi(r_2)))
           &\text{[By inductive hypothesis]} \\
           &= \lambda r . \asem[B]{C_1}(\chi(r)) \lor \asem[B]{C_2}(\chi(r)) \\
