@@ -629,6 +629,40 @@
       \verb https://doi.org/10.1007/978-94-011-1793-7_4
       \endverb
     \endentry
+    \entry{Gougen82}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=94ab6b6c4efab9d6906a4b6e41a4496e}{%
+           family={Goguen},
+           familyi={G\bibinitperiod},
+           given={J.\bibnamedelimi A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=1445f001c41051eebf198e0f30b9f72a}{%
+           family={Meseguer},
+           familyi={M\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \strng{fullhash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \strng{bibnamehash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \strng{authorbibnamehash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \strng{authornamehash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \strng{authorfullhash}{99d975d06fd0d8f5e7d44740ffe97c54}
+      \field{labelalpha}{GM82}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{1982 IEEE Symposium on Security and Privacy}
+      \field{title}{Security Policies and Security Models}
+      \field{year}{1982}
+      \field{pages}{11\bibrangedash 11}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1109/SP.1982.10014
+      \endverb
+      \keyw{Computational modeling;Automata;Finite element methods;Mathematical model;Data models;Computers;Message systems}
+    \endentry
     \entry{Gratzer11}{book}{}
       \name{author}{1}{}{%
         {{hash=1fbe47f440ca22f20226c76a6051031f}{%
