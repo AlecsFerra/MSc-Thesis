@@ -519,7 +519,7 @@ $f$ exists as they are respectively top and bottom of $\fix(f)$.
 \section{Abstract Interpretation}
 
 Abstract interpretation \cite{Cousot77, Cousot21} is the de-facto standard
-approach for designing static program analysis. Fixed some reprentation of the
+approach for designing static program analysis. Fixed some representation of the
 state of the program usually denoted by $\states$, the specification of a
 program can be expressed as a pair of initial and final sets of states,
 $\mathit{Init}, \mathit{Final} \in \pow{\states}$, and the task of verifying a
@@ -699,7 +699,7 @@ amount of memory.
 \begin{example}[Complete sign domain]
   \label{exmp:sign}
   Let $Sign = \{ \bot , <0, >0, =0, \leq 0, \neq 0, \geq 0, \mathbb{Z}\}$ be 
-  ordered by following the hasse diagram below.
+  ordered by following the Hasse diagram below.
 
   \begin{center}
   \begin{tikzpicture}
@@ -1033,7 +1033,7 @@ abstract Hoare logic is dependent.
 As we did for the concrete collecting semantics, we need to prove that the
 semantics is well-defined. In general, For this we require for $A$
 to be a complete lattice or for $\bsem{b}$ to be monotone, play an essential role
-as they guarantee the existance of the required least-fixpoint.
+as they guarantee the existence of the required least-fixpoint.
 
 \begin{theorem}[Monotonicity]
   \label{thm:asem-mono} 
@@ -1393,13 +1393,13 @@ The idea of designing a Hoare-like logic to reason about properties of programs
 expressible within the theory of lattices using concepts from abstract
 interpretation is not new. In fact, \cite{Cousot12} already proposed a
 framework to perform this kind of reasoning. However, the validity of the
-triples in \cite{Cousot12} dependends on the standard definition of Hoare
+triples in \cite{Cousot12} depends on the standard definition of Hoare
 triples, and the proof system is incomplete if we ignore the rule to embed
 standard Hoare triples in the abstract ones.
 
 Our approach will be different. In particular, the meaning of abstract Hoare 
 triples will be dependent on the abstract inductive semantics, and we will 
-provide a sound and (relatively) complete without resorting to embedd Hoare 
+provide a sound and (relatively) complete without resorting to embedding Hoare 
 logic in its proof system as \cite{Cousot12}.
 
 \begin{definition}[Abstract Hoare triple]
@@ -1510,7 +1510,7 @@ The rules can be summarized as:
 The proofsystem is nonother than Definition \ref{def:hoaretules},
 where the assertion are replaced by elements of the complete lattice $A$.
 
-Note that we denote Abstract Hoare Triples as defined in Defintion \ref{def:aht}
+Note that we denote Abstract Hoare Triples as defined in Definition \ref{def:aht}
 with the notation $\atriple{P}{C}{Q}$ while we denote the triples obtained
 with the inference rules of Definition \ref{def:ahtrules} by $\vdash 
 \atriple{P}{C}{Q}$.
@@ -1803,7 +1803,7 @@ $\bsem{b}^{\pow{\states}}(P) = \{ \bsem{b}(\sigma) \; \mid \sigma
 \in P \mand \bsem{b}(\sigma) \downarrow\}$ as semantics of basic commands, turns out to be equivalent to the denotational 
 semantics given in Definition \ref{def:deno}. Therefore Abstract Hoare logic
 (Definition \ref{def:aht}) in this instance coincides with Hoare logic (Definition
-\ref{def:hoare}). Hence we obtain soundess and relative completeness for Hoare
+\ref{def:hoare}). Hence we obtain soundness and relative completeness for Hoare
 logic directly form Theorems \ref{thm:atriple-sound} and \ref{thm:completeness}.
 
 \subsection{Algebraic Hoare Logic}
@@ -3249,7 +3249,7 @@ same technique to  the abstract inductive semantics instantiated with a hyper
 domain of $\pow{\states}$, to study whether this would  lead to some interesting novel 
 logics or if
 they are all equivalent (this could happen because hyperproperties can disprove themselves,
-meaning that if a triple in hyper hoare logic is false we can prove its negation).
+meaning that if a triple in hyper Hoare logic is false we can prove its negation).
 
 An interesting feature of the hyper Hoare logic obtained via Abstract Hoare Logic
 is that the assertion language is relatively low-level, making it cumbersome to
