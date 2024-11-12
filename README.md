@@ -8,8 +8,6 @@
 
 You can fine the complete [thesis here (pdf)](out/thesis.pdf).
 
-**EVERYTHING IS STILL WORK IN PROGRESS**
-
 ## Thesis Overview
 
 The verification of program correctness is a critical task in computer science. Ensuring that software behaves as expected under all possible conditions is fundamental in a society that increasingly relies on computer programs. Programmers often reason about the behavior of their programs at an intuitive level. While this is definitely better than not reasoning at all, intuition alone becomes insufficient as the size of programs grows.
